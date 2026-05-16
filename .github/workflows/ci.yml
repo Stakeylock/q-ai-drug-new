@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,chem]"
+
+      - name: Validate service imports
+        run: |
+          python -m py_compile \
+            src/q_ai_drug/service/settings.py \
+            src/q_ai_drug/service/db.py \
+            src/q_ai_drug/service/queue.py \
+            src/q_ai_drug/service/tasks.py \
+            src/q_ai_drug/service/worker_loop.py \
+            src/q_ai_drug/service/auth.py \
+            src/q_ai_drug/service/access.py \
+            src/q_ai_drug/service/storage.py \
+            src/q_ai_drug/service/usage.py \
+            src/q_ai_drug/service/routes/auth.py \
+            src/q_ai_drug/service/routes/uploads.py \
+            src/q_ai_drug/service/routes/artifacts.py \
+            src/q_ai_drug/service/api.py \
+            src/q_ai_drug/service/main.py
+          python -c "import q_ai_drug.service.main; print('api import ok')"
+
+      - name: Run unit tests
+        run: python -m pytest tests -q
+
+      - name: Build API Docker image
+        run: docker build -t q-ai-drug-api:ci .

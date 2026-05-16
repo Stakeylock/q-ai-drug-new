@@ -1,0 +1,35 @@
+{
+  "bundle_path": "models\\admet\\admet_models.joblib",
+  "metrics_path": "models\\admet\\admet_model_metrics.csv",
+  "sources": {
+    "tox21_csv": "data\\raw\\tox21.csv",
+    "clintox_csv": "data\\raw\\clintox.csv"
+  },
+  "datasets": {
+    "tox21": {
+      "endpoints": [
+        "NR-AR",
+        "NR-AR-LBD",
+        "NR-AhR",
+        "NR-Aromatase",
+        "NR-ER",
+        "NR-ER-LBD",
+        "NR-PPAR-gamma",
+        "SR-ARE",
+        "SR-ATAD5",
+        "SR-HSE",
+        "SR-MMP",
+        "SR-p53"
+      ],
+      "records": 7831
+    },
+    "clintox": {
+      "endpoints": [
+        "FDA_APPROVED",
+        "CT_TOX"
+      ],
+      "records": 1484
+    }
+  },
+  "model_type": "RandomForestClassifier per endpoint on RDKit descriptors, hashed SMILES fingerprints, and Morgan fingerprints"
+}

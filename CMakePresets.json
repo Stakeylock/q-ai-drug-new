@@ -1,0 +1,327 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default research configure",
+      "description": "Configure the Q-AI drug discovery orchestration targets.",
+      "binaryDir": "${sourceDir}/build"
+    },
+    {
+      "name": "offline",
+      "displayName": "Offline cached-data configure",
+      "description": "Configure using cached data only; useful after the public datasets have been downloaded once.",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build-offline",
+      "cacheVariables": {
+        "QAI_SKIP_DOWNLOAD": "ON"
+      }
+    },
+    {
+      "name": "quick",
+      "displayName": "Quick smoke configure",
+      "description": "Configure a smaller generated set for fast local checks.",
+      "inherits": "default",
+      "binaryDir": "${sourceDir}/build-quick",
+      "cacheVariables": {
+        "QAI_OUTPUT": "outputs/cancer_proof_quick",
+        "QAI_SKIP_DOWNLOAD": "ON",
+        "QAI_N_GENERATE": "150"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "setup",
+      "configurePreset": "default",
+      "targets": ["setup_all"]
+    },
+    {
+      "name": "install-tools",
+      "configurePreset": "default",
+      "targets": ["install_wsl_tools"]
+    },
+    {
+      "name": "research",
+      "configurePreset": "default",
+      "targets": ["research_all"]
+    },
+    {
+      "name": "train-models",
+      "configurePreset": "default",
+      "targets": ["train_models"]
+    },
+    {
+      "name": "run-gnina",
+      "configurePreset": "offline",
+      "targets": ["run_gnina"]
+    },
+    {
+      "name": "run-experiments",
+      "configurePreset": "offline",
+      "targets": ["run_experiments"]
+    },
+    {
+      "name": "curate-legacy-structures",
+      "configurePreset": "offline",
+      "targets": ["curate_legacy_structures"]
+    },
+    {
+      "name": "offline-research",
+      "configurePreset": "offline",
+      "targets": ["research_all"]
+    },
+    {
+      "name": "quick-research",
+      "configurePreset": "quick",
+      "targets": ["research_all"]
+    },
+    {
+      "name": "show",
+      "configurePreset": "offline",
+      "targets": ["show_project"]
+    },
+    {
+      "name": "serve-report",
+      "configurePreset": "offline",
+      "targets": ["serve_report"]
+    },
+    {
+      "name": "serve-api",
+      "configurePreset": "offline",
+      "targets": ["serve_api"]
+    },
+    {
+      "name": "serve-dashboard",
+      "configurePreset": "offline",
+      "targets": ["serve_dashboard"]
+    },
+    {
+      "name": "validate",
+      "configurePreset": "offline",
+      "targets": ["validate_artifacts"]
+    },
+    {
+      "name": "production-gate",
+      "configurePreset": "offline",
+      "targets": ["validate_production"]
+    },
+    {
+      "name": "completion-report",
+      "configurePreset": "offline",
+      "targets": ["build_completion_report"]
+    },
+    {
+      "name": "investor-package",
+      "configurePreset": "offline",
+      "targets": ["investor_package"]
+    },
+    {
+      "name": "serve-investor",
+      "configurePreset": "offline",
+      "targets": ["serve_investor"]
+    },
+    {
+      "name": "smoke-ui-api",
+      "configurePreset": "offline",
+      "targets": ["smoke_ui_api"]
+    },
+    {
+      "name": "test-all",
+      "configurePreset": "offline",
+      "targets": ["test_all"]
+    },
+    {
+      "name": "bootstrap",
+      "configurePreset": "default",
+      "targets": ["setup_all"]
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "bootstrap",
+      "displayName": "Install WSL tools, Python extras, and smoke-test everything",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "default"
+        },
+        {
+          "type": "build",
+          "name": "install-tools"
+        },
+        {
+          "type": "build",
+          "name": "setup"
+        }
+      ]
+    },
+    {
+      "name": "setup",
+      "displayName": "Setup and smoke-test every dependency",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "default"
+        },
+        {
+          "type": "build",
+          "name": "setup"
+        }
+      ]
+    },
+    {
+      "name": "research",
+      "displayName": "Full research run with dataset refresh/cache",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "default"
+        },
+        {
+          "type": "build",
+          "name": "research"
+        }
+      ]
+    },
+    {
+      "name": "train-models",
+      "displayName": "Download datasets and train reusable models into models/",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "default"
+        },
+        {
+          "type": "build",
+          "name": "train-models"
+        }
+      ]
+    },
+    {
+      "name": "run-gnina",
+      "displayName": "Run GNINA CNN docking/rescoring on current top candidates",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "offline"
+        },
+        {
+          "type": "build",
+          "name": "run-gnina"
+        }
+      ]
+    },
+    {
+      "name": "research-bootstrap",
+      "displayName": "Install tools, then run the full research pipeline",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "default"
+        },
+        {
+          "type": "build",
+          "name": "install-tools"
+        },
+        {
+          "type": "build",
+          "name": "research"
+        }
+      ]
+    },
+    {
+      "name": "offline-research",
+      "displayName": "Full research run from cached datasets",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "offline"
+        },
+        {
+          "type": "build",
+          "name": "offline-research"
+        }
+      ]
+    },
+    {
+      "name": "quick-research",
+      "displayName": "Fast local research smoke run",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "quick"
+        },
+        {
+          "type": "build",
+          "name": "quick-research"
+        }
+      ]
+    },
+    {
+      "name": "test-all",
+      "displayName": "Unit tests plus proof-tier artifact validation",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "offline"
+        },
+        {
+          "type": "build",
+          "name": "test-all"
+        }
+      ]
+    },
+    {
+      "name": "show",
+      "displayName": "Run cached research and open report/API",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "offline"
+        },
+        {
+          "type": "build",
+          "name": "show"
+        }
+      ]
+    },
+    {
+      "name": "investor-package",
+      "displayName": "Build tests, production gate, completion report, and readiness artifacts",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "offline"
+        },
+        {
+          "type": "build",
+          "name": "investor-package"
+        }
+      ]
+    },
+    {
+      "name": "investor-demo",
+      "displayName": "Build investor package and open the investor site",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "offline"
+        },
+        {
+          "type": "build",
+          "name": "investor-package"
+        },
+        {
+          "type": "build",
+          "name": "serve-investor"
+        }
+      ]
+    }
+  ]
+}

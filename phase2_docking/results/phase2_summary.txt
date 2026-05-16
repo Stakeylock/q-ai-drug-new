@@ -1,0 +1,72 @@
+======================================================================
+DRUG DISCOVERY PIPELINE - PHASE 2 SUMMARY REPORT
+Generated: 2026-03-23 08:47:52
+======================================================================
+
+Total candidates docked: 25
+Total targets: 5
+Total docking pairs: 125
+
+----------------------------------------------------------------------
+BINDING CLASSIFICATION BREAKDOWN
+----------------------------------------------------------------------
+  Strong    :  108 (86.4%)
+  Moderate  :   17 (13.6%)
+
+----------------------------------------------------------------------
+TOP HITS PER TARGET (<= -7.0 kcal/mol)
+----------------------------------------------------------------------
+
+  ADA (Adenosine Deaminase):
+    Candidate_2     | -12.00 kcal/mol | Strong   | Cc1nc(C(=O)N2CCCC[C@H]2C(=O)O)sc1Br
+    Candidate_8     | -12.00 kcal/mol | Strong   | Cc1ccccc1-c1nc(C(=O)N2CCC[C@@H]2C(=O)O)cs1
+    Candidate_15    | -12.00 kcal/mol | Strong   | CC(=O)N[C@H](Cc1ccc(OCc2ccccc2)cc1)C(=O)O
+    Candidate_23    | -12.00 kcal/mol | Strong   | Cc1c(C(=O)N[C@H](C(=O)O)C(C)C)cnn1-c1ccc(F)cc1
+    Candidate_10    | -11.16 kcal/mol | Strong   | CCC(C)C(C)C(=O)N1CCOC(CN(CC(=O)O)S(C)(=O)=O)C1
+
+  ALDR (Aldose Reductase):
+    Candidate_8     | -12.00 kcal/mol | Strong   | Cc1ccccc1-c1nc(C(=O)N2CCC[C@@H]2C(=O)O)cs1
+    Candidate_15    | -12.00 kcal/mol | Strong   | CC(=O)N[C@H](Cc1ccc(OCc2ccccc2)cc1)C(=O)O
+    Candidate_23    | -12.00 kcal/mol | Strong   | Cc1c(C(=O)N[C@H](C(=O)O)C(C)C)cnn1-c1ccc(F)cc1
+    Candidate_2     | -11.48 kcal/mol | Strong   | Cc1nc(C(=O)N2CCCC[C@H]2C(=O)O)sc1Br
+    Candidate_10    | -11.42 kcal/mol | Strong   | CCC(C)C(C)C(=O)N1CCOC(CN(CC(=O)O)S(C)(=O)=O)C1
+
+  CAH2 (Carbonic Anhydrase II):
+    Candidate_8     | -12.00 kcal/mol | Strong   | Cc1ccccc1-c1nc(C(=O)N2CCC[C@@H]2C(=O)O)cs1
+    Candidate_15    | -12.00 kcal/mol | Strong   | CC(=O)N[C@H](Cc1ccc(OCc2ccccc2)cc1)C(=O)O
+    Candidate_23    | -12.00 kcal/mol | Strong   | Cc1c(C(=O)N[C@H](C(=O)O)C(C)C)cnn1-c1ccc(F)cc1
+    Candidate_2     | -11.99 kcal/mol | Strong   | Cc1nc(C(=O)N2CCCC[C@H]2C(=O)O)sc1Br
+    Candidate_10    | -10.73 kcal/mol | Strong   | CCC(C)C(C)C(=O)N1CCOC(CN(CC(=O)O)S(C)(=O)=O)C1
+
+  TRY1 (Trypsin-1):
+    Candidate_8     | -12.00 kcal/mol | Strong   | Cc1ccccc1-c1nc(C(=O)N2CCC[C@@H]2C(=O)O)cs1
+    Candidate_15    | -12.00 kcal/mol | Strong   | CC(=O)N[C@H](Cc1ccc(OCc2ccccc2)cc1)C(=O)O
+    Candidate_23    | -12.00 kcal/mol | Strong   | Cc1c(C(=O)N[C@H](C(=O)O)C(C)C)cnn1-c1ccc(F)cc1
+    Candidate_2     | -11.46 kcal/mol | Strong   | Cc1nc(C(=O)N2CCCC[C@H]2C(=O)O)sc1Br
+    Candidate_13    | -10.59 kcal/mol | Strong   | CN(C)CC(=O)N1CC(NC(=O)c2ccccc2)CC1C(=O)O
+
+  TRYB1 (Tryptase Beta-1):
+    Candidate_8     | -12.00 kcal/mol | Strong   | Cc1ccccc1-c1nc(C(=O)N2CCC[C@@H]2C(=O)O)cs1
+    Candidate_15    | -12.00 kcal/mol | Strong   | CC(=O)N[C@H](Cc1ccc(OCc2ccccc2)cc1)C(=O)O
+    Candidate_23    | -12.00 kcal/mol | Strong   | Cc1c(C(=O)N[C@H](C(=O)O)C(C)C)cnn1-c1ccc(F)cc1
+    Candidate_10    | -11.75 kcal/mol | Strong   | CCC(C)C(C)C(=O)N1CCOC(CN(CC(=O)O)S(C)(=O)=O)C1
+    Candidate_2     | -11.30 kcal/mol | Strong   | Cc1nc(C(=O)N2CCCC[C@H]2C(=O)O)sc1Br
+
+----------------------------------------------------------------------
+BEST OVERALL CANDIDATES
+----------------------------------------------------------------------
+  Candidate_15    | best=-12.00 | mean=-12.00 | strong_targets=5 | CC(=O)N[C@H](Cc1ccc(OCc2ccccc2)cc1)C(=O)O
+  Candidate_2     | best=-12.00 | mean=-11.65 | strong_targets=5 | Cc1nc(C(=O)N2CCCC[C@H]2C(=O)O)sc1Br
+  Candidate_23    | best=-12.00 | mean=-12.00 | strong_targets=5 | Cc1c(C(=O)N[C@H](C(=O)O)C(C)C)cnn1-c1ccc(F)cc
+  Candidate_8     | best=-12.00 | mean=-12.00 | strong_targets=5 | Cc1ccccc1-c1nc(C(=O)N2CCC[C@@H]2C(=O)O)cs1
+  Candidate_10    | best=-11.75 | mean=-11.05 | strong_targets=5 | CCC(C)C(C)C(=O)N1CCOC(CN(CC(=O)O)S(C)(=O)=O)C
+  Candidate_13    | best=-10.85 | mean=-10.50 | strong_targets=5 | CN(C)CC(=O)N1CC(NC(=O)c2ccccc2)CC1C(=O)O
+  Candidate_4     | best=-10.71 | mean=-10.45 | strong_targets=5 | O=C(O)[C@H](CCNC1CCCCC1)N1CCCCCC1
+  Candidate_7     | best=-10.51 | mean=-10.24 | strong_targets=5 | Cc1ccc(S(=O)(=O)NC(=O)NC2CCCC2)cc1
+  Candidate_17    | best=-10.40 | mean= -9.96 | strong_targets=5 | Cc1ccccc1S(=O)(=O)Nc1ccccc1
+  Candidate_1     | best=-10.38 | mean=-10.12 | strong_targets=5 | CN(C(=O)c1ccc(S(N)(=O)=O)cc1)C1CCCCC1
+
+======================================================================
+NOTE: Scores computed via RDKit descriptor-based proxy scoring.
+For publication-grade results, validate with AutoDock Vina or GOLD.
+======================================================================

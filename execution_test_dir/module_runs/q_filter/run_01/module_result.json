@@ -1,0 +1,125 @@
+{
+  "module_id": "q_filter",
+  "module_name": "Q-Filter",
+  "project_id": "execution_test_dir",
+  "run_id": "run_01",
+  "status": "succeeded",
+  "execution_mode": "small_or_production",
+  "queue": "scoring",
+  "artifacts": [
+    {
+      "type": "csv",
+      "name": "Filtered candidates",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/filtered_candidates.csv",
+      "relative_path": "module_runs/q_filter/run_01/filtered_candidates.csv",
+      "size_bytes": 58953,
+      "checksum": "b9af0113cd1ffc99",
+      "created_at": "2026-05-16T06:13:22.252556+00:00",
+      "artifact_id": "6a43c25e725fcecef0e5d64b"
+    },
+    {
+      "type": "sdf",
+      "name": "Filtered candidates SDF",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/filtered_candidates.sdf",
+      "relative_path": "module_runs/q_filter/run_01/filtered_candidates.sdf",
+      "size_bytes": 786852,
+      "checksum": "76eccd461a4e7fa3",
+      "created_at": "2026-05-16T06:13:22.432458+00:00",
+      "artifact_id": "fbe8442580aeb2bce9e57068"
+    },
+    {
+      "type": "csv",
+      "name": "Rejected candidates",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/rejected_candidates.csv",
+      "relative_path": "module_runs/q_filter/run_01/rejected_candidates.csv",
+      "size_bytes": 11933,
+      "checksum": "70a22eba26e85360",
+      "created_at": "2026-05-16T06:13:22.447654+00:00",
+      "artifact_id": "7afd244630fa0b4b55f2cea6"
+    },
+    {
+      "type": "csv",
+      "name": "Reject reasons",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/reject_reasons.csv",
+      "relative_path": "module_runs/q_filter/run_01/reject_reasons.csv",
+      "size_bytes": 3639,
+      "checksum": "47d152909521baf3",
+      "created_at": "2026-05-16T06:13:22.462375+00:00",
+      "artifact_id": "756e25a98527500558db9380"
+    },
+    {
+      "type": "csv",
+      "name": "Invalid molecules",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/invalid_molecules.csv",
+      "relative_path": "module_runs/q_filter/run_01/invalid_molecules.csv",
+      "size_bytes": 508,
+      "checksum": "2bc0d5994ac0bece",
+      "created_at": "2026-05-16T06:13:22.476442+00:00",
+      "artifact_id": "bf220f4eaa3b3e7740578bc0"
+    },
+    {
+      "type": "csv",
+      "name": "Duplicate molecules",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/duplicate_molecules.csv",
+      "relative_path": "module_runs/q_filter/run_01/duplicate_molecules.csv",
+      "size_bytes": 37214,
+      "checksum": "1ab4133e76f9e973",
+      "created_at": "2026-05-16T06:13:22.493152+00:00",
+      "artifact_id": "f520228b34c4a89b8449830a"
+    },
+    {
+      "type": "csv",
+      "name": "Medchem risk table",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/medchem_risk_table.csv",
+      "relative_path": "module_runs/q_filter/run_01/medchem_risk_table.csv",
+      "size_bytes": 27071,
+      "checksum": "5ba9d0ac8648c8b4",
+      "created_at": "2026-05-16T06:13:22.505709+00:00",
+      "artifact_id": "f0b1e7e63549a7829af0e09a"
+    },
+    {
+      "type": "json",
+      "name": "ADMET model manifest",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/admet_model_manifest.json",
+      "relative_path": "module_runs/q_filter/run_01/admet_model_manifest.json",
+      "size_bytes": 283,
+      "checksum": "6248b3543e95265a",
+      "created_at": "2026-05-16T06:13:22.514312+00:00",
+      "artifact_id": "95753c1c266776959e12b788"
+    },
+    {
+      "type": "json",
+      "name": "Filter summary",
+      "uri": "execution_test_dir/module_runs/q_filter/run_01/q_filter_summary.json",
+      "relative_path": "module_runs/q_filter/run_01/q_filter_summary.json",
+      "size_bytes": 568,
+      "checksum": "99f4f60f9062c12b",
+      "created_at": "2026-05-16T06:13:22.525372+00:00",
+      "artifact_id": "b8f1d3788c873de6847551a5"
+    }
+  ],
+  "warnings": [
+    "Removed 295 duplicate molecules (same canonical SMILES)",
+    "9 molecules (2.5%) failed parsing"
+  ],
+  "limitations": [
+    "Early medchem/ADMET triage only; not a safety or toxicology claim."
+  ],
+  "next_actions": [],
+  "credits_used": 0.1,
+  "claim_boundary": "Computational research hypothesis only. Wet-lab validation is required.",
+  "usage": {
+    "requested": {
+      "molecule_count": 659
+    },
+    "actual": {
+      "duplicates_removed": 295,
+      "molecule_count": 364,
+      "valid_molecule_count": 355,
+      "failed_molecule_count": 9,
+      "filtered_count": 332,
+      "rejected_count": 32
+    }
+  },
+  "created_at": "2026-05-16T06:13:22.532882+00:00"
+}

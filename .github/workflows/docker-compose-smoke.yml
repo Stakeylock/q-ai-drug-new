@@ -1,0 +1,69 @@
+name: docker-compose-smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * *"
+
+jobs:
+  compose-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate compose file
+        run: docker compose config
+
+      - name: Build core runtime images
+        run: docker compose build api worker-base
+
+      - name: Start core services and default worker
+        run: docker compose up -d postgres redis minio api worker-base
+
+      - name: Smoke API health and dry-run job
+        run: |
+          READY=0
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8000/health; then
+              curl -fsS http://127.0.0.1:8000/ready
+              READY=1
+              break
+            fi
+            sleep 3
+          done
+          if [ "$READY" != "1" ]; then
+            docker compose logs api
+            exit 1
+          fi
+          TOKEN=$(curl -fsS -X POST http://127.0.0.1:8000/auth/signup \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"ci@example.com","password":"ci-password-123","organization_name":"CI Org"}' \
+            | python -c "import json,sys; print(json.load(sys.stdin)['access_token'])")
+          PROJECT_ID=$(curl -fsS -X POST http://127.0.0.1:8000/projects \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H 'Content-Type: application/json' \
+            -d '{"name":"ci_smoke","config_path":"configs/cancer_targets.yaml"}' \
+            | python -c "import json,sys; print(json.load(sys.stdin)['id'])")
+          RUN_ID=$(curl -fsS -X POST "http://127.0.0.1:8000/projects/${PROJECT_ID}/runs" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H 'Content-Type: application/json' \
+            -d '{"project_id":"'"${PROJECT_ID}"'","dry_run":true}' \
+            | python -c "import json,sys; print(json.load(sys.stdin)['id'])")
+          for i in $(seq 1 40); do
+            STATUS=$(curl -fsS -H "Authorization: Bearer ${TOKEN}" "http://127.0.0.1:8000/runs/${RUN_ID}" | python -c "import json,sys; print(json.load(sys.stdin)['status'])")
+            if [ "$STATUS" = "succeeded" ]; then
+              curl -fsS -H "Authorization: Bearer ${TOKEN}" "http://127.0.0.1:8000/runs/${RUN_ID}/logs"
+              exit 0
+            fi
+            if [ "$STATUS" = "failed" ]; then
+              docker compose logs api worker-base
+              exit 1
+            fi
+            sleep 3
+          done
+          docker compose logs api worker-base
+          exit 1
+
+      - name: Shutdown
+        if: always()
+        run: docker compose down -v

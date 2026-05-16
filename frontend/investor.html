@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Q-AI Drug Discovery</title>
+  <link rel="stylesheet" href="/static/investor.css">
+</head>
+<body>
+  <header class="site-head">
+    <a class="brand" href="#home" aria-label="Q-AI home">
+      <span>Q</span>
+      <strong>Q-AI Drug</strong>
+    </a>
+    <nav>
+      <a href="#platform">Platform</a>
+      <a href="#proof">Cancer Proof</a>
+      <a href="#quantum">Quantum</a>
+      <a href="#demo">Demo</a>
+      <a href="#investors">Investors</a>
+    </nav>
+    <div class="head-actions">
+      <a class="button ghost" href="/artifacts/report.pdf">Proof Report</a>
+      <a class="button" href="/dashboard">Launch Console</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow">Cancer-first quantum-augmented research platform</p>
+        <h1>Q-AI Drug Discovery</h1>
+        <p class="lead">Generate, screen, visualize, and quantum-rank oncology drug candidates from public data or user-uploaded molecules.</p>
+        <div class="cta-row">
+          <a class="button" href="/dashboard">Open Live Discovery Console</a>
+          <a class="button ghost" href="/completion-report">Project Completion Report</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Live proof metrics">
+        <div class="screen-top">
+          <span></span>
+          <span></span>
+          <span></span>
+          <strong>Live cancer proof run</strong>
+        </div>
+        <div class="metric-wall" id="hero-metrics"></div>
+        <div class="molecule-strip" id="molecule-strip"></div>
+      </div>
+    </section>
+
+    <section class="trust-line">
+      <strong>Research-use computational candidates only.</strong>
+      <span>Synthesis, assays, ADMET experiments, selectivity profiling, safety studies, and regulatory review are required before any therapeutic claim.</span>
+    </section>
+
+    <section class="section" id="platform">
+      <div class="section-head">
+        <p class="eyebrow">Integrated product surface</p>
+        <h2>One browser workflow from oncology data to ranked candidate evidence</h2>
+      </div>
+      <div class="workflow" id="workflow"></div>
+      <div class="tool-suite" id="tool-suite"></div>
+    </section>
+
+    <section class="section split" id="proof">
+      <div>
+        <p class="eyebrow">Cancer proof</p>
+        <h2>EGFR, PARP1, and PIK3CA are already wired through the pipeline</h2>
+        <p>The current proof run includes public datasets, trained activity and ADMET models, Vina/Smina docking, GNINA CNN docking, OpenMM ligand-pose relaxation, xTB descriptors, Qiskit kernels, final ranking, and report generation.</p>
+      </div>
+      <div class="target-table" id="target-table"></div>
+    </section>
+
+    <section class="section" id="quantum">
+      <div class="section-head">
+        <p class="eyebrow">Quantum where it is practical today</p>
+        <h2>Quantum AI is used as a measurable prioritization and ablation layer</h2>
+      </div>
+      <div class="quantum-grid">
+        <article>
+          <h3>Q-Portfolio Prefilter</h3>
+          <p>Qiskit statevector kernels prioritize filtered candidates before expensive docking and QM stages.</p>
+          <strong id="prefilter-count">Loading</strong>
+        </article>
+        <article>
+          <h3>Q-Orbital Analyzer</h3>
+          <p>xTB GFN2 descriptors add orbital energy, gap, and energy features to the top-candidate evidence pack.</p>
+          <strong id="qm-count">Loading</strong>
+        </article>
+        <article>
+          <h3>Q-Rank</h3>
+          <p>Late-stage Qiskit kernel reranking is shown with classical score and quantum ablation columns.</p>
+          <strong id="qml-count">Loading</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section split" id="demo">
+      <div>
+        <p class="eyebrow">Investor demo path</p>
+        <h2>Start with the product, then open the live Discovery Console</h2>
+        <p>The demo is designed to show a cached scientific run first, then a live model/playground path. The computational tools can be launched, while the cached artifacts keep the investor story stable.</p>
+        <div class="cta-row">
+          <a class="button" href="/dashboard">Launch Console</a>
+          <a class="button ghost" href="/artifacts/report.html">Open HTML Report</a>
+        </div>
+      </div>
+      <div class="demo-flow" id="demo-flow"></div>
+    </section>
+
+    <section class="section" id="investors">
+      <div class="section-head">
+        <p class="eyebrow">Investor proof points</p>
+        <h2>Execution metrics, honest validation gates, and a clear SaaS path</h2>
+      </div>
+      <div class="readiness" id="readiness"></div>
+      <div class="links">
+        <a class="button" href="/dashboard">Discovery Console</a>
+        <a class="button ghost" href="/docs">API Docs</a>
+        <a class="button ghost" href="/artifacts/product_readiness_report.json">Product Readiness JSON</a>
+        <a class="button ghost" href="/completion-report">Completion Report</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>Q-AI Drug Discovery Platform</strong>
+    <span>Computational research platform for oncology candidate hypothesis generation.</span>
+  </footer>
+
+  <script src="/static/investor.js"></script>
+</body>
+</html>

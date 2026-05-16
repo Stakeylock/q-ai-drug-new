@@ -1,0 +1,40 @@
+{
+  "schema_version": "2.0",
+  "source_mode": "unknown_plus_uploaded",
+  "source_files": [
+    "execution_test_dir/uploads/master_drug_discovery_final.csv"
+  ],
+  "source_api": null,
+  "fallback_reason": null,
+  "retrieved_at": "2026-05-16T06:13:20.177807+00:00",
+  "target_query": [
+    "EGFR",
+    "PIK3CA"
+  ],
+  "targets_selected": [
+    "EGFR",
+    "PIK3CA"
+  ],
+  "curation_profile": "standard",
+  "curation_steps": [
+    "Resolve target IDs from configs/cancer_targets.yaml",
+    "Attempt ChEMBL live retrieval when dependency and network are available",
+    "Fallback to benchmark CSV when live retrieval is unavailable",
+    "Normalize pActivity/p_activity, units, target, SMILES, source, and curation fields",
+    "Merge uploaded assay rows after schema normalization when provided",
+    "Filter by selected targets and curation profile: standard",
+    "Detect duplicate measurements by target_id + canonical_smiles + standard_type",
+    "Flag conflicting measurements with >1 log unit spread",
+    "Generate scaffold-aware train/valid/test splits",
+    "Generate target coverage summary"
+  ],
+  "config_path": "configs/cancer_targets.yaml",
+  "output_location": "execution_test_dir/module_runs/onco_data_builder/run_01",
+  "dataset_hash": "575a9676570fcfc8",
+  "next_steps": [
+    "Review curated_activity.csv and rejected upload rows if present",
+    "Review duplicate_resolution.csv and conflicting_measurements.csv",
+    "Use train.csv / valid.csv / test.csv in Activity Model Studio",
+    "Use reference inhibitors and candidate modules for downstream screening"
+  ]
+}

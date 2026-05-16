@@ -1,0 +1,22 @@
+{
+  "module_id": "q_filter",
+  "input_molecules": 659,
+  "valid_molecules": 355,
+  "failed_parsing": 9,
+  "duplicates_removed": 295,
+  "invalid_molecules": 9,
+  "filtered_passed": 332,
+  "rejected": 32,
+  "filter_profile": "standard",
+  "admet_scored": 0,
+  "admet_model_available": false,
+  "alert_sources": [
+    "PAINS (RDKit FilterCatalog)",
+    "Brenk (RDKit FilterCatalog)",
+    "MedChem risk (SMARTS patterns)"
+  ],
+  "warnings": [
+    "Removed 295 duplicate molecules (same canonical SMILES)",
+    "9 molecules (2.5%) failed parsing"
+  ]
+}

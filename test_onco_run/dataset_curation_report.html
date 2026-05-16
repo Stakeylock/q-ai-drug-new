@@ -1,0 +1,81 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Dataset Curation Report</title>
+<style>
+body{font-family:Arial,sans-serif;margin:32px;color:#12202f} table{border-collapse:collapse;width:100%}
+td,th{border:1px solid #d8dee8;padding:6px;font-size:12px;text-align:left} th{background:#eef3f8}
+.note{background:#fff8df;border:1px solid #eadca5;padding:12px;margin:16px 0}
+</style></head><body>
+<h1>Dataset Curation Report</h1>
+<p>Active threshold: pActivity >= 6.0. Splits are scaffold-based where provided by the benchmark builder.</p>
+<div class="note">Computational research hypothesis only. Not a therapeutic, diagnostic, clinical, or regulatory claim. Wet-lab validation is required.</div>
+<table border="1" class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>target_id</th>
+      <th>gene</th>
+      <th>uniprot_id</th>
+      <th>raw_records</th>
+      <th>kept_records</th>
+      <th>unique_molecules</th>
+      <th>active_records</th>
+      <th>inactive_records</th>
+      <th>ambiguous_or_excluded_records</th>
+      <th>train_records</th>
+      <th>validation_records</th>
+      <th>test_records</th>
+      <th>unique_scaffolds</th>
+      <th>reference_drugs_configured</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>EGFR</td>
+      <td>EGFR</td>
+      <td>P00533</td>
+      <td>737</td>
+      <td>737</td>
+      <td>737</td>
+      <td>335</td>
+      <td>402</td>
+      <td>0</td>
+      <td>502</td>
+      <td>0</td>
+      <td>172</td>
+      <td>204</td>
+      <td>erlotinib;gefitinib;osimertinib;afatinib;dacomitinib</td>
+    </tr>
+    <tr>
+      <td>PARP1</td>
+      <td>PARP1</td>
+      <td>P09874</td>
+      <td>905</td>
+      <td>905</td>
+      <td>905</td>
+      <td>793</td>
+      <td>112</td>
+      <td>0</td>
+      <td>589</td>
+      <td>0</td>
+      <td>207</td>
+      <td>435</td>
+      <td>olaparib;rucaparib;niraparib;talazoparib</td>
+    </tr>
+    <tr>
+      <td>PIK3CA</td>
+      <td>PIK3CA</td>
+      <td>P42336</td>
+      <td>900</td>
+      <td>900</td>
+      <td>900</td>
+      <td>561</td>
+      <td>339</td>
+      <td>0</td>
+      <td>571</td>
+      <td>0</td>
+      <td>231</td>
+      <td>440</td>
+      <td>alpelisib</td>
+    </tr>
+  </tbody>
+</table>
+</body></html>

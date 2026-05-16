@@ -1,0 +1,67 @@
+[
+  {
+    "fragment_id": "frag_1_1",
+    "fragment": "c1ccc(S(N)(=O)=O)cc1",
+    "parent_smiles": "CN(C(=O)c1ccc(S(N)(=O)=O)cc1)C1CCCCC1",
+    "parent_score": 0.8089359478121627,
+    "num_qubits": 2,
+    "vqe_energy": -1.5109396051323158,
+    "classical_energy": -1.5109397748092448,
+    "energy_error": 1.6967692895164532e-07,
+    "optimizer_evals": null,
+    "converged": true,
+    "status": "success"
+  },
+  {
+    "fragment_id": "frag_2_1",
+    "fragment": "Cc1ccc(CN",
+    "parent_smiles": "Cc1ccc(CNC(=O)C2CCCC2CN)nc1",
+    "parent_score": 0.7920918945012079,
+    "num_qubits": 2,
+    "vqe_energy": -1.3478570455905285,
+    "classical_energy": -1.3478571073861556,
+    "energy_error": 6.179562705987962e-08,
+    "optimizer_evals": null,
+    "converged": true,
+    "status": "success"
+  },
+  {
+    "fragment_id": "frag_2_2",
+    "fragment": "C2CCCC2CN)nc1",
+    "parent_smiles": "Cc1ccc(CNC(=O)C2CCCC2CN)nc1",
+    "parent_score": 0.7920918945012079,
+    "num_qubits": 2,
+    "vqe_energy": -2.036748108591687,
+    "classical_energy": -2.036748116289203,
+    "energy_error": 7.697515957971746e-09,
+    "optimizer_evals": null,
+    "converged": true,
+    "status": "success"
+  },
+  {
+    "fragment_id": "frag_3_1",
+    "fragment": "CCc1ccc(S(=O)(=O)N2C",
+    "parent_smiles": "CCc1ccc(S(=O)(=O)N2CCCC(CN)C2)c(C)c1",
+    "parent_score": 0.7916106537064993,
+    "num_qubits": 2,
+    "vqe_energy": -2.0366951534144855,
+    "classical_energy": -2.036695389928286,
+    "energy_error": 2.365138005444578e-07,
+    "optimizer_evals": null,
+    "converged": true,
+    "status": "success"
+  },
+  {
+    "fragment_id": "frag_4_1",
+    "fragment": "N[C@H](C",
+    "parent_smiles": "CC(=O)N[C@H](C)C(=O)CCC(=O)Nc1ccc(C)cc1",
+    "parent_score": 0.7880199199387108,
+    "num_qubits": 2,
+    "vqe_energy": -1.5077839943226883,
+    "classical_energy": -1.5077840127557285,
+    "energy_error": 1.8433040205323437e-08,
+    "optimizer_evals": null,
+    "converged": true,
+    "status": "success"
+  }
+]

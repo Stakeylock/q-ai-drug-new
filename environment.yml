@@ -1,0 +1,33 @@
+name: qai-drug-ml
+channels:
+  - conda-forge
+  - pytorch
+  - pyg
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pandas
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - pyyaml
+  - requests
+  - tqdm
+  - rdkit
+  - openbabel
+  - openmm
+  - pdbfixer
+  - pytorch
+  - pip:
+      - -e .
+      - torch-geometric
+      - fastapi
+      - uvicorn
+      - pydantic
+      - py3Dmol
+      - qiskit
+      - pyarrow
+      - httpx
+      - pytest
