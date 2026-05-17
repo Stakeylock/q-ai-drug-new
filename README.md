@@ -26,6 +26,18 @@ Last validated locally on Windows with WSL:
 - Research-evidence artifact validation passes with zero warnings on the active artifact set.
 - Strict scientific hardening artifacts are generated: dataset curation reports, scaffold-split baseline comparisons, actives-vs-decoys enrichment tables, applicability-domain labels, medchem/ADMET risk tables, interaction fingerprints, quantum ablations, negative controls, claim matrix, and 30 candidate dossiers.
 
+## Latest Science-First Runner Updates
+
+The scientist-facing module runners now include stricter evidence-status handling for the standalone SaaS-style workflow. These updates are separate from the full CMake research pipeline and are intended to make per-user module runs more scientifically honest.
+
+- `q_orbital_analyzer` now supports an explicit `allow_fallback` payload flag. `method=xtb` with `allow_fallback=false` fails rows when xTB is unavailable or fails, while `allow_fallback=true` permits RDKit Extended Huckel fallback. Each output row carries a `qm_status` such as `xtb_success`, `eht_fallback`, `failed_xtb`, `failed_eht`, or `failed_xtb_no_fallback`.
+- `q_dock_studio` now records `requested_engine`, `actual_engine_used`, and `gnina_executed=false` in the standalone runner. The runner does not overclaim GNINA execution unless a dedicated GNINA path is actually wired. Mock docking rows are marked as non-evidence and are suitable only for plumbing/fallback tests.
+- `q_dock_studio` now emits explicit `interaction_fingerprints.csv` and `redocking_validation.csv` artifacts when relevant. These are honest placeholders until full receptor-pose contact parsing and reference-ligand RMSD redocking are implemented.
+- `q_rank` is routed to `q_ai_drug.product.module_runners.q_rank_scientific.QRankRunner`. This evidence-aware runner consumes candidate, activity, docking, applicability-domain, and orbital/QM evidence artifacts, then penalizes mock docking, heuristic activity scores, EHT fallback, failed/missing QM, out-of-domain candidates, and missing evidence.
+- Evidence-aware Q-Rank writes `ranked_candidates.csv`, `rank_explanations.csv`, `rank_ablation.csv`, `evidence_status_report.csv`, `missing_evidence_report.csv`, `weight_config_used.json`, and `q_rank_summary.json`.
+
+These updates improve scientific traceability for user-level runs. Remaining science-first work: full GNINA standalone execution or removal from standalone engine choices, real redocking RMSD computation, residue-level interaction fingerprints, Q-Report evidence-status tables, and regression tests for the new module contracts.
+
 Main report:
 
 ```text
