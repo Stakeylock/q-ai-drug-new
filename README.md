@@ -35,8 +35,10 @@ The scientist-facing module runners now include stricter evidence-status handlin
 - `q_dock_studio` now emits explicit `interaction_fingerprints.csv` and `redocking_validation.csv` artifacts when relevant. These are honest placeholders until full receptor-pose contact parsing and reference-ligand RMSD redocking are implemented.
 - `q_rank` is routed to `q_ai_drug.product.module_runners.q_rank_scientific.QRankRunner`. This evidence-aware runner consumes candidate, activity, docking, applicability-domain, and orbital/QM evidence artifacts, then penalizes mock docking, heuristic activity scores, EHT fallback, failed/missing QM, out-of-domain candidates, and missing evidence.
 - Evidence-aware Q-Rank writes `ranked_candidates.csv`, `rank_explanations.csv`, `rank_ablation.csv`, `evidence_status_report.csv`, `missing_evidence_report.csv`, `weight_config_used.json`, and `q_rank_summary.json`.
+- `q_report` is routed to `q_ai_drug.product.module_runners.q_report_scientific.QReportRunner`. It can consume ranked-candidate, wet-lab triage, evidence-status, and rank-ablation artifacts, then generates an evidence-aware report package.
+- Evidence-aware Q-Report writes `selected_candidates.csv`, `claim_matrix.csv`, `report_ranked_candidates_subset.csv`, `report.md`, `report.html`, and `report_manifest.json`. The report explicitly separates real, fallback, mock, missing, and wet-lab-required evidence and prevents therapeutic overclaiming.
 
-These updates improve scientific traceability for user-level runs. Remaining science-first work: full GNINA standalone execution or removal from standalone engine choices, real redocking RMSD computation, residue-level interaction fingerprints, Q-Report evidence-status tables, and regression tests for the new module contracts.
+These updates improve scientific traceability for user-level runs. Remaining science-first work: full GNINA standalone execution or removal from standalone engine choices, real redocking RMSD computation, residue-level interaction fingerprints, regression tests for the new module contracts, and deeper Activity Model / Applicability Domain training-set integration.
 
 Main report:
 
@@ -405,7 +407,7 @@ The research evidence gate should now return `pass` with zero warnings on the ac
 ## Key Outputs
 
 ```text
-data/processed/oncology_benchmark.csv
+data/processed/ontology_benchmark.csv
 data/processed/reference_inhibitors.csv
 models/activity/
 models/admet/
