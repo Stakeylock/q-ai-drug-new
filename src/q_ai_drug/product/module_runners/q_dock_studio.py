@@ -109,9 +109,7 @@ class QDockStudioRunner(BaseModuleRunner):
 
         if not self._vina_available:
             self._mock_mode = True
-            self.add_warning(
-                "AutoDock Vina/Smina not found. Running in labeled mock mode; scores are not real docking evidence."
-            )
+            self.add_warning("AutoDock Vina/Smina not found. Running in labeled mock mode; scores are not real docking evidence.")
         if self._vina_available and not self._obabel_available and receptor_path.suffix.lower() != ".pdbqt":
             self.add_warning("OpenBabel not found; receptor conversion may fail and force mock mode.")
 
@@ -201,11 +199,7 @@ class QDockStudioRunner(BaseModuleRunner):
         return sdf_path, pdbqt_path
 
     def _resolve_engine(self, requested_engine: str) -> tuple[str, str]:
-        """Return (tool_name, evidence_label) for actual execution.
-
-        GNINA is not executed by this runner. Requests containing GNINA are downgraded to
-        the best Vina/Smina-compatible path and explicitly labelled as such.
-        """
+        """Return (tool_name, evidence_label) for actual execution."""
         if "gnina" in requested_engine:
             self.add_warning("GNINA requested, but this standalone runner does not execute GNINA. Using Vina/Smina-compatible docking evidence only.")
         if requested_engine in ("smina",) and self._vina_available:
@@ -292,39 +286,100 @@ class QDockStudioRunner(BaseModuleRunner):
         }
 
     def _add_interaction_fingerprint(self, candidate_id: str, smiles: str, pose_sdf: Path | None, is_real: bool) -> None:
-        """Write a conservative interaction-fingerprint placeholder.
-
-        Full residue-level contacts require receptor-pose parsing. Until that is wired,
-        the table explicitly marks contact_quality as unavailable for mock rows and
-        pose_level_placeholder for real docking rows.
-        """
+        if is_real and pose_sdf and pose_sdf.exists() and self.receptor_path and self.receptor_path.suffix.lower() == ".pdb":
+            try:
+                from q_ai_drug.docking.interactions import compute_interaction_fingerprint
+                row = compute_interaction_fingerprint(self.receptor_path, pose_sdf, candidate_id).to_row()
+                row["canonical_smiles"] = smiles
+                row["docking_is_real"] = True
+                self.interaction_fingerprints.append(row)
+                return
+            except Exception as exc:
+                self.add_warning(f"Geometric interaction parsing failed for {candidate_id}: {exc}")
         self.interaction_fingerprints.append({
             "candidate_id": candidate_id,
             "canonical_smiles": smiles,
             "pose_file": str(pose_sdf) if pose_sdf and pose_sdf.exists() else None,
             "docking_is_real": is_real,
             "contact_residues": "not_computed",
+            "contact_count": 0,
             "hbond_like_contacts": None,
             "hydrophobic_contacts": None,
             "salt_bridge_like_contacts": None,
-            "interaction_quality": "pose_level_placeholder" if is_real else "mock_no_contacts",
-            "claim_boundary": "Interaction fingerprints are placeholders until receptor-pose contact parsing is enabled.",
+            "interaction_quality": "mock_no_contacts" if not is_real else "geometric_proxy_failed_or_unavailable",
+            "failure_reason": None if not is_real else "requires readable PDB receptor and SDF pose",
+            "claim_boundary": "Geometric proxy only; not a validated biochemical interaction fingerprint.",
         })
+
+    def _resolve_reference_ligand(self) -> Path | None:
+        ref = self.validated_payload.get("reference_ligand_file")
+        if not ref:
+            return None
+        path = Path(ref)
+        if path.exists():
+            return path
+        upload_path = self.project_dir / "uploads" / ref
+        if upload_path.exists():
+            return upload_path
+        return None
 
     def _write_redocking_validation_stub(self) -> None:
         if not self.validated_payload.get("run_redocking_validation"):
             return
-        status = "not_run_missing_reference_ligand"
-        if self.validated_payload.get("reference_ligand_file"):
-            status = "not_implemented_reference_ligand_supplied"
-        self.redocking_rows.append({
-            "requested": True,
-            "status": status,
-            "rmsd_angstrom": None,
-            "validation_pass": None,
-            "claim_boundary": "Standalone Q-Dock redocking validation is not complete until reference ligand RMSD is computed.",
-        })
-        self.add_warning(f"Redocking validation requested but {status}.")
+        ref_path = self._resolve_reference_ligand()
+        first_pose = next((Path(r["pose_sdf_path"]) for r in self.docking_results if r.get("docking_is_real") and r.get("pose_sdf_path") and Path(r["pose_sdf_path"]).exists()), None)
+        if ref_path is None:
+            status = "not_run_missing_reference_ligand"
+            row = {
+                "requested": True,
+                "reference_ligand_file": self.validated_payload.get("reference_ligand_file"),
+                "docked_pose_file": str(first_pose) if first_pose else None,
+                "validation_status": status,
+                "rmsd_angstrom": None,
+                "validation_pass": None,
+                "reason": "reference_ligand_file not provided or not found",
+                "rmsd_threshold_angstrom": 2.0,
+                "claim_boundary": "Redocking validation requires a readable reference ligand pose.",
+            }
+            self.redocking_rows.append(row)
+            self.add_warning(f"Redocking validation requested but {status}.")
+            return
+        if first_pose is None:
+            status = "not_run_missing_docked_pose"
+            self.redocking_rows.append({
+                "requested": True,
+                "reference_ligand_file": str(ref_path),
+                "docked_pose_file": None,
+                "validation_status": status,
+                "rmsd_angstrom": None,
+                "validation_pass": None,
+                "reason": "no real docked SDF pose available",
+                "rmsd_threshold_angstrom": 2.0,
+                "claim_boundary": "Redocking validation requires a real docked SDF pose.",
+            })
+            self.add_warning(f"Redocking validation requested but {status}.")
+            return
+        try:
+            from q_ai_drug.docking.redocking import compute_pose_rmsd
+            validation = compute_pose_rmsd(ref_path, first_pose)
+            row = validation.to_row(ref_path, first_pose)
+            row["requested"] = True
+            row["claim_boundary"] = "Redocking RMSD is a docking-setup validation proxy, not biological validation."
+            self.redocking_rows.append(row)
+            if validation.validation_pass is False:
+                self.add_warning(f"Redocking validation did not pass: {validation.reason or validation.rmsd_angstrom}")
+        except Exception as exc:
+            self.redocking_rows.append({
+                "requested": True,
+                "reference_ligand_file": str(ref_path),
+                "docked_pose_file": str(first_pose),
+                "validation_status": "validation_failed",
+                "rmsd_angstrom": None,
+                "validation_pass": False,
+                "reason": f"RMSD helper failed: {exc}",
+                "rmsd_threshold_angstrom": 2.0,
+                "claim_boundary": "Redocking RMSD could not be computed.",
+            })
 
     def run(self) -> None:
         if not self.ligand_mols or not self.pocket_box:
@@ -386,6 +441,9 @@ class QDockStudioRunner(BaseModuleRunner):
             self.register_artifact(self.write_csv(self.redocking_rows, "redocking_validation"), "csv", "Redocking validation")
         real_count = sum(1 for r in self.docking_results if r.get("docking_is_real"))
         mock_count = sum(1 for r in self.docking_results if not r.get("docking_is_real"))
+        redocking_status = self.redocking_rows[0].get("validation_status") if self.redocking_rows else "not_requested"
+        redocking_rmsd = self.redocking_rows[0].get("rmsd_angstrom") if self.redocking_rows else None
+        redocking_pass = self.redocking_rows[0].get("validation_pass") if self.redocking_rows else None
         summary = {
             "module_id": "q_dock_studio",
             "pocket": {"center": [self.pocket_box.center_x, self.pocket_box.center_y, self.pocket_box.center_z], "size": [self.pocket_box.size_x, self.pocket_box.size_y, self.pocket_box.size_z]},
@@ -400,6 +458,11 @@ class QDockStudioRunner(BaseModuleRunner):
             "obabel_available": self._obabel_available,
             "mock_mode": self._mock_mode,
             "gnina_executed": False,
+            "redocking_requested": bool(self.validated_payload.get("run_redocking_validation")),
+            "redocking_status": redocking_status,
+            "redocking_rmsd_angstrom": redocking_rmsd,
+            "redocking_validation_pass": redocking_pass,
+            "interaction_fingerprint_method": "geometric_proxy_or_mock_placeholder",
             "warnings": self.warnings,
         }
         self.register_artifact(self.write_json(summary, "q_dock_summary"), "json", "Docking summary")
