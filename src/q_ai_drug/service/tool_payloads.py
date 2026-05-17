@@ -17,11 +17,6 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 
-# ============================================================================
-# Enums for common options
-# ============================================================================
-
-
 class FilterStrictness(str, Enum):
     """Drug-likeness filter profile."""
     STRICT = "strict"
@@ -66,11 +61,6 @@ class UploadType(str, Enum):
     UNKNOWN = "unknown"
 
 
-# ============================================================================
-# Pocket Box Definition
-# ============================================================================
-
-
 class PocketBox(BaseModel):
     """3D box definition for docking pocket."""
     center_x: float = Field(..., description="Box center X coordinate (Angstroms)")
@@ -90,41 +80,14 @@ class PocketBox(BaseModel):
         return v
 
 
-# ============================================================================
-# OncoData Builder Payload
-# ============================================================================
-
-
 class OncoDataBuilderPayload(BaseModel):
-    """OncoData Builder: Dataset curation and provisioning.
-
-    Accept target IDs and data source configuration.
-    Output curated activity benchmark with metadata and provenance.
-    """
-    target_ids: list[str] = Field(
-        ...,
-        description="Target identifiers to curate (e.g., ['TP53', 'EGFR'])"
-    )
-    data_sources: Literal["public_only", "public_plus_uploaded", "uploaded_only"] = Field(
-        default="public_only",
-        description="Data source configuration"
-    )
-    uploaded_assay_csv: Optional[str] = Field(
-        None,
-        description="Path to user-uploaded assay CSV if using public_plus_uploaded"
-    )
-    uploaded_assay_csv_artifact_id: Optional[str] = Field(
-        None,
-        description="Artifact ID for uploaded assay CSV"
-    )
-    curation_profile: Literal["standard", "strict", "permissive"] = Field(
-        default="standard",
-        description="Curation stringency: strict (high-confidence only), standard (balanced), permissive (exploratory)"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode"
-    )
+    """OncoData Builder: Dataset curation and provisioning."""
+    target_ids: list[str] = Field(..., description="Target identifiers to curate (e.g., ['TP53', 'EGFR'])")
+    data_sources: Literal["public_only", "public_plus_uploaded", "uploaded_only"] = Field(default="public_only")
+    uploaded_assay_csv: Optional[str] = None
+    uploaded_assay_csv_artifact_id: Optional[str] = None
+    curation_profile: Literal["standard", "strict", "permissive"] = Field(default="standard")
+    dry_run: bool = False
 
     @field_validator('target_ids')
     @classmethod
@@ -136,54 +99,17 @@ class OncoDataBuilderPayload(BaseModel):
         return v
 
 
-# ============================================================================
-# Q-Filter Payload
-# ============================================================================
-
-
 class QFilterPayload(BaseModel):
-    """Q-Filter: Drug-likeness and risk filtering.
-
-    Accept molecule library, run filtering with customizable strictness,
-    output filtered/rejected molecules with reasons and risk tables.
-    """
-    candidate_library_artifact_id: Optional[str] = Field(
-        None,
-        description="Artifact ID from previous upload/run, or null to use upload"
-    )
-    # Also accept 'candidate_artifact_id' as alias for consistency
-    candidate_artifact_id: Optional[str] = Field(
-        None,
-        description="Alias for candidate_library_artifact_id"
-    )
-    candidate_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name (SMILES CSV or SDF) if not using artifact_id"
-    )
-    target_id: Optional[str] = Field(
-        None,
-        description="Target context (EGFR, PARP1, PIK3CA) for risk profiling; optional"
-    )
-    filter_profile: FilterStrictness = Field(
-        default=FilterStrictness.STANDARD,
-        description="Drug-likeness filter strictness"
-    )
-    run_admet: bool = Field(
-        default=True,
-        description="Include ADMET prediction in filter"
-    )
-    max_molecules: Optional[int] = Field(
-        default=None,
-        description="Process max N molecules; None = all"
-    )
-    output_format: Literal["csv", "sdf"] = Field(
-        default="csv",
-        description="Output molecule format"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode: estimate only, don't save results"
-    )
+    """Q-Filter: Drug-likeness and risk filtering."""
+    candidate_library_artifact_id: Optional[str] = None
+    candidate_artifact_id: Optional[str] = None
+    candidate_upload_file: Optional[str] = None
+    target_id: Optional[str] = None
+    filter_profile: FilterStrictness = FilterStrictness.STANDARD
+    run_admet: bool = True
+    max_molecules: Optional[int] = None
+    output_format: Literal["csv", "sdf"] = "csv"
+    dry_run: bool = False
 
     @field_validator('max_molecules')
     @classmethod
@@ -193,45 +119,19 @@ class QFilterPayload(BaseModel):
         return v
 
 
-# ============================================================================
-# Q-Orbital Analyzer Payload
-# ============================================================================
-
-
 class QOrbitalAnalyzerPayload(BaseModel):
-    """Q-Orbital Analyzer: Quantum descriptor extraction.
-
-    Accept molecular structures, compute HOMO/LUMO/gap and other
-    orbital descriptors using xTB with RDKit EHT fallback.
-    """
-    candidate_artifact_id: Optional[str] = Field(
-        None,
-        description="Artifact ID from filter/selection, or null to use upload"
+    """Q-Orbital Analyzer: Quantum descriptor extraction."""
+    candidate_artifact_id: Optional[str] = None
+    candidate_upload_file: Optional[str] = None
+    selected_candidate_ids: Optional[list[str]] = None
+    method: QMMethod = QMMethod.AUTO
+    allow_fallback: bool = Field(
+        default=True,
+        description="If false and method=xtb, rows fail instead of falling back to RDKit EHT when xTB is unavailable or fails."
     )
-    candidate_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name (SMILES CSV or SDF) if not using artifact_id"
-    )
-    selected_candidate_ids: Optional[list[str]] = Field(
-        default=None,
-        description="Run only these candidates; None = all"
-    )
-    method: QMMethod = Field(
-        default=QMMethod.AUTO,
-        description="QM method: xTB, RDKit EHT fallback, or auto-select"
-    )
-    max_molecules: Optional[int] = Field(
-        default=None,
-        description="Process max N molecules; None = all"
-    )
-    conformer_count: int = Field(
-        default=1,
-        description="Number of 3D conformers to generate per molecule"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode: estimate only, don't compute"
-    )
+    max_molecules: Optional[int] = None
+    conformer_count: int = 1
+    dry_run: bool = False
 
     @field_validator('max_molecules', 'conformer_count')
     @classmethod
@@ -241,65 +141,20 @@ class QOrbitalAnalyzerPayload(BaseModel):
         return v
 
 
-# ============================================================================
-# Q-Dock Studio Payload
-# ============================================================================
-
-
 class QDockStudioPayload(BaseModel):
-    """Q-Dock Studio: Molecular docking and scoring.
-
-    Accept receptor, ligands, pocket, and engine settings.
-    Output docking poses, scores, and validation metrics.
-    """
-    receptor_artifact_id: Optional[str] = Field(
-        None,
-        description="Receptor artifact ID or null to use upload"
-    )
-    receptor_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name (PDB/PDBQT/mmCIF) if not using artifact_id"
-    )
-    ligand_artifact_id: Optional[str] = Field(
-        None,
-        description="Ligand artifact ID or null to use upload"
-    )
-    ligand_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name (SDF/SMILES CSV) if not using artifact_id"
-    )
-    pocket_source: PocketSource = Field(
-        default=PocketSource.UPLOADED_BOX,
-        description="Where pocket definition comes from"
-    )
-    pocket_box: Optional[PocketBox] = Field(
-        None,
-        description="Pocket box definition if source=uploaded_box"
-    )
-    reference_ligand_file: Optional[str] = Field(
-        None,
-        description="Reference ligand PDB file if source=reference_ligand"
-    )
-    engine: DockingEngine = Field(
-        default=DockingEngine.VINA_SMINA,
-        description="Docking engine: Vina, Smina, GNINA, or combined"
-    )
-    exhaustiveness: int = Field(
-        default=8,
-        description="Vina exhaustiveness (1-32); higher=more thorough"
-    )
-    max_ligands: Optional[int] = Field(
-        default=None,
-        description="Dock max N ligands; None = all"
-    )
-    run_redocking_validation: bool = Field(
-        default=False,
-        description="Include reference ligand redocking validation"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode: estimate only, don't dock"
-    )
+    """Q-Dock Studio: Molecular docking and scoring."""
+    receptor_artifact_id: Optional[str] = None
+    receptor_upload_file: Optional[str] = None
+    ligand_artifact_id: Optional[str] = None
+    ligand_upload_file: Optional[str] = None
+    pocket_source: PocketSource = PocketSource.UPLOADED_BOX
+    pocket_box: Optional[PocketBox] = None
+    reference_ligand_file: Optional[str] = None
+    engine: DockingEngine = DockingEngine.VINA_SMINA
+    exhaustiveness: int = 8
+    max_ligands: Optional[int] = None
+    run_redocking_validation: bool = False
+    dry_run: bool = False
 
     @field_validator('exhaustiveness')
     @classmethod
@@ -322,53 +177,17 @@ class QDockStudioPayload(BaseModel):
         return self
 
 
-# ============================================================================
-# Activity Model Studio Payload
-# ============================================================================
-
-
 class ActivityModelStudioPayload(BaseModel):
-    """Activity Model Studio: Batch prediction or model training.
-
-    Accept molecules and optional assay data.
-    Output predictions with confidence intervals.
-    """
-    candidate_artifact_id: Optional[str] = Field(
-        None,
-        description="Molecules to predict"
-    )
-    candidate_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name if not using artifact_id"
-    )
-    target_id: Optional[str] = Field(
-        None,
-        description="Specific target for prediction; None = use default model"
-    )
-    model_id: Optional[str] = Field(
-        default="best_available",
-        description="Which activity model to use for prediction"
-    )
-    assay_csv_artifact_id: Optional[str] = Field(
-        None,
-        description="Assay IC50 data if training custom model"
-    )
-    mode: Literal["predict", "train"] = Field(
-        default="predict",
-        description="Predict with existing model or train new model"
-    )
-    max_molecules: Optional[int] = Field(
-        default=None,
-        description="Process max N molecules"
-    )
-    confidence_threshold: float = Field(
-        default=0.5,
-        description="Report predictions with confidence >= threshold"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode"
-    )
+    """Activity Model Studio: Batch prediction or model training."""
+    candidate_artifact_id: Optional[str] = None
+    candidate_upload_file: Optional[str] = None
+    target_id: Optional[str] = None
+    model_id: Optional[str] = "best_available"
+    assay_csv_artifact_id: Optional[str] = None
+    mode: Literal["predict", "train"] = "predict"
+    max_molecules: Optional[int] = None
+    confidence_threshold: float = 0.5
+    dry_run: bool = False
 
     @field_validator('confidence_threshold')
     @classmethod
@@ -378,214 +197,66 @@ class ActivityModelStudioPayload(BaseModel):
         return v
 
 
-# ============================================================================
-# Q-Rank Payload
-# ============================================================================
-
-
 class QRankPayload(BaseModel):
-    """Q-Rank: Candidate ranking and prioritization.
-
-    Accept docking results, activity predictions, and molecular properties.
-    Output ranked candidates with reasons.
-    """
-    candidate_artifact_id: Optional[str] = Field(
-        None,
-        description="Candidate set with properties/scores"
-    )
-    candidate_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name if not using artifact_id"
-    )
-    docking_results_artifact_id: Optional[str] = Field(
-        None,
-        description="Docking scores if available"
-    )
-    docking_results_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name for docking scores"
-    )
-    activity_predictions_artifact_id: Optional[str] = Field(
-        None,
-        description="Activity predictions if available"
-    )
-    activity_predictions_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name for activity predictions"
-    )
-    ranking_method: Literal["ensemble", "docking_first", "activity_first", "properties_first"] = Field(
-        default="ensemble",
-        description="How to weight different scores"
-    )
-    max_candidates: Optional[int] = Field(
-        default=100,
-        description="Return top N ranked candidates"
-    )
-    confidence_cutoff: float = Field(
-        default=0.0,
-        description="Minimum confidence to include"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode"
-    )
-
-
-# ============================================================================
-# Wet-Lab Triage Board Payload
-# ============================================================================
+    """Q-Rank: Candidate ranking and prioritization."""
+    candidate_artifact_id: Optional[str] = None
+    candidate_upload_file: Optional[str] = None
+    docking_results_artifact_id: Optional[str] = None
+    docking_results_upload_file: Optional[str] = None
+    activity_predictions_artifact_id: Optional[str] = None
+    activity_predictions_upload_file: Optional[str] = None
+    domain_artifact_id: Optional[str] = None
+    domain_upload_file: Optional[str] = None
+    orbital_artifact_id: Optional[str] = None
+    orbital_upload_file: Optional[str] = None
+    ranking_method: Literal["ensemble", "docking_first", "activity_first", "properties_first"] = "ensemble"
+    max_candidates: Optional[int] = 100
+    confidence_cutoff: float = 0.0
+    dry_run: bool = False
 
 
 class WetLabTriagePayload(BaseModel):
-    """Wet-Lab Triage Board: Decision support for wet-lab testing.
-
-    Accept ranked candidates and evidence artifacts.
-    Output triage board with reasons to test/not test.
-    """
-    candidate_artifact_id: Optional[str] = Field(
-        None,
-        description="Ranked candidates"
-    )
-    candidate_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name if not using artifact_id"
-    )
-    docking_artifact_id: Optional[str] = Field(
-        None,
-        description="3D docking evidence"
-    )
-    orbital_artifact_id: Optional[str] = Field(
-        None,
-        description="QM/orbital evidence"
-    )
-    activity_artifact_id: Optional[str] = Field(
-        None,
-        description="Activity prediction evidence"
-    )
-    include_failed_rows: bool = Field(
-        default=False,
-        description="Include rows with failed computations"
-    )
-    triage_policy: Literal["conservative", "standard", "exploratory"] = Field(
-        default="standard",
-        description="Decision thresholds"
-    )
-    max_to_triage: Optional[int] = Field(
-        default=None,
-        description="Triage max N candidates"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode"
-    )
-
-
-# ============================================================================
-# Q-Report Payload
-# ============================================================================
+    """Wet-Lab Triage Board: Decision support for wet-lab testing."""
+    candidate_artifact_id: Optional[str] = None
+    candidate_upload_file: Optional[str] = None
+    docking_artifact_id: Optional[str] = None
+    orbital_artifact_id: Optional[str] = None
+    activity_artifact_id: Optional[str] = None
+    include_failed_rows: bool = False
+    triage_policy: Literal["conservative", "standard", "exploratory"] = "standard"
+    max_to_triage: Optional[int] = None
+    dry_run: bool = False
 
 
 class QReportPayload(BaseModel):
-    """Q-Report: Generate reports and export packages.
-
-    Accept selected candidates and optional evidence artifacts.
-    Output HTML/PDF report, candidate dossiers, and assay pack.
-    """
-    candidate_ids: list[str] = Field(
-        ...,
-        description="Selected candidates to report"
-    )
-    report_template: Literal["standard", "investor", "wet_lab_brief", "comprehensive"] = Field(
-        default="standard",
-        description="Report style"
-    )
-    include_evidence: list[str] = Field(
-        default_factory=list,
-        description="Evidence types to include: docking, orbital, activity, etc."
-    )
-    include_limitations: bool = Field(
-        default=True,
-        description="Include computational limitations and claim boundaries"
-    )
-    include_wet_lab_triage: bool = Field(
-        default=True,
-        description="Include wet-lab triage decisions"
-    )
-    export_formats: list[Literal["html", "pdf", "markdown", "csv"]] = Field(
-        default_factory=lambda: ["html", "csv"],
-        description="Export file formats"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode"
-    )
-
-    @field_validator('candidate_ids')
-    @classmethod
-    def validate_candidates(cls, v: list[str]) -> list[str]:
-        if len(v) == 0:
-            raise ValueError("At least one candidate must be selected")
-        return v
-
-
-# ============================================================================
-# Applicability Domain Guard Payload
-# ============================================================================
+    """Q-Report: Generate reports and export packages."""
+    candidate_ids: list[str] = Field(..., description="Selected candidates to report")
+    report_template: Literal["standard", "investor", "wet_lab_brief", "comprehensive"] = "standard"
+    include_evidence: list[str] = Field(default_factory=list)
+    include_limitations: bool = True
+    include_wet_lab_triage: bool = True
+    export_formats: list[Literal["html", "pdf", "markdown", "csv"]] = Field(default_factory=lambda: ["html", "csv"])
+    dry_run: bool = False
 
 
 class ApplicabilityDomainPayload(BaseModel):
-    """Applicability Domain Guard: Check if molecules are in training domain.
-
-    Accept candidate set and reference training set.
-    Output domain membership and distance metrics.
-    """
-    candidate_artifact_id: Optional[str] = Field(
-        None,
-        description="Candidates to evaluate"
-    )
-    candidate_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name if not using artifact_id"
-    )
-    training_set_artifact_id: Optional[str] = Field(
-        None,
-        description="Reference training set; None = use default"
-    )
-    training_set_upload_file: Optional[str] = Field(
-        None,
-        description="Upload file name for training set"
-    )
-    descriptor_method: Literal["rdkit", "ecfp", "atom_pair"] = Field(
-        default="rdkit",
-        description="Molecular descriptor method"
-    )
-    threshold_percentile: float = Field(
-        default=95.0,
-        description="Percentile for domain boundary"
-    )
-    max_molecules: Optional[int] = Field(
-        default=None,
-        description="Evaluate max N molecules"
-    )
-    dry_run: bool = Field(
-        default=False,
-        description="Dry-run mode"
-    )
-
-    @field_validator('threshold_percentile')
-    @classmethod
-    def validate_percentile(cls, v: float) -> float:
-        if v < 0 or v > 100:
-            raise ValueError("threshold_percentile must be 0-100")
-        return v
+    """Applicability Domain Guard."""
+    candidate_artifact_id: Optional[str] = None
+    candidate_upload_file: Optional[str] = None
+    training_set_artifact_id: Optional[str] = None
+    training_set_upload_file: Optional[str] = None
+    reference_inhibitors_artifact_id: Optional[str] = None
+    descriptor_method: Literal["rdkit", "ecfp", "morgan"] = "rdkit"
+    threshold_percentile: float = 95.0
+    max_molecules: Optional[int] = None
+    dry_run: bool = False
 
 
-# ============================================================================
-# Module Payload Registry
-# ============================================================================
+class PayloadValidationError(Exception):
+    """Raised when a module payload fails validation."""
 
 
-MODULE_PAYLOAD_MODELS = {
+MODULE_PAYLOAD_MODELS: dict[str, type[BaseModel]] = {
     "onco_data_builder": OncoDataBuilderPayload,
     "q_filter": QFilterPayload,
     "q_orbital_analyzer": QOrbitalAnalyzerPayload,
@@ -598,30 +269,15 @@ MODULE_PAYLOAD_MODELS = {
 }
 
 
-def get_payload_model(module_id: str) -> type | None:
-    """Get the Pydantic payload model for a module."""
-    return MODULE_PAYLOAD_MODELS.get(module_id)
-
-
-def validate_payload(module_id: str, payload_dict: dict[str, Any]) -> dict[str, Any]:
-    """Validate and parse module payload.
-
-    Args:
-        module_id: Module identifier
-        payload_dict: Raw payload dictionary from API
-
-    Returns:
-        Validated payload dictionary
-
-    Raises:
-        ValueError: If payload is invalid
-    """
-    model_class = get_payload_model(module_id)
-    if not model_class:
-        raise ValueError(f"No payload model registered for module: {module_id}")
-
+def validate_payload(module_id: str, payload: dict[str, Any] | None) -> dict[str, Any]:
+    """Validate payload for a module. Returns validated dict or raises PayloadValidationError."""
+    if payload is None:
+        payload = {}
+    model_class = MODULE_PAYLOAD_MODELS.get(module_id)
+    if model_class is None:
+        return payload
     try:
-        validated = model_class.model_validate(payload_dict)
+        validated = model_class.model_validate(payload)
         return validated.model_dump()
     except Exception as e:
-        raise ValueError(f"Invalid payload for {module_id}: {str(e)}")
+        raise PayloadValidationError(f"Invalid payload for {module_id}: {e}") from e
