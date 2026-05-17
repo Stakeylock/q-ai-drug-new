@@ -38,6 +38,7 @@ The scientist-facing module runners now include stricter evidence-status handlin
 - `q_report` is routed to `q_ai_drug.product.module_runners.q_report_scientific.QReportRunner`. It can consume ranked-candidate, wet-lab triage, evidence-status, and rank-ablation artifacts, then generates an evidence-aware report package.
 - Evidence-aware Q-Report writes `selected_candidates.csv`, `claim_matrix.csv`, `report_ranked_candidates_subset.csv`, `report.md`, `report.html`, and `report_manifest.json`. The report explicitly separates real, fallback, mock, missing, and wet-lab-required evidence and prevents therapeutic overclaiming.
 - `tests/test_scientific_runner_contracts.py` locks the lightweight Python contracts for strict Q-Orbital fallback behavior, Q-Dock GNINA-request preservation, evidence-aware Q-Rank routing, and evidence-aware Q-Report routing.
+- `docs/LLM_SCIENTIFIC_HARDENING_PLAYBOOK.md` provides micro-task prompts, file targets, tests, and acceptance criteria for implementing the remaining hard scientific features with a smaller coding LLM.
 
 These updates improve scientific traceability for user-level runs. Remaining science-first work: full GNINA standalone execution or removal from standalone engine choices, real redocking RMSD computation, residue-level interaction fingerprints, and deeper Activity Model / Applicability Domain training-set integration.
 
@@ -526,6 +527,7 @@ Blueprint implementation docs:
 docs/scientist_modular_saas_blueprint.md
 docs/aws_mongodb_architecture.md
 docs/api_developer_experience.md
+docs/LLM_SCIENTIFIC_HARDENING_PLAYBOOK.md
 ```
 
 ## Research-Use Statement
