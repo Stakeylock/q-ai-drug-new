@@ -17,7 +17,7 @@ _RUNNER_SPECS = {
     "q_dock_studio": ("q_ai_drug.product.module_runners.q_dock_studio", "QDockStudioRunner"),
     "activity_model_studio": ("q_ai_drug.product.module_runners.downstream", "ActivityModelStudioRunner"),
     "applicability_domain_guard": ("q_ai_drug.product.module_runners.downstream", "ApplicabilityDomainGuardRunner"),
-    "q_rank": ("q_ai_drug.product.module_runners.downstream", "QRankRunner"),
+    "q_rank": ("q_ai_drug.product.module_runners.q_rank_scientific", "QRankRunner"),
     "wet_lab_triage_board": ("q_ai_drug.product.module_runners.downstream", "WetLabTriageBoardRunner"),
     "q_report": ("q_ai_drug.product.module_runners.downstream", "QReportRunner"),
 }
