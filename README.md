@@ -37,8 +37,9 @@ The scientist-facing module runners now include stricter evidence-status handlin
 - Evidence-aware Q-Rank writes `ranked_candidates.csv`, `rank_explanations.csv`, `rank_ablation.csv`, `evidence_status_report.csv`, `missing_evidence_report.csv`, `weight_config_used.json`, and `q_rank_summary.json`.
 - `q_report` is routed to `q_ai_drug.product.module_runners.q_report_scientific.QReportRunner`. It can consume ranked-candidate, wet-lab triage, evidence-status, and rank-ablation artifacts, then generates an evidence-aware report package.
 - Evidence-aware Q-Report writes `selected_candidates.csv`, `claim_matrix.csv`, `report_ranked_candidates_subset.csv`, `report.md`, `report.html`, and `report_manifest.json`. The report explicitly separates real, fallback, mock, missing, and wet-lab-required evidence and prevents therapeutic overclaiming.
+- `tests/test_scientific_runner_contracts.py` locks the lightweight Python contracts for strict Q-Orbital fallback behavior, Q-Dock GNINA-request preservation, evidence-aware Q-Rank routing, and evidence-aware Q-Report routing.
 
-These updates improve scientific traceability for user-level runs. Remaining science-first work: full GNINA standalone execution or removal from standalone engine choices, real redocking RMSD computation, residue-level interaction fingerprints, regression tests for the new module contracts, and deeper Activity Model / Applicability Domain training-set integration.
+These updates improve scientific traceability for user-level runs. Remaining science-first work: full GNINA standalone execution or removal from standalone engine choices, real redocking RMSD computation, residue-level interaction fingerprints, and deeper Activity Model / Applicability Domain training-set integration.
 
 Main report:
 
@@ -407,7 +408,7 @@ The research evidence gate should now return `pass` with zero warnings on the ac
 ## Key Outputs
 
 ```text
-data/processed/ontology_benchmark.csv
+data/processed/oncology_benchmark.csv
 data/processed/reference_inhibitors.csv
 models/activity/
 models/admet/
