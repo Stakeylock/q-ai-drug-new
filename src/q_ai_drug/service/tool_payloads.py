@@ -229,8 +229,16 @@ class WetLabTriagePayload(BaseModel):
 
 
 class QReportPayload(BaseModel):
-    """Q-Report: Generate reports and export packages."""
+    """Q-Report: Generate evidence-aware candidate reports and export packages."""
     candidate_ids: list[str] = Field(..., description="Selected candidates to report")
+    ranked_candidates_artifact_id: Optional[str] = None
+    ranked_candidates_upload_file: Optional[str] = None
+    triage_artifact_id: Optional[str] = None
+    triage_upload_file: Optional[str] = None
+    evidence_status_artifact_id: Optional[str] = None
+    evidence_status_upload_file: Optional[str] = None
+    rank_ablation_artifact_id: Optional[str] = None
+    rank_ablation_upload_file: Optional[str] = None
     report_template: Literal["standard", "investor", "wet_lab_brief", "comprehensive"] = "standard"
     include_evidence: list[str] = Field(default_factory=list)
     include_limitations: bool = True
