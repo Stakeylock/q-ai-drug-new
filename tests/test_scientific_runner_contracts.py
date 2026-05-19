@@ -6,6 +6,7 @@ honesty in user-facing module runs.
 """
 
 from q_ai_drug.product.module_runners import get_runner
+from q_ai_drug.product.module_registry import get_module
 from q_ai_drug.service.tool_payloads import validate_payload
 
 
@@ -68,6 +69,12 @@ def test_q_report_routes_to_scientific_runner():
     runner = get_runner("q_report")
     assert runner is not None
     assert runner.__module__ == "q_ai_drug.product.module_runners.q_report_scientific"
+
+
+def test_q_report_contract_alias_exists_for_scientific_runner():
+    module = get_module("q_report")
+    assert module.module_id == "q_report"
+    assert module.queue == "reporting"
 
 
 def test_q_dock_payload_preserves_gnina_request_for_honest_downgrade():

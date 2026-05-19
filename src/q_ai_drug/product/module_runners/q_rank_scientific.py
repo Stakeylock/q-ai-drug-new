@@ -63,14 +63,58 @@ def _minmax_score(series: pd.Series, *, invert: bool = False) -> pd.Series:
     return 1 - scaled if invert else scaled
 
 
+def _normalize_merge_value(value: Any) -> str | None:
+    if pd.isna(value):
+        return None
+    text = str(value).strip()
+    if text.endswith(".0"):
+        try:
+            number = float(text)
+        except ValueError:
+            return text
+        if number.is_integer():
+            return str(int(number))
+    return text
+
+
+def _merge_key(series: pd.Series) -> pd.Series:
+    return series.map(_normalize_merge_value)
+
+
+def _has_merge_overlap(base: pd.DataFrame, evidence: pd.DataFrame, left_col: str, right_col: str) -> bool:
+    left_keys = set(_merge_key(base[left_col]).dropna())
+    right_keys = set(_merge_key(evidence[right_col]).dropna())
+    return bool(left_keys.intersection(right_keys))
+
+
+def _merge_on_normalized_key(
+    base: pd.DataFrame,
+    evidence: pd.DataFrame,
+    left_col: str,
+    right_col: str,
+    suffix: str,
+) -> pd.DataFrame:
+    merge_key = f"__q_rank_merge_key{suffix}"
+    left = base.copy()
+    right = evidence.copy()
+    left[merge_key] = _merge_key(left[left_col])
+    right[merge_key] = _merge_key(right[right_col])
+    if left_col == right_col:
+        right = right.drop(columns=[right_col])
+    merged = left.merge(right, on=merge_key, how="left", suffixes=("", suffix))
+    return merged.drop(columns=[merge_key])
+
+
 def _merge_evidence(base: pd.DataFrame, evidence: pd.DataFrame, base_cid: str, base_smi: str, suffix: str) -> pd.DataFrame:
     if evidence.empty:
         return base
     if "candidate_id" in evidence.columns and base_cid in base.columns:
-        return base.merge(evidence, left_on=base_cid, right_on="candidate_id", how="left", suffixes=("", suffix))
+        if _has_merge_overlap(base, evidence, base_cid, "candidate_id"):
+            return _merge_on_normalized_key(base, evidence, base_cid, "candidate_id", suffix)
     ev_smi = _smiles_col(evidence)
     if ev_smi and base_smi in base.columns:
-        return base.merge(evidence, left_on=base_smi, right_on=ev_smi, how="left", suffixes=("", suffix))
+        if _has_merge_overlap(base, evidence, base_smi, ev_smi):
+            return _merge_on_normalized_key(base, evidence, base_smi, ev_smi, suffix)
     return base
 
 

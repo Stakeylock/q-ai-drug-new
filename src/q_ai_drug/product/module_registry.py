@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from typing import Any
 
 
@@ -408,6 +408,7 @@ MODULES: tuple[ModuleContract, ...] = (
 )
 
 MODULE_BY_ID = {module.module_id: module for module in MODULES}
+MODULE_BY_ID["q_report"] = replace(MODULE_BY_ID["q_report_and_candidate_dossiers"], module_id="q_report")
 
 
 def list_modules() -> list[dict[str, Any]]:

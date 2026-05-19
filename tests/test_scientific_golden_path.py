@@ -12,23 +12,12 @@ Validates the full 9-module chain:
 9. Q-Report (Final dossier)
 """
 
-import json
 from pathlib import Path
 
 import pandas as pd
 import pytest
 
-from q_ai_drug.product.module_runners.onco_data_builder import OncoDataBuilderRunner
-from q_ai_drug.product.module_runners.q_filter import QFilterRunner
-from q_ai_drug.product.module_runners.downstream import (
-    ActivityModelStudioRunner,
-    ApplicabilityDomainGuardRunner,
-    QRankRunner,
-    WetLabTriageBoardRunner,
-    QReportRunner,
-)
-from q_ai_drug.product.module_runners.q_dock_studio import QDockStudioRunner
-from q_ai_drug.product.module_runners.q_orbital_analyzer import QOrbitalAnalyzerRunner
+from q_ai_drug.product.module_runners import get_runner
 
 try:
     from rdkit import Chem
@@ -52,6 +41,11 @@ def test_scientific_golden_path(project_dir):
     """Run the entire pipeline and verify scientific boundaries."""
     if not HAS_RDKIT:
         pytest.skip("RDKit required for full golden path execution.")
+
+    def make_runner(module_id, run_id, payload):
+        runner_class = get_runner(module_id)
+        assert runner_class is not None, f"{module_id} is not registered"
+        return runner_class(module_id, project_dir, run_id, payload)
 
     # 1. Provide initial benchmark data
     benchmark_csv = project_dir / "data" / "processed" / "oncology_benchmark.csv"
@@ -81,9 +75,8 @@ def test_scientific_golden_path(project_dir):
         return new_name
 
     # 1. OncoData Builder
-    runner1 = OncoDataBuilderRunner(
+    runner1 = make_runner(
         "onco_data_builder",
-        project_dir,
         "run1",
         {
             "target_ids": ["EGFR"],
@@ -96,7 +89,7 @@ def test_scientific_golden_path(project_dir):
     onco_file = chain_file(res1, "curated_activity_with_split", "onco_out.csv")
 
     # 2. Q-Filter
-    runner2 = QFilterRunner("q_filter", project_dir, "run2", {
+    runner2 = make_runner("q_filter", "run2", {
         "candidate_upload_file": onco_file,
         "filter_profile": "standard"
     })
@@ -106,7 +99,7 @@ def test_scientific_golden_path(project_dir):
     filtered_file = chain_file(res2, "filtered", "filtered_out.csv")
 
     # 3. Activity Model Studio (Predict fallback)
-    runner3 = ActivityModelStudioRunner("activity_model_studio", project_dir, "run3", {
+    runner3 = make_runner("activity_model_studio", "run3", {
         "candidate_upload_file": filtered_file,
         "mode": "predict"
     })
@@ -115,7 +108,7 @@ def test_scientific_golden_path(project_dir):
     activity_file = chain_file(res3, "activity_predictions", "activity_out.csv")
 
     # 4. Applicability Domain Guard
-    runner4 = ApplicabilityDomainGuardRunner("applicability_domain_guard", project_dir, "run4", {
+    runner4 = make_runner("applicability_domain_guard", "run4", {
         "candidate_upload_file": filtered_file,
         "training_set_upload_file": onco_file,
     })
@@ -126,7 +119,7 @@ def test_scientific_golden_path(project_dir):
     # 5. Q-Dock Studio (Mock since no real Vina setup in tmp_path)
     receptor_path = project_dir / "uploads" / "rec.pdb"
     receptor_path.write_text("ATOM      1  CA  ALA A   1      10.000  20.000  30.000  1.00  0.00           C\n")
-    runner5 = QDockStudioRunner("q_dock_studio", project_dir, "run5", {
+    runner5 = make_runner("q_dock_studio", "run5", {
         "receptor_upload_file": "rec.pdb",
         "ligand_upload_file": filtered_file,
         "pocket_source": "uploaded_box",
@@ -137,7 +130,7 @@ def test_scientific_golden_path(project_dir):
     docking_file = chain_file(res5, "docking results", "docking_out.csv")
 
     # 6. Q-Orbital Analyzer (EHT fallback)
-    runner6 = QOrbitalAnalyzerRunner("q_orbital_analyzer", project_dir, "run6", {
+    runner6 = make_runner("q_orbital_analyzer", "run6", {
         "candidate_upload_file": filtered_file,
         "method": "auto"
     })
@@ -146,21 +139,29 @@ def test_scientific_golden_path(project_dir):
     orbital_file = chain_file(res6, "qm descriptors", "orbital_out.csv")
 
     # 7. Q-Rank (Evidence fusion)
-    runner7 = QRankRunner("q_rank", project_dir, "run7", {
+    q_rank_class = get_runner("q_rank")
+    assert q_rank_class is not None
+    assert q_rank_class.__module__ == "q_ai_drug.product.module_runners.q_rank_scientific"
+    runner7 = make_runner("q_rank", "run7", {
         "candidate_upload_file": domain_file,  # Has domain features
         "docking_results_upload_file": docking_file,
         "activity_predictions_upload_file": activity_file,
+        "domain_upload_file": domain_file,
+        "orbital_upload_file": orbital_file,
     })
     res7 = runner7.execute()
     assert res7["status"] == "succeeded", res7.get("failure_message", str(res7))
     rank_file = chain_file(res7, "ranked_candidates", "rank_out.csv")
+    evidence_status_file = chain_file(res7, "evidence_status_report", "evidence_status_out.csv")
+    rank_ablation_file = chain_file(res7, "rank_ablation", "rank_ablation_out.csv")
 
     # 8. Wet-Lab Triage
-    runner8 = WetLabTriageBoardRunner("wet_lab_triage_board", project_dir, "run8", {
+    runner8 = make_runner("wet_lab_triage_board", "run8", {
         "candidate_upload_file": rank_file
     })
     res8 = runner8.execute()
     assert res8["status"] == "succeeded", res8.get("failure_message", str(res8))
+    triage_file = chain_file(res8, "wet_lab_triage_board", "triage_out.csv")
 
     # Verify Wet-Lab Triage output schema and reasoning
     triage_csv = project_dir / "module_runs" / "wet_lab_triage_board" / "run8" / "wet_lab_triage_board.csv"
@@ -172,8 +173,16 @@ def test_scientific_golden_path(project_dir):
     assert len(triage_df) > 0
 
     # 9. Q-Report
-    runner9 = QReportRunner("q_report_and_candidate_dossiers", project_dir, "run9", {
-        "candidate_ids": [str(cid) for cid in triage_df["candidate_id"]]
+    q_report_class = get_runner("q_report")
+    assert q_report_class is not None
+    assert q_report_class.__module__ == "q_ai_drug.product.module_runners.q_report_scientific"
+    runner9 = make_runner("q_report", "run9", {
+        "candidate_ids": [str(cid) for cid in triage_df["candidate_id"]],
+        "ranked_candidates_upload_file": rank_file,
+        "triage_upload_file": triage_file,
+        "evidence_status_upload_file": evidence_status_file,
+        "rank_ablation_upload_file": rank_ablation_file,
+        "report_template": "comprehensive",
     })
     res9 = runner9.execute()
     assert res9["status"] == "succeeded"
