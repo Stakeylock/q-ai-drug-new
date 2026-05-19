@@ -22,6 +22,7 @@ tests.rar
 execution_test_dir/uploads/master_drug_discovery_final.csv
 drug_cleaned.csv
 drug_filtered.csv
+qc1.rar
 existing_candidates_ranked.csv
 generated_candidates.csv
 *.csv
