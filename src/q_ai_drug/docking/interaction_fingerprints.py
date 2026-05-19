@@ -7,6 +7,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from q_ai_drug.docking.prolif_adapter import compute_prolif_summary
+
 try:
     from rdkit import Chem, RDLogger
     RDLogger.DisableLog("rdApp.warning")
@@ -271,8 +273,48 @@ def build_interaction_fingerprints(
         receptor_key = str(receptor_path)
         if receptor_key not in receptor_cache:
             receptor_cache[receptor_key] = _parse_pdb_atoms(receptor_path)
-        ligand_atoms = _ligand_atoms_from_sdf(pose_path)
-        evidence = _classify_contacts(receptor_cache[receptor_key], ligand_atoms, target_id)
+        prolif = compute_prolif_summary(receptor_path, pose_path, candidate_id)
+        if prolif.get("interaction_backend") == "prolif":
+            contact_residues = {
+                item.strip().replace(" ", "")
+                for item in str(prolif.get("contact_residues") or "").split(";")
+                if item.strip()
+            }
+            key_set = KEY_RESIDUES.get(str(target_id).upper(), set())
+            key_contacts = sorted(contact_residues.intersection(key_set))
+            evidence = {
+                "contact_residue_count": int(prolif.get("contact_residue_count") or prolif.get("contact_count") or 0),
+                "contact_residues": prolif.get("contact_residues", ""),
+                "hbond_like_contacts": int(prolif.get("hbond_like_contacts") or 0),
+                "salt_bridge_like_contacts": int(prolif.get("salt_bridge_like_contacts") or 0),
+                "hydrophobic_contacts": int(prolif.get("hydrophobic_contacts") or 0),
+                "halogen_contacts": int(prolif.get("halogen_contacts") or 0),
+                "key_residue_contact_count": len(key_contacts),
+                "key_residue_contacts": ";".join(key_contacts),
+                "interaction_quality": prolif.get("interaction_quality", "prolif_fingerprint"),
+                "interaction_backend": "prolif",
+                "interaction_status": "completed",
+                "interaction_classes": prolif.get("interaction_classes", ""),
+                "residue_interaction_count": int(prolif.get("residue_interaction_count") or 0),
+                "prolif_failure_reason": None,
+                "claim_boundary": prolif.get("claim_boundary"),
+            }
+        else:
+            ligand_atoms = _ligand_atoms_from_sdf(pose_path)
+            evidence = _classify_contacts(receptor_cache[receptor_key], ligand_atoms, target_id)
+            evidence.update(
+                {
+                    "interaction_backend": "geometric_fallback",
+                    "interaction_status": prolif.get("interaction_status", "geometric_completed"),
+                    "interaction_classes": "geometric_hbond_like;geometric_hydrophobic;geometric_salt_bridge_like;geometric_halogen",
+                    "residue_interaction_count": int(evidence.get("hbond_like_contacts", 0) or 0)
+                    + int(evidence.get("salt_bridge_like_contacts", 0) or 0)
+                    + int(evidence.get("hydrophobic_contacts", 0) or 0)
+                    + int(evidence.get("halogen_contacts", 0) or 0),
+                    "prolif_failure_reason": prolif.get("failure_reason"),
+                    "claim_boundary": "Geometric fallback interaction proxy only; not a validated biochemical fingerprint.",
+                }
+            )
         rows.append(
             {
                 "target_id": target_id,

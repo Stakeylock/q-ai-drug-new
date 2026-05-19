@@ -30,6 +30,7 @@ chem = ["rdkit>=2023.9"]
 postgres = ["alembic>=1.13", "psycopg[binary]>=3.1"]
 qm = ["qiskit>=1.0"]
 data = ["chembl-webresource-client>=0.10"]
+interactions = ["prolif>=2.0"]
 dev = [
   "pytest>=7.4",
   "httpx>=0.24",
@@ -41,6 +42,7 @@ research = [
   "openmm>=8.0",
   "psycopg[binary]>=3.1",
   "py3Dmol>=2.0",
+  "prolif>=2.0",
   "pytest>=7.4",
   "qiskit>=1.0",
   "rdkit>=2023.9",
@@ -51,6 +53,7 @@ q-ai-drug = "q_ai_drug.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["q_ai_drug*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -703,6 +703,9 @@ class QReportRunner(BaseModuleRunner):
 
     def __init__(self, module_id: str, project_dir: Path, run_id: str, payload: dict[str, Any]):
         super().__init__(module_id, project_dir, run_id, payload)
+        if module_id == "q_report_and_candidate_dossiers":
+            self.output_dir = project_dir / "module_runs" / "q_report" / run_id
+            self.output_dir.mkdir(parents=True, exist_ok=True)
         self.report_payload: dict[str, Any] = {}
 
     def validate_payload(self) -> None:

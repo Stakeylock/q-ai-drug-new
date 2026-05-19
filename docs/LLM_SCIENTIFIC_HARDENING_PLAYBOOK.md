@@ -346,12 +346,13 @@ Update README.md.
 
 ## C1. Scientific Goal
 
-Interaction fingerprints should identify receptor residues near the docked ligand and classify simple contact types. Until full PLIP/ProLIF-level analysis is integrated, implement a conservative geometric parser.
+Interaction fingerprints should identify receptor residues near the docked ligand and classify contact types with explicit provenance. Use ProLIF when installed; otherwise fall back to the conservative geometric parser and label the backend/status clearly.
 
 ## C2. Files To Add Or Modify
 
 ```text
 src/q_ai_drug/docking/interactions.py
+src/q_ai_drug/docking/prolif_adapter.py
 src/q_ai_drug/product/module_runners/q_dock_studio.py
 tests/test_interaction_fingerprints.py
 README.md
@@ -408,22 +409,29 @@ not full biochemical interaction proof.
 ```text
 candidate_id
 pose_file
+interaction_backend
+interaction_status
 contact_residues
 contact_count
 hbond_like_contacts
 hydrophobic_contacts
 salt_bridge_like_contacts
+interaction_classes
+residue_interaction_count
 interaction_quality
 failure_reason
+prolif_failure_reason
 claim_boundary
 ```
 
 ## C6. Tests
 
 ```text
-[ ] simple toy receptor + ligand within cutoff reports contact residue.
-[ ] far ligand reports no contacts.
-[ ] missing pose returns failure_reason.
+[ ] ProLIF-installed path reports `interaction_backend=prolif` when it can parse the pose.
+[ ] ProLIF-unavailable path reports `interaction_backend=geometric_fallback`.
+[ ] Simple toy receptor + ligand within cutoff reports contact residue.
+[ ] Far ligand reports no contacts.
+[ ] Missing pose returns failure_reason.
 ```
 
 ## C7. Small LLM Prompt

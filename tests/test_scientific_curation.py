@@ -14,7 +14,7 @@ def test_curate_activity_outputs_required_columns(tmp_path, monkeypatch):
                 "target_chembl_id": "CHEMBL_T",
                 "molecule_chembl_id": "CHEMBL_M",
                 "canonical_smiles": "CCO",
-                "standard_type": "IC50",
+                "standard_type": "EC50",
                 "standard_relation": "=",
                 "standard_value_nm": 100.0,
                 "standard_units": "nM",
@@ -50,6 +50,7 @@ def test_curate_activity_outputs_required_columns(tmp_path, monkeypatch):
         "murcko_scaffold",
     }
     assert required.issubset(curated.columns)
+    assert curated.loc[0, "assay_type"] == "biochemical_or_binding_public_assay"
     assert {"raw_records", "kept_records", "unique_molecules", "reference_drugs_configured"}.issubset(summary.columns)
     assert (tmp_path / "project" / "dataset_curation_report.html").exists()
     assert (tmp_path / "docs" / "dataset_curation_protocol.md").exists()

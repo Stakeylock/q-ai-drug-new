@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -26,7 +25,7 @@ except Exception:
 
 
 def vina_available() -> bool:
-    return shutil.which("vina") is not None or shutil.which("smina") is not None
+    return resolve_tool("vina").available or resolve_tool("smina").available
 
 
 def parse_vina_log(text: str) -> list[dict[str, float]]:

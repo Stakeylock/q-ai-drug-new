@@ -12,7 +12,7 @@ This report maps the investor product plan to the current runnable research plat
 | Generated candidates | 15000 |
 | Filtered candidates | 1500 |
 | Vina/Smina docking rows | 300 |
-| GNINA CNN rows | 30 |
+| GNINA CNN rows | 3 |
 | OpenMM ligand-pose relaxation rows | 30 |
 | xTB QM rows | 30 |
 | Qiskit QML rows | 30 |
@@ -25,9 +25,9 @@ This report maps the investor product plan to the current runnable research plat
 
 | Target | Benchmark rows | Top candidates | Best candidate | Best score | Quantum delta | Docking | GNINA | QM | QML |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| EGFR | 737 | 10 | EGFR_CAND_00111 | 0.8569688497754953 | -0.0749680627611132 | 100 | 10 | 10 | 10 |
-| PARP1 | 905 | 10 | PARP1_CAND_00105 | 0.895794413735708 | -0.0545902555778856 | 100 | 10 | 10 | 10 |
-| PIK3CA | 900 | 10 | PIK3CA_CAND_00041 | 0.875902278785503 | -0.0651288958445738 | 100 | 10 | 10 | 10 |
+| EGFR | 737 | 10 | EGFR_CAND_00119 | 0.7254107806607423 | -0.0470246088321277 | 100 | 1 | 10 | 10 |
+| PARP1 | 905 | 10 | PARP1_CAND_00012 | 0.8723587113308873 | -0.0530460826657243 | 100 | 1 | 10 | 10 |
+| PIK3CA | 900 | 10 | PIK3CA_CAND_00071 | 0.7848124542839363 | -0.0423985414002662 | 100 | 1 | 10 | 10 |
 
 ## Product Tool Completion
 
@@ -44,7 +44,7 @@ This report maps the investor product plan to the current runnable research plat
 | Q-Rank | REAL | Classical plus quantum ablation ranking | Final ranked candidates with quantum delta |
 | Q-Report | REAL | HTML/PDF report builder | Shareable evidence package |
 | Model Playground | REAL | FastAPI single and batch prediction endpoints | Interactive target/activity/ADMET scoring |
-| External Tool Chain | REAL | openbabel_conversion, xtb_single_point, vina_executable, vina_mini_docking, smina_executable, smina_mini_docking, gnina_executable, gnina_score_only | Vina/Smina/GNINA/OpenBabel/xTB smoke evidence |
+| External Tool Chain | REAL | openbabel_conversion, xtb_single_point, vina_executable, vina_mini_docking, smina_executable, smina_mini_docking, gnina_executable, gnina_mini_docking | Vina/Smina/GNINA/OpenBabel/xTB smoke evidence |
 
 ## Research Pipeline Funnel
 
@@ -58,7 +58,7 @@ This report maps the investor product plan to the current runnable research plat
 | OpenMM relaxation rows | 30 | REAL | Ligand-pose relaxation |
 | xTB QM rows | 30 | REAL | GFN2 single-point descriptors |
 | QML rerank rows | 30 | REAL | Qiskit statevector kernel |
-| GNINA CNN rows | 30 | REAL | GNINA selected top candidates |
+| GNINA CNN rows | 3 | REAL | GNINA selected top candidates |
 | Ranked rows | 300 | REAL | Final ranking and ablation |
 
 ## Model and Quantum Evidence
@@ -74,7 +74,7 @@ This report maps the investor product plan to the current runnable research plat
 | Quantum prefilter rows | 1500 |
 | Qiskit rerank rows | 30 |
 | xTB rows | 30 |
-| Mean quantum ablation delta | -0.07007310357039417 |
+| Mean quantum ablation delta | -0.049875345293383465 |
 | Quantum claim | Qiskit statevector kernels and xTB descriptors are active research signals; no hardware speedup is claimed. |
 
 ## Validation Gate

@@ -166,7 +166,7 @@ Implement robust uploaded CSV normalization for:
 smiles / SMILES / canonical_smiles
 compound_id / molecule_id / id
 target / gene / target_id
-IC50 / Ki / Kd / EC50 / activity_value / standard_value
+IC50 / EC50 / Ki / Kd / AC50 / activity_value / standard_value
 unit / units / standard_units
 pActivity / p_activity / pchembl_value
 assay_type / activity_type / standard_type

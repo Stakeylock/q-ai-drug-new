@@ -37,8 +37,18 @@ def test_wet_lab_triage_generates_reasons_for_all_candidates(tmp_path: Path):
     (project / "docking").mkdir()
     pd.DataFrame(
         [
-            {"target_id": "EGFR", "candidate_id": "A", "interaction_quality": "plausible_key_pocket_contacts"},
-            {"target_id": "EGFR", "candidate_id": "B", "interaction_quality": "missing_pose"},
+            {
+                "target_id": "EGFR",
+                "candidate_id": "A",
+                "interaction_quality": "plausible_key_pocket_contacts",
+                "claim_boundary": "Upstream interaction annotation only.",
+            },
+            {
+                "target_id": "EGFR",
+                "candidate_id": "B",
+                "interaction_quality": "missing_pose",
+                "claim_boundary": "Upstream interaction annotation only.",
+            },
         ]
     ).to_csv(project / "docking" / "interaction_fingerprints.csv", index=False)
     pd.DataFrame(
@@ -57,6 +67,8 @@ def test_wet_lab_triage_generates_reasons_for_all_candidates(tmp_path: Path):
     assert len(triage) == 2
     assert triage["reasons_to_test"].astype(str).str.len().gt(0).all()
     assert triage["reasons_not_to_test"].astype(str).str.len().gt(0).all()
+    assert triage["claim_boundary"].astype(str).str.contains("Computational hypothesis", case=False).all()
+    assert "upstream_claim_boundary" in triage.columns
     assert (project / "triage" / "wet_lab_triage_summary.json").exists()
     assert set(triage["triage_class"]).issubset({"test_now", "test_after_review", "watchlist", "reject_hold"})
 

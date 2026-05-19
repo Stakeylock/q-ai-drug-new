@@ -58,6 +58,12 @@ def test_interaction_fingerprint_schema(tmp_path):
         "key_residue_contact_count",
         "key_residue_contacts",
         "interaction_quality",
+        "interaction_backend",
+        "interaction_status",
+        "interaction_classes",
+        "residue_interaction_count",
+        "claim_boundary",
     }
     assert required.issubset(result.columns)
     assert result.loc[0, "contact_residue_count"] >= 1
+    assert result.loc[0, "interaction_backend"] in {"prolif", "geometric_fallback"}

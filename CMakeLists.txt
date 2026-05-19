@@ -78,7 +78,7 @@ add_custom_target(verify_tools
   VERBATIM
   COMMENT "Verifying external tool discovery through Windows PATH and WSL."
 )
-add_dependencies(verify_tools setup_python install_wsl_tools)
+add_dependencies(verify_tools setup_python)
 
 add_custom_target(smoke_tools
   COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/scripts/smoke_external_tools.py"
@@ -215,6 +215,16 @@ add_custom_target(validate_artifacts
 )
 add_dependencies(validate_artifacts build_report)
 
+add_custom_target(validate_current_artifacts
+  COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/scripts/validate_research_artifacts.py"
+          --project "${QAI_OUTPUT}"
+          --tier proof
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  VERBATIM
+  COMMENT "Validating the current proof-tier artifact set without rebuilding the full research pipeline."
+)
+add_dependencies(validate_current_artifacts setup_python)
+
 add_custom_target(validate_production
   COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/scripts/validate_research_artifacts.py"
           --project "${QAI_OUTPUT}"
@@ -224,6 +234,16 @@ add_custom_target(validate_production
   COMMENT "Running production-tier validation gates, including real docking and MD requirements."
 )
 add_dependencies(validate_production build_report)
+
+add_custom_target(validate_current_production
+  COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/scripts/validate_research_artifacts.py"
+          --project "${QAI_OUTPUT}"
+          --tier production
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  VERBATIM
+  COMMENT "Running production-tier validation on the current artifact set."
+)
+add_dependencies(validate_current_production setup_python)
 
 add_custom_target(build_completion_report
   COMMAND ${Python3_EXECUTABLE} -m q_ai_drug.reporting.completion_report
@@ -235,7 +255,7 @@ add_custom_target(build_completion_report
   VERBATIM
   COMMENT "Building the investor/product completion report and readiness JSON."
 )
-add_dependencies(build_completion_report validate_production)
+add_dependencies(build_completion_report validate_current_production)
 
 add_custom_target(unit_tests
   COMMAND ${Python3_EXECUTABLE} -m pytest tests -q
@@ -255,7 +275,7 @@ add_custom_target(smoke_ui_api
 add_dependencies(smoke_ui_api setup_python)
 
 add_custom_target(test_all
-  DEPENDS unit_tests validate_artifacts
+  DEPENDS unit_tests validate_current_artifacts
   COMMENT "Running unit tests plus proof-tier artifact validation."
 )
 

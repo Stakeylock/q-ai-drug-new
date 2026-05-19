@@ -83,9 +83,18 @@ class PocketBox(BaseModel):
 class OncoDataBuilderPayload(BaseModel):
     """OncoData Builder: Dataset curation and provisioning."""
     target_ids: list[str] = Field(..., description="Target identifiers to curate (e.g., ['TP53', 'EGFR'])")
-    data_sources: Literal["public_only", "public_plus_uploaded", "uploaded_only"] = Field(default="public_only")
+    data_sources: Literal[
+        "public_only",
+        "public_plus_uploaded",
+        "uploaded_only",
+        "public_plus_bindingdb",
+        "bindingdb_only",
+        "public_plus_uploaded_plus_bindingdb",
+    ] = Field(default="public_only")
     uploaded_assay_csv: Optional[str] = None
     uploaded_assay_csv_artifact_id: Optional[str] = None
+    bindingdb_tsv: Optional[str] = None
+    bindingdb_tsv_artifact_id: Optional[str] = None
     curation_profile: Literal["standard", "strict", "permissive"] = Field(default="standard")
     dry_run: bool = False
 
@@ -260,7 +269,7 @@ class ApplicabilityDomainPayload(BaseModel):
     dry_run: bool = False
 
 
-class PayloadValidationError(Exception):
+class PayloadValidationError(ValueError):
     """Raised when a module payload fails validation."""
 
 
@@ -273,6 +282,7 @@ MODULE_PAYLOAD_MODELS: dict[str, type[BaseModel]] = {
     "q_rank": QRankPayload,
     "wet_lab_triage_board": WetLabTriagePayload,
     "q_report": QReportPayload,
+    "q_report_and_candidate_dossiers": QReportPayload,
     "applicability_domain_guard": ApplicabilityDomainPayload,
 }
 
@@ -283,7 +293,7 @@ def validate_payload(module_id: str, payload: dict[str, Any] | None) -> dict[str
         payload = {}
     model_class = MODULE_PAYLOAD_MODELS.get(module_id)
     if model_class is None:
-        return payload
+        raise ValueError(f"No payload model for module: {module_id}")
     try:
         validated = model_class.model_validate(payload)
         return validated.model_dump()

@@ -1,10 +1,9 @@
 """Q-Dock Studio module runner: molecular docking and scoring.
 
 This standalone runner accepts receptor, ligand, pocket, and engine settings.
-It runs real AutoDock Vina/Smina-compatible docking when binaries are available
-and otherwise emits clearly labeled mock rows. It does not claim GNINA execution;
-GNINA must be integrated through a dedicated runner/path before being advertised
-as real evidence here.
+It runs real AutoDock Vina/Smina-compatible docking when binaries are available,
+runs GNINA only through an explicit GNINA branch when the binary is available,
+and otherwise emits clearly labeled mock rows.
 """
 
 from __future__ import annotations
@@ -46,10 +45,12 @@ class QDockStudioRunner(BaseModuleRunner):
         self.interaction_fingerprints: list[dict[str, Any]] = []
         self.redocking_rows: list[dict[str, Any]] = []
         self._vina_available: bool = False
+        self._gnina_available: bool = False
         self._obabel_available: bool = False
         self._mock_mode: bool = False
         self._actual_engine_used: str = "mock"
         self._requested_engine: str = "vina_smina"
+        self._gnina_executed_count: int = 0
 
     def validate_payload(self) -> None:
         try:
@@ -98,18 +99,26 @@ class QDockStudioRunner(BaseModuleRunner):
         if Chem is None:
             raise MissingDependencyError("RDKit is required for Q-Dock Studio. Install q-ai-drug[chem] or rdkit.")
 
+        engine_val = payload.get("engine", "vina_smina")
+        engine_str = engine_val.value if hasattr(engine_val, "value") else str(engine_val)
         try:
             from q_ai_drug.docking.vina_runner import vina_available
             from q_ai_drug.tools.external import resolve_tool
             self._vina_available = bool(vina_available())
+            self._gnina_available = bool(resolve_tool("gnina").available)
             self._obabel_available = bool(resolve_tool("obabel").available)
         except Exception:
             self._vina_available = False
+            self._gnina_available = False
             self._obabel_available = False
 
-        if not self._vina_available:
+        gnina_requested = "gnina" in str(engine_str)
+        can_execute_requested_engine = self._vina_available or (gnina_requested and self._gnina_available)
+        if not can_execute_requested_engine:
             self._mock_mode = True
             self.add_warning("AutoDock Vina/Smina not found. Running in labeled mock mode; scores are not real docking evidence.")
+        if gnina_requested and not self._gnina_available:
+            self.add_warning("GNINA requested but GNINA binary was not found. Standalone Q-Dock will not claim GNINA evidence.")
         if self._vina_available and not self._obabel_available and receptor_path.suffix.lower() != ".pdbqt":
             self.add_warning("OpenBabel not found; receptor conversion may fail and force mock mode.")
 
@@ -139,6 +148,8 @@ class QDockStudioRunner(BaseModuleRunner):
             if not self.ligand_mols:
                 raise ModuleInputError("No valid ligands found in input file")
             self.add_usage_requested("docking_pairs", len(self.ligand_mols))
+            if gnina_requested:
+                self.add_usage_requested("gnina_pairs", len(self.ligand_mols))
         except ModuleInputError:
             raise
         except Exception as e:
@@ -172,8 +183,9 @@ class QDockStudioRunner(BaseModuleRunner):
             raise ModuleExecutionError(f"Receptor PDBQT conversion failed: {result.stderr[:500]}")
         return pdbqt_path
 
-    def _prepare_ligand_pdbqt(self, ligand_info: dict[str, Any], pose_dir: Path) -> tuple[Path, Path]:
+    def _prepare_ligand_sdf(self, ligand_info: dict[str, Any], pose_dir: Path) -> Path:
         name = ligand_info["name"]
+        pose_dir.mkdir(parents=True, exist_ok=True)
         mol3d = Chem.AddHs(ligand_info["mol"])
         status = AllChem.EmbedMolecule(mol3d, randomSeed=42)
         if status != 0:
@@ -189,6 +201,11 @@ class QDockStudioRunner(BaseModuleRunner):
         writer = Chem.SDWriter(str(sdf_path))
         writer.write(mol3d)
         writer.close()
+        return sdf_path
+
+    def _prepare_ligand_pdbqt(self, ligand_info: dict[str, Any], pose_dir: Path) -> tuple[Path, Path]:
+        name = ligand_info["name"]
+        sdf_path = self._prepare_ligand_sdf(ligand_info, pose_dir)
         pdbqt_path = pose_dir / f"{name}.pdbqt"
         if not self._obabel_available:
             raise RuntimeError("obabel not available for PDBQT conversion")
@@ -200,8 +217,10 @@ class QDockStudioRunner(BaseModuleRunner):
 
     def _resolve_engine(self, requested_engine: str) -> tuple[str, str]:
         """Return (tool_name, evidence_label) for actual execution."""
-        if "gnina" in requested_engine:
-            self.add_warning("GNINA requested, but this standalone runner does not execute GNINA. Using Vina/Smina-compatible docking evidence only.")
+        if "gnina" in requested_engine and self._gnina_available:
+            return "gnina", "real_docking_gnina"
+        if "gnina" in requested_engine and not self._gnina_available:
+            self.add_warning("GNINA requested, but GNINA is unavailable. Using Vina/Smina-compatible docking evidence only when available.")
         if requested_engine in ("smina",) and self._vina_available:
             return "smina", "real_docking_smina_compatible"
         if requested_engine in ("vina_smina", "vina_smina_gnina", "gnina", "vina"):
@@ -255,6 +274,106 @@ class QDockStudioRunner(BaseModuleRunner):
             "log_path": str(log_path),
             "runtime_s": round(time.time() - started, 2),
             "exhaustiveness": exhaustiveness,
+        }
+
+    def _dock_gnina(self, ligand_info: dict[str, Any], poses_dir: Path, logs_dir: Path, engine: str, exhaustiveness: int) -> dict[str, Any]:
+        from q_ai_drug.docking.gnina_runner import _parse_gnina_output, _parse_gnina_warnings
+        from q_ai_drug.tools.external import resolve_tool, run_external, windows_to_wsl_path
+
+        if self.receptor_path is None or self.pocket_box is None:
+            raise ModuleExecutionError("GNINA inputs not resolved")
+        tool = resolve_tool("gnina")
+        if not tool.available:
+            raise RuntimeError("GNINA requested but binary is not available")
+
+        name = ligand_info["name"]
+        pose_dir = poses_dir / name
+        pose_dir.mkdir(parents=True, exist_ok=True)
+        started = time.time()
+        ligand_sdf = self._prepare_ligand_sdf(ligand_info, pose_dir)
+        out_pose = pose_dir / f"{name}_gnina.sdf"
+        log_path = logs_dir / f"{name}_gnina.log"
+        center = (self.pocket_box.center_x, self.pocket_box.center_y, self.pocket_box.center_z)
+
+        def external_path(path: Path) -> str:
+            return windows_to_wsl_path(path) if tool.via_wsl else str(path)
+
+        args = [
+            "--no_gpu",
+            "--cpu",
+            "2",
+            "--seed",
+            "17",
+            "--exhaustiveness",
+            str(exhaustiveness),
+            "--num_modes",
+            "9",
+            "-r",
+            external_path(self.receptor_path),
+            "-l",
+            external_path(ligand_sdf),
+            "--center_x",
+            f"{center[0]:.3f}",
+            "--center_y",
+            f"{center[1]:.3f}",
+            "--center_z",
+            f"{center[2]:.3f}",
+            "--size_x",
+            f"{self.pocket_box.size_x:.3f}",
+            "--size_y",
+            f"{self.pocket_box.size_y:.3f}",
+            "--size_z",
+            f"{self.pocket_box.size_z:.3f}",
+            "-o",
+            external_path(out_pose),
+        ]
+        run = run_external("gnina", args, cwd=pose_dir, timeout=900, check=False)
+        log_text = run.stdout + "\n" + run.stderr
+        log_path.write_text(log_text, encoding="utf-8", errors="replace")
+        metrics = _parse_gnina_output(log_text)
+        completed = run.returncode == 0 and out_pose.exists()
+        if not completed:
+            raise RuntimeError(f"GNINA failed with return code {run.returncode}. Log: {log_text[-500:]}")
+        if metrics.get("gnina_cnn_pose_score") is None:
+            self.add_warning(f"GNINA completed for {name}, but CNN metrics were not parseable from the log.")
+
+        self._actual_engine_used = "gnina"
+        self._gnina_executed_count += 1
+        self.add_usage_actual("gnina_pairs", 1)
+        self._add_interaction_fingerprint(name, ligand_info["smiles"], out_pose, True)
+        affinity = metrics.get("gnina_affinity_kcal_mol")
+        return {
+            "name": name,
+            "candidate_id": name,
+            "canonical_smiles": ligand_info["smiles"],
+            "smiles": ligand_info["smiles"],
+            "requested_engine": engine,
+            "engine": "gnina",
+            "actual_engine_used": "gnina",
+            "execution_mode": "real_docking_gnina",
+            "vina_score": round(float(affinity), 3) if affinity is not None else None,
+            "gnina_status": "completed",
+            "gnina_returncode": run.returncode,
+            "gnina_affinity_kcal_mol": metrics.get("gnina_affinity_kcal_mol"),
+            "gnina_intramol_kcal_mol": metrics.get("gnina_intramol_kcal_mol"),
+            "gnina_cnn_pose_score": metrics.get("gnina_cnn_pose_score"),
+            "gnina_cnn_affinity": metrics.get("gnina_cnn_affinity"),
+            "gnina_pose_sdf_path": str(out_pose),
+            "gnina_log_path": str(log_path),
+            "gnina_mode": "standalone_gnina_cpu_uploaded_box",
+            "gnina_warnings": _parse_gnina_warnings(log_text),
+            "gnina_output_excerpt": "\n".join(log_text.splitlines()[-20:]),
+            "rmsd_lb": None,
+            "rmsd_ub": None,
+            "binding_class": "strong" if affinity is not None and affinity <= -8.0 else "moderate" if affinity is not None and affinity <= -7.0 else "weak",
+            "status": "docked",
+            "docking_is_real": True,
+            "pose_pdbqt_path": None,
+            "pose_sdf_path": str(out_pose),
+            "log_path": str(log_path),
+            "runtime_s": round(time.time() - started, 2),
+            "exhaustiveness": exhaustiveness,
+            "claim_boundary": "GNINA CNN docking/rescoring is computational evidence only; not measured binding or therapeutic validation.",
         }
 
     def _dock_mock(self, ligand_info: dict[str, Any], engine: str, exhaustiveness: int) -> dict[str, Any]:
@@ -396,8 +515,9 @@ class QDockStudioRunner(BaseModuleRunner):
         poses_dir.mkdir(parents=True, exist_ok=True)
         logs_dir.mkdir(parents=True, exist_ok=True)
 
+        gnina_requested_and_available = "gnina" in engine and self._gnina_available
         receptor_pdbqt = None
-        if not self._mock_mode:
+        if not self._mock_mode and not gnina_requested_and_available:
             try:
                 receptor_prep_dir = self.output_dir / "receptor_prep"
                 receptor_prep_dir.mkdir(parents=True, exist_ok=True)
@@ -413,7 +533,9 @@ class QDockStudioRunner(BaseModuleRunner):
             smiles = ligand_info["smiles"]
             name = ligand_info["name"]
             try:
-                if not self._mock_mode and receptor_pdbqt is not None:
+                if not self._mock_mode and gnina_requested_and_available:
+                    result = self._dock_gnina(ligand_info, poses_dir, logs_dir, engine, exhaustiveness)
+                elif not self._mock_mode and receptor_pdbqt is not None:
                     result = self._dock_real(ligand_info, receptor_pdbqt, poses_dir, logs_dir, engine, exhaustiveness)
                 else:
                     result = self._dock_mock(ligand_info, engine, exhaustiveness)
@@ -455,9 +577,11 @@ class QDockStudioRunner(BaseModuleRunner):
             "requested_engine": self._requested_engine,
             "actual_engine_used": self._actual_engine_used,
             "vina_available": self._vina_available,
+            "gnina_available": self._gnina_available,
             "obabel_available": self._obabel_available,
             "mock_mode": self._mock_mode,
-            "gnina_executed": False,
+            "gnina_executed": self._gnina_executed_count > 0,
+            "gnina_rows": self._gnina_executed_count,
             "redocking_requested": bool(self.validated_payload.get("run_redocking_validation")),
             "redocking_status": redocking_status,
             "redocking_rmsd_angstrom": redocking_rmsd,
@@ -470,14 +594,21 @@ class QDockStudioRunner(BaseModuleRunner):
     def get_result(self, status: str = "succeeded") -> dict[str, Any]:
         result = super().get_result(status)
         real_count = sum(1 for r in self.docking_results if r.get("docking_is_real"))
-        if self._mock_mode or real_count == 0:
+        if status == "failed":
+            pass
+        elif self._mock_mode or real_count == 0:
             result["execution_mode"] = "mock_docking"
             result["claim_boundary"] = "MOCK DOCKING - scores are not physical docking evidence. Wet-lab validation required."
             result["failure_code"] = FailureCode.TOOL_UNAVAILABLE.value
         else:
-            result["execution_mode"] = "real_docking_vina" if self._actual_engine_used == "vina" else "real_docking_smina_compatible"
+            if self._actual_engine_used == "gnina":
+                result["execution_mode"] = "real_docking_gnina"
+            elif self._actual_engine_used == "vina":
+                result["execution_mode"] = "real_docking_vina"
+            else:
+                result["execution_mode"] = "real_docking_smina_compatible"
             result["claim_boundary"] = "Computational docking hypothesis only. Not a measured binding or therapeutic claim."
-        result["gnina_executed"] = False
+        result["gnina_executed"] = self._gnina_executed_count > 0
         result["requested_engine"] = self._requested_engine
         result["actual_engine_used"] = self._actual_engine_used
         return result

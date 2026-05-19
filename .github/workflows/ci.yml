@@ -25,6 +25,10 @@ jobs:
       - name: Validate service imports
         run: |
           python -m py_compile \
+            src/q_ai_drug/data/__init__.py \
+            src/q_ai_drug/data/build_oncology_benchmark.py \
+            src/q_ai_drug/data/curate_activity.py \
+            src/q_ai_drug/data/retrieve_public_oncology_data.py \
             src/q_ai_drug/service/settings.py \
             src/q_ai_drug/service/db.py \
             src/q_ai_drug/service/queue.py \
@@ -39,6 +43,7 @@ jobs:
             src/q_ai_drug/service/routes/artifacts.py \
             src/q_ai_drug/service/api.py \
             src/q_ai_drug/service/main.py
+          python -c "import q_ai_drug.data.build_oncology_benchmark; print('data import ok')"
           python -c "import q_ai_drug.service.main; print('api import ok')"
 
       - name: Run unit tests

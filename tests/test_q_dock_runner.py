@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import json
 from pathlib import Path
 
 import pytest
@@ -235,6 +236,75 @@ def test_q_dock_real_vina_path_mocked(tmp_path, monkeypatch):
     
     content = docking_csv.read_text()
     assert "-7.5" in content
+
+
+@pytest.mark.skipif(not HAS_RDKIT, reason="RDKit not installed")
+def test_q_dock_standalone_gnina_path_is_real_and_cnn_labeled(tmp_path, monkeypatch):
+    """GNINA requests must execute the GNINA branch and emit CNN fields when available."""
+    proj = tmp_path / "proj_gnina"
+    proj.mkdir()
+    uploads = proj / "uploads"
+    _write_dummy_receptor(uploads / "receptor.pdb")
+    _write_smiles_csv(uploads / "ligs.csv", [TINY_SMILES[0]])
+
+    def mock_resolve_tool(tool_name):
+        from types import SimpleNamespace
+        if tool_name == "gnina":
+            return SimpleNamespace(available=True, via_wsl=False, path="mock_gnina")
+        if tool_name in ("vina", "smina", "obabel"):
+            return SimpleNamespace(available=False, via_wsl=False, path=None)
+        return SimpleNamespace(available=False, via_wsl=False, path=None)
+
+    def mock_run_external(name, args, *, cwd=None, timeout=600, check=True):
+        from types import SimpleNamespace
+        ligand_path = Path(args[args.index("-l") + 1])
+        output_path = Path(args[args.index("-o") + 1])
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(ligand_path.read_text(encoding="utf-8", errors="ignore"), encoding="utf-8")
+        stdout = "\n".join([
+            "mode | affinity | intramol | CNN pose score | CNN affinity",
+            "1 -7.6 0.2 0.81 -8.9",
+        ])
+        return SimpleNamespace(returncode=0, stdout=stdout, stderr="")
+
+    monkeypatch.setattr("q_ai_drug.tools.external.resolve_tool", mock_resolve_tool)
+    monkeypatch.setattr("q_ai_drug.tools.external.run_external", mock_run_external)
+    monkeypatch.setattr("q_ai_drug.docking.vina_runner.vina_available", lambda: False)
+
+    runner = QDockStudioRunner(
+        "q_dock_studio",
+        proj,
+        "run-gnina",
+        {
+            "receptor_upload_file": "receptor.pdb",
+            "ligand_upload_file": "ligs.csv",
+            "pocket_source": "uploaded_box",
+            "pocket_box": POCKET_BOX,
+            "engine": "gnina",
+            "max_ligands": 1,
+        },
+    )
+    result = runner.execute()
+
+    assert result["status"] in ("succeeded", "partial_success")
+    assert result["execution_mode"] == "real_docking_gnina"
+    assert result["gnina_executed"] is True
+    assert result["actual_engine_used"] == "gnina"
+
+    out_dir = proj / "module_runs" / "q_dock_studio" / "run-gnina"
+    rows = list(csv.DictReader((out_dir / "docking_results.csv").open()))
+    assert rows[0]["engine"] == "gnina"
+    assert rows[0]["docking_is_real"] == "True"
+    assert rows[0]["gnina_status"] == "completed"
+    assert rows[0]["gnina_cnn_pose_score"] == "0.81"
+    assert rows[0]["gnina_cnn_affinity"] == "-8.9"
+    assert Path(rows[0]["gnina_pose_sdf_path"]).exists()
+    assert Path(rows[0]["gnina_log_path"]).exists()
+
+    summary = json.loads((out_dir / "q_dock_summary.json").read_text(encoding="utf-8"))
+    assert summary["gnina_executed"] is True
+    assert summary["gnina_rows"] == 1
+    assert summary["actual_engine_used"] == "gnina"
 
 
 # ============================================================================

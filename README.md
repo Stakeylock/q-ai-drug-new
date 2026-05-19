@@ -13,7 +13,7 @@ Last validated locally on Windows with WSL:
 - GNINA: available through WSL with CUDA/cuDNN runtime libraries, smoke-tested with CNN score-only and run on top candidates.
 - OpenBabel: available through WSL, smoke-tested for SDF/PDBQT conversion.
 - xTB: available through WSL, smoke-tested with a real GFN2 single-point calculation.
-- RDKit, OpenMM, Qiskit, py3Dmol, FastAPI: installed in the Python research environment.
+- RDKit, OpenMM, Qiskit, py3Dmol, ProLIF, FastAPI: installed in the Python research environment.
 - Full cached research run completed under CMake.
 - Reusable trained models are saved under `models/activity/` and `models/admet/`.
 - Early Qiskit statevector quantum-kernel portfolio prefiltering is active before docking/QM.
@@ -31,17 +31,17 @@ Last validated locally on Windows with WSL:
 The scientist-facing module runners now include stricter evidence-status handling for the standalone SaaS-style workflow. These updates are separate from the full CMake research pipeline and are intended to make per-user module runs more scientifically honest.
 
 - `q_orbital_analyzer` now supports an explicit `allow_fallback` payload flag. `method=xtb` with `allow_fallback=false` fails rows when xTB is unavailable or fails, while `allow_fallback=true` permits RDKit Extended Huckel fallback. Each output row carries a `qm_status` such as `xtb_success`, `eht_fallback`, `failed_xtb`, `failed_eht`, or `failed_xtb_no_fallback`.
-- `q_dock_studio` now records `requested_engine`, `actual_engine_used`, and `gnina_executed=false` in the standalone runner. The runner does not overclaim GNINA execution unless a dedicated GNINA path is actually wired. Mock docking rows are marked as non-evidence and are suitable only for plumbing/fallback tests.
-- `q_dock_studio` now emits `interaction_fingerprints.csv` and `redocking_validation.csv` artifacts backed by helper implementations. `redocking_validation.csv` computes RDKit best-alignment RMSD when a readable reference ligand and real docked SDF pose are available. `interaction_fingerprints.csv` uses a conservative PDB/SDF geometric contact parser and labels those contacts as `geometric_proxy`, not validated biochemical interactions.
+- `q_dock_studio` now records `requested_engine`, `actual_engine_used`, and `gnina_executed` in the standalone runner. When GNINA is installed and requested, it writes real standalone GNINA SDF poses/logs plus CNN affinity/pose-score fields. When GNINA is unavailable, it falls back only with explicit non-GNINA labeling; mock docking rows remain non-evidence.
+- `q_dock_studio` now emits `interaction_fingerprints.csv` and `redocking_validation.csv` artifacts backed by helper implementations. `redocking_validation.csv` computes RDKit best-alignment RMSD when a readable reference ligand and real docked SDF pose are available. `interaction_fingerprints.csv` uses ProLIF when installed, otherwise a conservative PDB/SDF geometric contact parser, and every row carries interaction backend/status and claim-boundary fields.
 - `q_rank` is routed to `q_ai_drug.product.module_runners.q_rank_scientific.QRankRunner`. This evidence-aware runner consumes candidate, activity, docking, applicability-domain, and orbital/QM evidence artifacts, then penalizes mock docking, heuristic activity scores, EHT fallback, failed/missing QM, out-of-domain candidates, and missing evidence.
 - Evidence-aware Q-Rank writes `ranked_candidates.csv`, `rank_explanations.csv`, `rank_ablation.csv`, `evidence_status_report.csv`, `missing_evidence_report.csv`, `weight_config_used.json`, and `q_rank_summary.json`.
 - `q_report` is routed to `q_ai_drug.product.module_runners.q_report_scientific.QReportRunner`. It can consume ranked-candidate, wet-lab triage, evidence-status, and rank-ablation artifacts, then generates an evidence-aware report package.
 - Evidence-aware Q-Report writes `selected_candidates.csv`, `claim_matrix.csv`, `report_ranked_candidates_subset.csv`, `report.md`, `report.html`, and `report_manifest.json`. The report explicitly separates real, fallback, mock, missing, and wet-lab-required evidence and prevents therapeutic overclaiming.
 - `tests/test_scientific_runner_contracts.py` locks the lightweight Python contracts for strict Q-Orbital fallback behavior, Q-Dock GNINA-request preservation, evidence-aware Q-Rank routing, and evidence-aware Q-Report routing.
-- `tests/test_docking_science_helpers.py` tests RDKit redocking RMSD and geometric receptor-ligand contact detection using tiny local fixtures.
+- `tests/test_docking_science_helpers.py` tests RDKit redocking RMSD, ProLIF availability/fallback provenance, and geometric receptor-ligand contact detection using tiny local fixtures.
 - `docs/LLM_SCIENTIFIC_HARDENING_PLAYBOOK.md` provides micro-task prompts, file targets, tests, and acceptance criteria for implementing the remaining hard scientific features with a smaller coding LLM.
 
-These updates improve scientific traceability for user-level runs. Remaining science-first work: full GNINA standalone execution or removal from standalone engine choices, stronger end-to-end scientific chain tests, and continued Activity Model / Applicability Domain calibration beyond the current training-set fingerprint implementation.
+These updates improve scientific traceability for user-level runs. Remaining science-first work is now focused on broader external benchmark expansion and continued Activity Model / Applicability Domain calibration beyond the current scaffold-split and nearest-neighbor evidence.
 
 Main report:
 
@@ -204,7 +204,7 @@ Build the investor package and open the investor site:
 cmake --workflow --preset investor-demo
 ```
 
-Build only the completion report and readiness JSON:
+Build tests, production validation on the current artifact set, the completion report, and readiness JSON:
 
 ```powershell
 cmake --workflow --preset investor-package

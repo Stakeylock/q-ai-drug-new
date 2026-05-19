@@ -184,6 +184,7 @@ def smoke_docking_tool(
 def smoke_gnina(work_dir: Path, results: dict[str, dict[str, Any]]) -> None:
     receptor_pdb = work_dir / "alanine_receptor.pdb"
     ligand_sdf = work_dir / "ethanol.sdf"
+    out_sdf = work_dir / "gnina_docked.sdf"
     try:
         version = run_external("gnina", ["--version"], cwd=work_dir, timeout=120, check=False)
     except Exception as exc:
@@ -202,27 +203,49 @@ def smoke_gnina(work_dir: Path, results: dict[str, dict[str, Any]]) -> None:
 
     args = [
         "--no_gpu",
-        "--score_only",
+        "--cpu",
+        "1",
+        "--seed",
+        "17",
+        "--exhaustiveness",
+        "1",
+        "--num_modes",
+        "1",
         "-r",
         _tool_path_arg("gnina", receptor_pdb),
         "-l",
         _tool_path_arg("gnina", ligand_sdf),
+        "--center_x",
+        "0",
+        "--center_y",
+        "0",
+        "--center_z",
+        "0",
+        "--size_x",
+        "12",
+        "--size_y",
+        "12",
+        "--size_z",
+        "12",
+        "-o",
+        _tool_path_arg("gnina", out_sdf),
     ]
     try:
         scoring = run_external("gnina", args, cwd=work_dir, timeout=300, check=False)
         text = scoring.stdout + "\n" + scoring.stderr
-        ok = scoring.returncode == 0 and "CNNscore" in text and "CNNaffinity" in text
+        ok = scoring.returncode == 0 and out_sdf.exists() and "pose score" in text and "affinity" in text
         _record(
             results,
-            "gnina_score_only",
+            "gnina_mini_docking",
             ok,
             returncode=scoring.returncode,
             receptor=str(receptor_pdb),
             ligand=str(ligand_sdf),
+            output=str(out_sdf),
             output_excerpt=_compact_output(text),
         )
     except Exception as exc:
-        _record(results, "gnina_score_only", False, error=str(exc))
+        _record(results, "gnina_mini_docking", False, error=str(exc))
 
 
 def main(argv: list[str] | None = None) -> None:

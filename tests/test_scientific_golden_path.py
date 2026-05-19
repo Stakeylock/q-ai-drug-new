@@ -62,6 +62,8 @@ def test_scientific_golden_path(project_dir):
         {"target_id": "EGFR", "canonical_smiles": "CC(C)C", "p_activity": 5.5, "source": "benchmark", "curation_kept": True},
         {"target_id": "EGFR", "canonical_smiles": "CCCC", "p_activity": 6.0, "source": "benchmark", "curation_kept": True},
     ]).to_csv(benchmark_csv, index=False)
+    upload_benchmark_csv = project_dir / "uploads" / "oncology_benchmark_upload.csv"
+    upload_benchmark_csv.write_bytes(benchmark_csv.read_bytes())
 
     config_path = project_dir / "configs" / "cancer_targets.yaml"
     config_path.write_text("primary_targets:\n  EGFR:\n    gene: EGFR\n")
@@ -79,7 +81,16 @@ def test_scientific_golden_path(project_dir):
         return new_name
 
     # 1. OncoData Builder
-    runner1 = OncoDataBuilderRunner("onco_data_builder", project_dir, "run1", {"target_ids": ["EGFR"]})
+    runner1 = OncoDataBuilderRunner(
+        "onco_data_builder",
+        project_dir,
+        "run1",
+        {
+            "target_ids": ["EGFR"],
+            "data_sources": "uploaded_only",
+            "uploaded_assay_csv": upload_benchmark_csv.name,
+        },
+    )
     res1 = runner1.execute()
     assert res1["status"] == "succeeded"
     onco_file = chain_file(res1, "curated_activity_with_split", "onco_out.csv")

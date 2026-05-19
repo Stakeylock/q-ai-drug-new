@@ -57,15 +57,25 @@ def project_with_benchmark(tmp_path):
 
 def _run_builder(project_dir, targets=None):
     """Helper to run OncoData Builder."""
+    import builtins
     import os
+    original_import = builtins.__import__
+
+    def mock_import(name, *args, **kwargs):
+        if name == "chembl_webresource_client.new_client":
+            raise ImportError("Unit test uses benchmark fallback instead of live ChEMBL")
+        return original_import(name, *args, **kwargs)
+
     old_cwd = os.getcwd()
     os.chdir(project_dir)
+    builtins.__import__ = mock_import
     try:
         payload = {"target_ids": targets or ["EGFR", "TP53"]}
         runner = OncoDataBuilderRunner("onco_data_builder", project_dir, "test_run_1", payload)
         result = runner.execute()
         return result, runner
     finally:
+        builtins.__import__ = original_import
         os.chdir(old_cwd)
 
 
@@ -86,6 +96,157 @@ class TestOncoDataSchema:
         assert curated["target_id"].notna().all()
         assert curated["canonical_smiles"].notna().all()
         assert curated["p_activity"].notna().all()
+
+
+class TestUploadedActivityEndpointNormalization:
+    """Uploaded IC50/EC50/Ki/Kd-style wide sheets must become canonical evidence rows."""
+
+    def test_wide_endpoint_columns_expand_to_one_row_per_measurement(self):
+        raw = pd.DataFrame(
+            [
+                {
+                    "target": "EGFR",
+                    "smiles": "CCO",
+                    "compound_id": "cmpd-1",
+                    "IC50": 100,
+                    "EC50": 250,
+                    "Ki": 50,
+                    "Kd": 10,
+                    "unit": "nM",
+                }
+            ]
+        )
+
+        normalized = OncoDataBuilderRunner._normalize_activity_schema(raw, source="uploaded")
+
+        assert set(normalized["standard_type"]) == {"IC50", "EC50", "Ki", "Kd"}
+        assert len(normalized) == 4
+        assert normalized["standardized_activity_nM"].notna().all()
+        assert normalized["p_activity"].notna().all()
+        assert normalized["p_activity"].equals(normalized["pActivity"])
+
+    def test_uploaded_only_runner_writes_normalization_summary(self, tmp_path):
+        config_dir = tmp_path / "configs"
+        upload_dir = tmp_path / "uploads"
+        config_dir.mkdir()
+        upload_dir.mkdir()
+        config_dir.joinpath("cancer_targets.yaml").write_text(
+            "primary_targets:\n  EGFR:\n    gene: EGFR\n",
+            encoding="utf-8",
+        )
+        pd.DataFrame(
+            [
+                {"target": "EGFR", "smiles": "CCO", "ic50": 0.1, "ec50": 0.4, "kd": 0.02, "unit": "uM"},
+                {"target": "EGFR", "smiles": "CCC", "pKi": 7.2},
+            ]
+        ).to_csv(upload_dir / "uploaded_assay.csv", index=False)
+
+        import os
+
+        old_cwd = os.getcwd()
+        os.chdir(tmp_path)
+        try:
+            runner = OncoDataBuilderRunner(
+                "onco_data_builder",
+                tmp_path,
+                "uploaded-wide",
+                {
+                    "target_ids": ["EGFR"],
+                    "data_sources": "uploaded_only",
+                    "uploaded_assay_csv": "uploaded_assay.csv",
+                },
+            )
+            result = runner.execute()
+        finally:
+            os.chdir(old_cwd)
+
+        assert result["status"] == "succeeded"
+        assert runner.source_mode == "uploaded"
+        assert set(runner.curated_activity["standard_type"]) == {"IC50", "EC50", "Kd", "Ki"}
+        summary_path = runner.output_dir / "uploaded_assay_curation_summary.json"
+        assert summary_path.exists()
+        summary = json.loads(summary_path.read_text())
+        assert summary["uploaded_assay_usable_rows"] == 4
+        assert summary["uploaded_assay_rejected_rows"] == 0
+        assert summary["p_activity_synchronized"] is True
+
+
+class TestBindingDBNormalization:
+    """BindingDB Ki/Kd/IC50/EC50 exports must normalize into auditable activity rows."""
+
+    def test_bindingdb_tsv_expands_endpoint_columns(self, tmp_path):
+        from q_ai_drug.data.bindingdb import normalize_bindingdb_activities
+
+        path = tmp_path / "bindingdb.tsv"
+        pd.DataFrame(
+            [
+                {
+                    "BindingDB Reactant_set_id": "BDBM1",
+                    "Ligand SMILES": "CCO",
+                    "Target Name": "Epidermal growth factor receptor EGFR",
+                    "Ki (nM)": "<50",
+                    "IC50 (nM)": "100",
+                    "Kd (nM)": "25",
+                    "EC50 (nM)": "",
+                    "PubMed ID": "12345",
+                }
+            ]
+        ).to_csv(path, sep="\t", index=False)
+
+        normalized = normalize_bindingdb_activities(path, target_ids=["EGFR"])
+
+        assert set(normalized["standard_type"]) == {"Ki", "IC50", "Kd"}
+        assert normalized["source"].eq("bindingdb").all()
+        assert normalized["source_database"].eq("BindingDB").all()
+        assert normalized["standardized_activity_nM"].notna().all()
+        assert normalized["p_activity"].notna().all()
+        assert normalized.loc[normalized["standard_type"] == "Ki", "standard_relation"].iloc[0] == "<"
+
+    def test_oncodata_builder_accepts_bindingdb_only_source(self, tmp_path):
+        config_dir = tmp_path / "configs"
+        upload_dir = tmp_path / "uploads"
+        config_dir.mkdir()
+        upload_dir.mkdir()
+        config_dir.joinpath("cancer_targets.yaml").write_text(
+            "primary_targets:\n  EGFR:\n    gene: EGFR\n",
+            encoding="utf-8",
+        )
+        pd.DataFrame(
+            [
+                {
+                    "BindingDB Reactant_set_id": "BDBM1",
+                    "Ligand SMILES": "CCO",
+                    "Target Name": "EGFR kinase",
+                    "Ki (nM)": 10,
+                    "IC50 (nM)": 100,
+                }
+            ]
+        ).to_csv(upload_dir / "bindingdb.tsv", sep="\t", index=False)
+
+        import os
+
+        old_cwd = os.getcwd()
+        os.chdir(tmp_path)
+        try:
+            runner = OncoDataBuilderRunner(
+                "onco_data_builder",
+                tmp_path,
+                "bindingdb-only",
+                {
+                    "target_ids": ["EGFR"],
+                    "data_sources": "bindingdb_only",
+                    "bindingdb_tsv": "bindingdb.tsv",
+                },
+            )
+            result = runner.execute()
+        finally:
+            os.chdir(old_cwd)
+
+        assert result["status"] == "succeeded"
+        assert runner.source_mode == "bindingdb"
+        assert set(runner.curated_activity["standard_type"]) == {"Ki", "IC50"}
+        assert (runner.output_dir / "bindingdb_normalized.csv").exists()
+        assert (runner.output_dir / "bindingdb_curation_summary.json").exists()
 
 
 class TestDuplicateResolution:

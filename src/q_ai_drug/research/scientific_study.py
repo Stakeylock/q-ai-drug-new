@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -133,6 +134,7 @@ def _safe_float(value: Any, default: float = float("nan")) -> float:
         return default
 
 
+@lru_cache(maxsize=50000)
 def _fingerprint(smiles: str) -> Any:
     if Chem is None or DataStructs is None:
         return None
@@ -144,15 +146,25 @@ def _fingerprint(smiles: str) -> Any:
     return rdMolDescriptors.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048)
 
 
+def _valid_fingerprints(smiles_values: list[str]) -> list[Any]:
+    return [fp for fp in (_fingerprint(str(smiles)) for smiles in smiles_values) if fp is not None]
+
+
+def _max_similarity_to_fps(smiles: str, reference_fps: list[Any]) -> float:
+    query = _fingerprint(str(smiles))
+    if query is None or not reference_fps:
+        return float("nan")
+    return float(max(DataStructs.BulkTanimotoSimilarity(query, reference_fps)))
+
+
 def _max_similarity(smiles: str, references: list[str]) -> float:
     query = _fingerprint(smiles)
     if query is None:
         return float("nan")
-    refs = [_fingerprint(ref) for ref in references]
-    refs = [fp for fp in refs if fp is not None]
+    refs = _valid_fingerprints(references)
     if not refs:
         return float("nan")
-    return float(max(DataStructs.TanimotoSimilarity(query, fp) for fp in refs))
+    return float(max(DataStructs.BulkTanimotoSimilarity(query, refs)))
 
 
 def _internal_diversity(smiles_values: list[str], max_items: int = 200) -> float:
@@ -228,16 +240,18 @@ def _generation_metrics(project_dir: Path, benchmark: pd.DataFrame, references: 
         generated["canonical_smiles"] = generated["smiles"]
     rows = []
     scaffold_rows = []
-    benchmark_by_target = {target: group["canonical_smiles"].dropna().astype(str).tolist() for target, group in benchmark.groupby("target_id")} if not benchmark.empty else {}
-    reference_by_target = {target: group["canonical_smiles"].dropna().astype(str).tolist() for target, group in references.groupby("target_id")} if not references.empty else {}
+    benchmark_by_target = {target: _valid_fingerprints(group["canonical_smiles"].dropna().astype(str).tolist()) for target, group in benchmark.groupby("target_id")} if not benchmark.empty else {}
+    reference_by_target = {target: _valid_fingerprints(group["canonical_smiles"].dropna().astype(str).tolist()) for target, group in references.groupby("target_id")} if not references.empty else {}
     for target_id, group in generated.groupby("target_id"):
         smiles = group["canonical_smiles"].dropna().astype(str).tolist()
         valid = [smi for smi in smiles if Chem is None or Chem.MolFromSmiles(smi) is not None]
         unique = sorted(set(valid))
         train_refs = benchmark_by_target.get(target_id, [])
         drug_refs = reference_by_target.get(target_id, [])
-        novelty_train = [1.0 - _max_similarity(smi, train_refs) for smi in unique[:500] if not math.isnan(_max_similarity(smi, train_refs))]
-        novelty_drug = [1.0 - _max_similarity(smi, drug_refs) for smi in unique[:500] if not math.isnan(_max_similarity(smi, drug_refs))]
+        train_similarities = [_max_similarity_to_fps(smi, train_refs) for smi in unique[:500]]
+        drug_similarities = [_max_similarity_to_fps(smi, drug_refs) for smi in unique[:500]]
+        novelty_train = [1.0 - similarity for similarity in train_similarities if not math.isnan(similarity)]
+        novelty_drug = [1.0 - similarity for similarity in drug_similarities if not math.isnan(similarity)]
         rows.append(
             {
                 "target_id": target_id,

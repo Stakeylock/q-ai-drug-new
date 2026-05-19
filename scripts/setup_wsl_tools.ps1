@@ -20,7 +20,8 @@ if ($LASTEXITCODE -ne 0) {
     throw "WSL is not available. Install Ubuntu for WSL first, then rerun this target."
 }
 
-$wslRepo = (& wsl.exe @wslArgs wslpath -a $repoRoot).Trim()
+$repoRootForWslPath = (Resolve-Path -LiteralPath $repoRoot).Path -replace "\\", "/"
+$wslRepo = (& wsl.exe @wslArgs wslpath -a $repoRootForWslPath).Trim()
 if ($LASTEXITCODE -ne 0 -or -not $wslRepo) {
     throw "Could not translate repository path to WSL path."
 }

@@ -160,6 +160,13 @@ def build_wet_lab_triage_board(project_dir: str | Path, *, budget: int | None = 
     evidence = _merge_optional(evidence, _read_csv(project_dir / "admet" / "candidate_admet_risk_table.csv"))
     evidence = _merge_optional(evidence, _read_csv(project_dir / "docking" / "interaction_fingerprints.csv"))
     evidence = _merge_optional(evidence, _read_csv(project_dir / "inhibitors" / "candidate_inhibitor_proximity.csv"))
+    boundary_renames = {
+        column: f"upstream_{column}"
+        for column in evidence.columns
+        if column == "claim_boundary" or column.startswith("claim_boundary")
+    }
+    if boundary_renames:
+        evidence = evidence.rename(columns=boundary_renames)
     redocking = _redocking_context(project_dir)
     triage_rows = []
     for _, row in evidence.iterrows():

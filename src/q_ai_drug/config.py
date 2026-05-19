@@ -14,7 +14,7 @@ class TargetConfig:
     uniprot_id: str
     cancer_types: list[str] = field(default_factory=list)
     reference_drugs: list[str] = field(default_factory=list)
-    activity_types: list[str] = field(default_factory=lambda: ["IC50", "Ki", "Kd"])
+    activity_types: list[str] = field(default_factory=lambda: ["IC50", "EC50", "Ki", "Kd", "AC50"])
     preferred_pdb_ids: list[str] = field(default_factory=list)
 
 
@@ -71,7 +71,7 @@ def load_config(path: str | Path) -> AppConfig:
             uniprot_id=target_data["uniprot_id"],
             cancer_types=list(target_data.get("cancer_types") or []),
             reference_drugs=list(target_data.get("reference_drugs") or []),
-            activity_types=list(target_data.get("activity_types") or ["IC50", "Ki", "Kd"]),
+            activity_types=list(target_data.get("activity_types") or ["IC50", "EC50", "Ki", "Kd", "AC50"]),
             preferred_pdb_ids=list(target_data.get("preferred_pdb_ids") or []),
         )
     return AppConfig(

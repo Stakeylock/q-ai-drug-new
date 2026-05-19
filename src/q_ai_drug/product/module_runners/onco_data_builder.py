@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+import re
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,9 @@ import pandas as pd
 from q_ai_drug.data.curate_activity import curate_activity_benchmark
 from q_ai_drug.product.module_runners.base import BaseModuleRunner, ModuleExecutionError, ModuleInputError
 from q_ai_drug.service.tool_payloads import OncoDataBuilderPayload
+
+
+ACTIVITY_ENDPOINT_TYPES = ("IC50", "EC50", "Ki", "Kd", "AC50")
 
 
 class OncoDataBuilderRunner(BaseModuleRunner):
@@ -29,9 +33,13 @@ class OncoDataBuilderRunner(BaseModuleRunner):
         self.curation_profile: str = "standard"
         self.uploaded_assay_csv: str | None = None
         self.uploaded_assay_csv_artifact_id: str | None = None
+        self.bindingdb_tsv: str | None = None
+        self.bindingdb_tsv_artifact_id: str | None = None
         self.curated_activity: pd.DataFrame | None = None
         self.uploaded_assay_df: pd.DataFrame | None = None
         self.uploaded_rejected_rows: pd.DataFrame = pd.DataFrame()
+        self.bindingdb_df: pd.DataFrame | None = None
+        self.bindingdb_rejected_rows: pd.DataFrame = pd.DataFrame()
         self.config: dict[str, Any] = {}
         self.source_mode: str = "unknown"
         self.source_files: list[str] = []
@@ -55,6 +63,8 @@ class OncoDataBuilderRunner(BaseModuleRunner):
             self.curation_profile = validated.curation_profile
             self.uploaded_assay_csv = validated.uploaded_assay_csv
             self.uploaded_assay_csv_artifact_id = getattr(validated, "uploaded_assay_csv_artifact_id", None)
+            self.bindingdb_tsv = getattr(validated, "bindingdb_tsv", None)
+            self.bindingdb_tsv_artifact_id = getattr(validated, "bindingdb_tsv_artifact_id", None)
             self.add_usage_requested("targets_requested", len(self.target_ids))
         except Exception as e:
             raise ModuleInputError(f"Invalid OncoDataBuilder payload: {e}")
@@ -84,6 +94,8 @@ class OncoDataBuilderRunner(BaseModuleRunner):
 
         if self.uploaded_assay_csv or self.uploaded_assay_csv_artifact_id:
             self._load_uploaded_assay()
+        if self.bindingdb_tsv or self.bindingdb_tsv_artifact_id:
+            self._load_bindingdb_assay()
 
     # ------------------------------------------------------------------
     # Uploaded assay normalization
@@ -112,6 +124,24 @@ class OncoDataBuilderRunner(BaseModuleRunner):
             )
         return upload_path
 
+    def _resolve_bindingdb_path(self) -> Path:
+        if self.bindingdb_tsv_artifact_id:
+            try:
+                from q_ai_drug.service.artifact_resolver import resolve_artifact_path
+
+                return resolve_artifact_path(self.project_dir, self.bindingdb_tsv_artifact_id)
+            except Exception as e:
+                raise ModuleInputError(f"Cannot load BindingDB artifact: {e}.")
+        if not self.bindingdb_tsv:
+            raise ModuleInputError("bindingdb_tsv or bindingdb_tsv_artifact_id is required")
+        direct_path = Path(self.bindingdb_tsv)
+        if direct_path.exists():
+            return direct_path
+        upload_path = self.project_dir / "uploads" / self.bindingdb_tsv
+        if not upload_path.exists():
+            raise ModuleInputError(f"BindingDB file not found: {self.bindingdb_tsv}.")
+        return upload_path
+
     def _load_uploaded_assay(self) -> None:
         """Load, normalize, and validate uploaded assay CSV/TSV."""
         upload_path = self._resolve_uploaded_assay_path()
@@ -136,6 +166,24 @@ class OncoDataBuilderRunner(BaseModuleRunner):
         except Exception as e:
             raise ModuleExecutionError(f"Failed to load uploaded assay CSV: {e}")
 
+    def _load_bindingdb_assay(self) -> None:
+        """Load, normalize, and validate BindingDB TSV/ZIP activity data."""
+        bindingdb_path = self._resolve_bindingdb_path()
+        try:
+            from q_ai_drug.data.bindingdb import normalize_bindingdb_activities
+
+            normalized = normalize_bindingdb_activities(bindingdb_path, target_ids=self.target_ids)
+            self.source_files.append(bindingdb_path.as_posix())
+            self.bindingdb_df, self.bindingdb_rejected_rows = self._split_usable_activity_rows(normalized)
+            self.add_usage_actual("bindingdb_usable_rows", len(self.bindingdb_df))
+            self.add_usage_actual("bindingdb_rejected_rows", len(self.bindingdb_rejected_rows))
+            if self.bindingdb_df.empty:
+                self.add_warning("BindingDB normalization produced no usable target-matched activity rows.")
+        except ModuleInputError:
+            raise
+        except Exception as e:
+            raise ModuleExecutionError(f"Failed to load BindingDB activities: {e}")
+
     @staticmethod
     def _unit_to_nm(value: Any, unit: Any) -> float | None:
         try:
@@ -144,10 +192,18 @@ class OncoDataBuilderRunner(BaseModuleRunner):
             return None
         if val <= 0:
             return None
-        unit_key = str(unit or "nM").strip().lower().replace("μ", "u")
+        unit_key = (
+            str(unit or "nM")
+            .strip()
+            .lower()
+            .replace("μ", "u")
+            .replace("µ", "u")
+            .replace("Î¼", "u")
+            .replace("Âµ", "u")
+        )
         if unit_key in {"nm", "nanomolar"}:
             return val
-        if unit_key in {"um", "µm", "micromolar"}:
+        if unit_key in {"um", "micromolar"}:
             return val * 1_000.0
         if unit_key in {"mm", "millimolar"}:
             return val * 1_000_000.0
@@ -155,10 +211,131 @@ class OncoDataBuilderRunner(BaseModuleRunner):
             return val * 1_000_000_000.0
         return val  # assume nM when unit is absent/unknown but numeric
 
+    @staticmethod
+    def _column_key(column: Any) -> str:
+        normalized = str(column).strip().lower().replace("µ", "u").replace("μ", "u")
+        return re.sub(r"[^a-z0-9]+", "", normalized)
+
+    @staticmethod
+    def _has_value(value: Any) -> bool:
+        if value is None:
+            return False
+        try:
+            if pd.isna(value):
+                return False
+        except (TypeError, ValueError):
+            pass
+        return str(value).strip().lower() not in {"", "nan", "none", "null"}
+
+    @staticmethod
+    def _unit_from_activity_column(column: Any) -> str | None:
+        key = OncoDataBuilderRunner._column_key(column)
+        if key.endswith("nm") or "nanomolar" in key:
+            return "nM"
+        if key.endswith("um") or "micromolar" in key:
+            return "uM"
+        if key.endswith("mm") or "millimolar" in key:
+            return "mM"
+        if key.endswith("m") or "molar" in key:
+            return "M"
+        return None
+
+    @classmethod
+    def _expand_wide_activity_columns(cls, df: pd.DataFrame) -> pd.DataFrame:
+        """Expand IC50/EC50/Ki/Kd/AC50 wide columns into one row per endpoint."""
+        if df.empty:
+            return df
+
+        endpoint_value_cols: dict[str, str] = {}
+        endpoint_p_cols: dict[str, str] = {}
+        endpoint_unit_cols: dict[str, str] = {}
+        generic_unit_col: str | None = None
+        p_aliases = {
+            "IC50": {"pic50"},
+            "EC50": {"pec50"},
+            "Ki": {"pki", "pkiapp"},
+            "Kd": {"pkd"},
+            "AC50": {"pac50"},
+        }
+
+        for column in df.columns:
+            key = cls._column_key(column)
+            if key in {"standardunits", "activityunit", "unit", "units", "affinityunits"} and generic_unit_col is None:
+                generic_unit_col = column
+            for endpoint in ACTIVITY_ENDPOINT_TYPES:
+                endpoint_key = endpoint.lower()
+                value_keys = {
+                    endpoint_key,
+                    f"{endpoint_key}nm",
+                    f"{endpoint_key}um",
+                    f"{endpoint_key}mm",
+                    f"{endpoint_key}m",
+                    f"{endpoint_key}value",
+                    f"{endpoint_key}valuenm",
+                    f"{endpoint_key}valueum",
+                    f"{endpoint_key}valuemm",
+                    f"{endpoint_key}valuem",
+                }
+                unit_keys = {
+                    f"{endpoint_key}unit",
+                    f"{endpoint_key}units",
+                    f"{endpoint_key}standardunit",
+                    f"{endpoint_key}standardunits",
+                }
+                if key in value_keys and endpoint not in endpoint_value_cols:
+                    endpoint_value_cols[endpoint] = column
+                elif key in p_aliases[endpoint] and endpoint not in endpoint_p_cols:
+                    endpoint_p_cols[endpoint] = column
+                elif key in unit_keys and endpoint not in endpoint_unit_cols:
+                    endpoint_unit_cols[endpoint] = column
+
+        endpoint_specific_cols = set(endpoint_value_cols.values()) | set(endpoint_p_cols.values()) | set(endpoint_unit_cols.values())
+        if not endpoint_specific_cols:
+            return df
+
+        expanded_rows: list[dict[str, Any]] = []
+        expanded_any = False
+        for _, row in df.iterrows():
+            base = {column: row[column] for column in df.columns if column not in endpoint_specific_cols}
+            emitted = False
+            for endpoint in ACTIVITY_ENDPOINT_TYPES:
+                value_col = endpoint_value_cols.get(endpoint)
+                p_col = endpoint_p_cols.get(endpoint)
+                has_value = value_col is not None and cls._has_value(row.get(value_col))
+                has_p_activity = p_col is not None and cls._has_value(row.get(p_col))
+                if not has_value and not has_p_activity:
+                    continue
+
+                out_row = dict(base)
+                out_row["standard_type"] = endpoint
+                out_row["activity_type"] = endpoint
+                if has_value:
+                    out_row["standard_value"] = row[value_col]
+                    unit_col = endpoint_unit_cols.get(endpoint)
+                    if unit_col and cls._has_value(row.get(unit_col)):
+                        out_row["standard_units"] = row[unit_col]
+                    elif (derived_unit := cls._unit_from_activity_column(value_col)) is not None:
+                        out_row["standard_units"] = derived_unit
+                    elif generic_unit_col and cls._has_value(row.get(generic_unit_col)):
+                        out_row["standard_units"] = row[generic_unit_col]
+                    else:
+                        out_row["standard_units"] = out_row.get("standard_units", "nM")
+                if has_p_activity:
+                    out_row["p_activity"] = row[p_col]
+                    out_row["pActivity"] = row[p_col]
+                out_row["activity_endpoint_source_column"] = str(value_col or p_col)
+                expanded_rows.append(out_row)
+                emitted = True
+                expanded_any = True
+            if not emitted:
+                expanded_rows.append(row.to_dict())
+
+        return pd.DataFrame(expanded_rows) if expanded_any else df
+
     @classmethod
     def _normalize_activity_schema(cls, df: pd.DataFrame, *, source: str) -> pd.DataFrame:
         """Normalize public or uploaded activity data to the canonical OncoData schema."""
-        out = df.copy()
+        out = cls._expand_wide_activity_columns(df.copy())
         rename_map: dict[str, str] = {}
         lower_to_original = {str(c).lower(): c for c in out.columns}
 
@@ -202,27 +379,36 @@ class OncoDataBuilderRunner(BaseModuleRunner):
                 for value, unit in zip(out["standard_value"], out.get("standard_units", pd.Series(["nM"] * len(out))))
             ]
 
-        if "p_activity" not in out.columns and "standardized_activity_nM" in out.columns:
-            def _to_pactivity(nm: Any) -> float | None:
-                try:
-                    nm_float = float(nm)
-                    if nm_float <= 0:
-                        return None
-                    return round(-math.log10(nm_float * 1e-9), 3)
-                except (TypeError, ValueError):
+        def _to_pactivity(nm: Any) -> float | None:
+            try:
+                nm_float = float(nm)
+                if nm_float <= 0:
                     return None
+                return round(-math.log10(nm_float * 1e-9), 3)
+            except (TypeError, ValueError):
+                return None
 
-            out["p_activity"] = out["standardized_activity_nM"].apply(_to_pactivity)
+        if "standardized_activity_nM" in out.columns:
+            calculated_p_activity = out["standardized_activity_nM"].apply(_to_pactivity)
+            if "p_activity" not in out.columns:
+                out["p_activity"] = calculated_p_activity
+            else:
+                out["p_activity"] = pd.to_numeric(out["p_activity"], errors="coerce").fillna(calculated_p_activity)
             out["pActivity"] = out["p_activity"]
 
-        if "standardized_activity_nM" not in out.columns and "p_activity" in out.columns:
-            def _pactivity_to_nm(p_act: Any) -> float | None:
-                try:
-                    return round((10 ** (-float(p_act))) * 1e9, 6)
-                except (TypeError, ValueError):
-                    return None
+        def _pactivity_to_nm(p_act: Any) -> float | None:
+            try:
+                return round((10 ** (-float(p_act))) * 1e9, 6)
+            except (TypeError, ValueError):
+                return None
 
-            out["standardized_activity_nM"] = out["p_activity"].apply(_pactivity_to_nm)
+        if "p_activity" in out.columns:
+            calculated_nm = out["p_activity"].apply(_pactivity_to_nm)
+            if "standardized_activity_nM" not in out.columns:
+                out["standardized_activity_nM"] = calculated_nm
+            else:
+                out["standardized_activity_nM"] = pd.to_numeric(out["standardized_activity_nM"], errors="coerce").fillna(calculated_nm)
+            out["pActivity"] = out["p_activity"]
 
         if "source" not in out.columns:
             out["source"] = source
@@ -280,7 +466,18 @@ class OncoDataBuilderRunner(BaseModuleRunner):
 
             if self.uploaded_assay_df is not None and not self.uploaded_assay_df.empty:
                 curated_df = pd.concat([curated_df, self.uploaded_assay_df], ignore_index=True, sort=False)
-                self.source_mode = f"{self.source_mode}_plus_uploaded" if self.source_mode else "uploaded"
+                if self.source_mode and self.source_mode != "unknown" and not curated_df.empty:
+                    self.source_mode = f"{self.source_mode}_plus_uploaded"
+                else:
+                    self.source_mode = "uploaded"
+                self.add_usage_requested("merged_source", self.source_mode)
+
+            if self.bindingdb_df is not None and not self.bindingdb_df.empty:
+                curated_df = pd.concat([curated_df, self.bindingdb_df], ignore_index=True, sort=False)
+                if self.source_mode and self.source_mode != "unknown" and not curated_df.empty:
+                    self.source_mode = f"{self.source_mode}_plus_bindingdb"
+                else:
+                    self.source_mode = "bindingdb"
                 self.add_usage_requested("merged_source", self.source_mode)
 
             curated_df, rejected_after_merge = self._split_usable_activity_rows(curated_df)
@@ -644,6 +841,46 @@ class OncoDataBuilderRunner(BaseModuleRunner):
             rejected_path = self.output_dir / "uploaded_assay_rejected_rows.csv"
             self.uploaded_rejected_rows.to_csv(rejected_path, index=False)
             self.register_artifact(rejected_path, "csv", "uploaded_assay_rejected_rows")
+        if self.uploaded_assay_df is not None:
+            uploaded_summary = {
+                "accepted_activity_types": list(ACTIVITY_ENDPOINT_TYPES),
+                "uploaded_assay_usable_rows": int(len(self.uploaded_assay_df)),
+                "uploaded_assay_rejected_rows": int(len(self.uploaded_rejected_rows)),
+                "assay_type_counts": (
+                    self.uploaded_assay_df["standard_type"].astype(str).value_counts().to_dict()
+                    if not self.uploaded_assay_df.empty and "standard_type" in self.uploaded_assay_df.columns
+                    else {}
+                ),
+                "p_activity_synchronized": (
+                    bool(self.uploaded_assay_df["p_activity"].equals(self.uploaded_assay_df["pActivity"]))
+                    if not self.uploaded_assay_df.empty and {"p_activity", "pActivity"}.issubset(self.uploaded_assay_df.columns)
+                    else True
+                ),
+            }
+            uploaded_summary_path = self.write_json(uploaded_summary, "uploaded_assay_curation_summary")
+            self.register_artifact(uploaded_summary_path, "json", "uploaded_assay_curation_summary")
+        if self.bindingdb_df is not None:
+            bindingdb_path = self.output_dir / "bindingdb_normalized.csv"
+            self.bindingdb_df.to_csv(bindingdb_path, index=False)
+            self.register_artifact(bindingdb_path, "csv", "bindingdb_normalized")
+            if not self.bindingdb_rejected_rows.empty:
+                rejected_path = self.output_dir / "bindingdb_rejected_rows.csv"
+                self.bindingdb_rejected_rows.to_csv(rejected_path, index=False)
+                self.register_artifact(rejected_path, "csv", "bindingdb_rejected_rows")
+            bindingdb_summary = {
+                "accepted_activity_types": list(ACTIVITY_ENDPOINT_TYPES),
+                "bindingdb_usable_rows": int(len(self.bindingdb_df)),
+                "bindingdb_rejected_rows": int(len(self.bindingdb_rejected_rows)),
+                "assay_type_counts": (
+                    self.bindingdb_df["standard_type"].astype(str).value_counts().to_dict()
+                    if not self.bindingdb_df.empty and "standard_type" in self.bindingdb_df.columns
+                    else {}
+                ),
+                "source_database": "BindingDB",
+                "claim_boundary": "BindingDB activity rows are source-reported assay measurements after unit normalization, not independent validation.",
+            }
+            summary_path = self.write_json(bindingdb_summary, "bindingdb_curation_summary")
+            self.register_artifact(summary_path, "json", "bindingdb_curation_summary")
 
         # --- Duplicate resolution ---
         if not self.duplicate_resolution.empty:
@@ -693,6 +930,7 @@ class OncoDataBuilderRunner(BaseModuleRunner):
             "curation_profile": self.curation_profile,
             "data_sources_requested": self.data_sources,
             "source_mode": self.source_mode,
+            "accepted_activity_types": list(ACTIVITY_ENDPOINT_TYPES),
             "record_count": len(self.curated_activity),
             "unique_molecules": int(self.curated_activity["canonical_smiles"].nunique()),
             "dataset_hash": self.dataset_hash or self._hash_dataframe(self.curated_activity),
@@ -722,6 +960,8 @@ class OncoDataBuilderRunner(BaseModuleRunner):
                 "Resolve target IDs from configs/cancer_targets.yaml",
                 "Attempt ChEMBL live retrieval when dependency and network are available",
                 "Fallback to benchmark CSV when live retrieval is unavailable",
+                "Expand wide IC50/EC50/Ki/Kd/AC50 columns into one row per endpoint when uploaded",
+                "Normalize BindingDB Ki/IC50/Kd/EC50 TSV exports when provided",
                 "Normalize pActivity/p_activity, units, target, SMILES, source, and curation fields",
                 "Merge uploaded assay rows after schema normalization when provided",
                 f"Filter by selected targets and curation profile: {self.curation_profile}",
