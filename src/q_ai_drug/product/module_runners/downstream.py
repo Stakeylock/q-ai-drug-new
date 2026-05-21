@@ -128,7 +128,7 @@ class ActivityModelStudioRunner(BaseModuleRunner):
             self.add_usage_requested("molecule_count", len(self.candidates))
 
     def _train(self) -> None:
-        """Train RF and GBT models on scaffold-split data."""
+        """Train RF, ET, and GBT models on scaffold-split data."""
         df = self.train_data.copy()
         smiles_column = _smiles_col(df)
         if smiles_column is None:
@@ -137,6 +137,7 @@ class ActivityModelStudioRunner(BaseModuleRunner):
         try:
             from rdkit import Chem
             from rdkit.Chem import AllChem
+            from rdkit.Chem.Scaffolds.MurckoScaffold import MurckoScaffoldSmiles
             import numpy as np
             has_rdkit = True
         except ImportError:
@@ -145,6 +146,7 @@ class ActivityModelStudioRunner(BaseModuleRunner):
 
         # Generate fingerprints
         fps, valid_idx = [], []
+        train_scaffolds = []
         for i, smi in enumerate(df[smiles_column]):
             if has_rdkit:
                 mol = Chem.MolFromSmiles(str(smi)) if smi else None
@@ -152,6 +154,11 @@ class ActivityModelStudioRunner(BaseModuleRunner):
                     fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=1024)
                     fps.append(list(fp))
                     valid_idx.append(i)
+                    try:
+                        scaf = MurckoScaffoldSmiles(str(smi))
+                    except Exception:
+                        scaf = ""
+                    train_scaffolds.append(scaf)
                 else:
                     self.prediction_failures.append({"idx": i, "smiles": str(smi), "reason": "Invalid SMILES"})
             else:
@@ -159,6 +166,7 @@ class ActivityModelStudioRunner(BaseModuleRunner):
                 h = int(hashlib.md5(str(smi).encode()).hexdigest(), 16)
                 fps.append([(h >> j) & 1 for j in range(1024)])
                 valid_idx.append(i)
+                train_scaffolds.append("")
 
         if len(fps) < 10:
             self.add_warning("Too few valid molecules for meaningful training.")
@@ -170,14 +178,43 @@ class ActivityModelStudioRunner(BaseModuleRunner):
 
         # Use scaffold split if available
         split_col = "split" if "split" in df.columns else None
+        split_method = "random"
+        
         if split_col:
             train_mask = df.iloc[valid_idx][split_col].isin(["train"]).values
             test_mask = df.iloc[valid_idx][split_col].isin(["test", "valid"]).values
+            split_method = "provided"
+        elif has_rdkit:
+            # Deterministic scaffold split
+            from collections import defaultdict
+            scaffold_to_indices = defaultdict(list)
+            for local_idx, scaf in enumerate(train_scaffolds):
+                scaffold_to_indices[scaf].append(local_idx)
+            
+            # Sort scaffolds by size
+            sorted_scaffolds = sorted(scaffold_to_indices.keys(), key=lambda s: (len(scaffold_to_indices[s]), s), reverse=True)
+            
+            train_indices = []
+            test_indices = []
+            total_needed_test = int(0.2 * len(valid_idx))
+            
+            for scaf in sorted_scaffolds:
+                indices = scaffold_to_indices[scaf]
+                if len(test_indices) + len(indices) <= total_needed_test or not test_indices:
+                    test_indices.extend(indices)
+                else:
+                    train_indices.extend(indices)
+            
+            train_mask = np.zeros(len(valid_idx), dtype=bool)
+            train_mask[train_indices] = True
+            test_mask = ~train_mask
+            split_method = "scaffold"
         else:
             np.random.seed(42)
             mask = np.random.rand(len(X)) < 0.8
             train_mask, test_mask = mask, ~mask
-            self.add_warning("No scaffold split column found; using random 80/20 split.")
+            split_method = "random"
+            self.add_warning("No scaffold split column found and RDKit unavailable; using random 80/20 split.")
 
         X_train, y_train = X[train_mask], y[train_mask]
         X_test, y_test = X[test_mask], y[test_mask]
@@ -187,23 +224,40 @@ class ActivityModelStudioRunner(BaseModuleRunner):
             return
 
         try:
-            from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-            from sklearn.metrics import mean_squared_error, r2_score
+            from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
+            try:
+                from sklearn.ensemble import HistGradientBoostingRegressor
+            except ImportError:
+                HistGradientBoostingRegressor = None
+            from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
         except ImportError:
             self.add_warning("scikit-learn not installed; cannot train models.")
             return
 
-        models = {"RandomForest": RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=1),
-                  "GradientBoosting": GradientBoostingRegressor(n_estimators=100, random_state=42)}
+        models = {
+            "RandomForest": RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=1),
+            "ExtraTrees": ExtraTreesRegressor(n_estimators=100, random_state=42, n_jobs=1),
+        }
+        if HistGradientBoostingRegressor is not None:
+            models["HistGradientBoosting"] = HistGradientBoostingRegressor(random_state=42)
+
         best_r2, best_name = -999, None
         for name, model in models.items():
             model.fit(X_train, y_train)
             preds = model.predict(X_test)
             r2 = r2_score(y_test, preds)
             rmse = float(np.sqrt(mean_squared_error(y_test, preds)))
-            self.model_comparison.append({"model": name, "r2_test": round(r2, 4), "rmse_test": round(rmse, 4),
-                                          "train_size": int(train_mask.sum()), "test_size": int(test_mask.sum()),
-                                          "split_method": "scaffold" if split_col else "random"})
+            mae = float(mean_absolute_error(y_test, preds))
+            self.model_comparison.append({
+                "model": name, 
+                "r2_test": round(r2, 4), 
+                "rmse_test": round(rmse, 4),
+                "mae_test": round(mae, 4),
+                "train_size": int(train_mask.sum()), 
+                "test_size": int(test_mask.sum()),
+                "split_method": split_method,
+                "fingerprint_spec": "morgan_1024_r2"
+            })
             if r2 > best_r2:
                 best_r2, best_name = r2, name
                 self.trained_model = model
@@ -218,8 +272,30 @@ class ActivityModelStudioRunner(BaseModuleRunner):
         except Exception:
             self.add_warning("Could not save model artifact (joblib not available).")
 
-        self.model_metrics = {"best_model": best_name, "best_r2": round(best_r2, 4),
-                              "model_hash": self.model_hash, "split_method": "scaffold" if split_col else "random"}
+        # Scaffold split metrics
+        if has_rdkit:
+            scaf_train_set = set(np.array(train_scaffolds)[train_mask])
+            scaf_test_set = set(np.array(train_scaffolds)[test_mask])
+            self.scaffold_split_metrics = {
+                "total_unique_scaffolds": len(set(train_scaffolds)),
+                "train_unique_scaffolds": len(scaf_train_set),
+                "test_unique_scaffolds": len(scaf_test_set),
+                "overlap_unique_scaffolds": len(scaf_train_set & scaf_test_set),
+                "split_method": split_method,
+            }
+        else:
+            self.scaffold_split_metrics = {}
+
+        self.model_metrics = {
+            "best_model": best_name, 
+            "best_r2": round(best_r2, 4),
+            "model_hash": self.model_hash or "none", 
+            "split_method": split_method,
+            "train_size": int(train_mask.sum()),
+            "valid_size": 0,
+            "test_size": int(test_mask.sum()),
+            "fingerprint_spec": "morgan_1024_r2"
+        }
         self.is_heuristic = False
         self.add_usage_actual("trained_model", best_name)
 
@@ -281,6 +357,9 @@ class ActivityModelStudioRunner(BaseModuleRunner):
         if self.model_metrics:
             path = self.write_json(self.model_metrics, "model_metrics")
             self.register_artifact(path, "json", "model_metrics")
+        if getattr(self, "scaffold_split_metrics", {}):
+            path = self.write_json(self.scaffold_split_metrics, "scaffold_split_metrics")
+            self.register_artifact(path, "json", "scaffold_split_metrics")
         manifest = {
             "mode": self.validated_payload.get("mode", "predict"),
             "is_heuristic": self.is_heuristic,
@@ -325,6 +404,12 @@ class ApplicabilityDomainGuardRunner(BaseModuleRunner):
                 artifact_id=payload.get("training_set_artifact_id"),
                 upload_file=payload.get("training_set_upload_file")
             )
+        self.reference_inhibitors = pd.DataFrame()
+        if payload.get("reference_inhibitors_artifact_id"):
+            self.reference_inhibitors = _load_candidate_table(
+                self.project_dir,
+                artifact_id=payload.get("reference_inhibitors_artifact_id")
+            )
         self.add_usage_requested("molecule_count", len(self.candidates))
 
     def run(self) -> None:
@@ -359,33 +444,105 @@ class ApplicabilityDomainGuardRunner(BaseModuleRunner):
     def _fingerprint_domain(self, df, cid_col, smiles_column, Chem, AllChem, DataStructs, MurckoScaffoldSmiles):
         """True ECFP Morgan fingerprint nearest-neighbor domain guard."""
         train_smi_col = _smiles_col(self.training_set)
+        
+        # Determine active column in training set
+        active_col = None
+        for col in ["label_active", "active", "p_activity", "activity"]:
+            if col in self.training_set.columns:
+                active_col = col
+                break
+                
         # Build training fingerprints
-        train_fps, train_scaffolds = [], set()
-        for smi in self.training_set[train_smi_col]:
+        train_fps, active_fps, train_scaffolds = [], [], set()
+        for _, row_tr in self.training_set.iterrows():
+            smi = row_tr.get(train_smi_col)
             mol = Chem.MolFromSmiles(str(smi)) if smi else None
             if mol:
-                train_fps.append(AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048))
+                fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048)
+                train_fps.append(fp)
+                
+                # Active check
+                is_active = False
+                if active_col:
+                    val = row_tr[active_col]
+                    if active_col == "p_activity":
+                        try:
+                            is_active = float(val) >= 6.0
+                        except (ValueError, TypeError):
+                            is_active = False
+                    elif active_col in ["label_active", "active"]:
+                        try:
+                            is_active = int(val) == 1 or str(val).lower() in ("true", "active", "yes")
+                        except (ValueError, TypeError):
+                            is_active = str(val).lower() in ("true", "active", "yes")
+                    else:
+                        is_active = str(val).lower() in ("true", "active", "yes", "1")
+                        
+                if is_active:
+                    active_fps.append(fp)
+                    
                 try:
                     train_scaffolds.add(MurckoScaffoldSmiles(str(smi)))
                 except Exception:
                     pass
 
+        # Build reference inhibitors fingerprints
+        ref_fps = []
+        if not getattr(self, "reference_inhibitors", pd.DataFrame()).empty:
+            ref_smi_col = _smiles_col(self.reference_inhibitors)
+            if ref_smi_col:
+                for smi in self.reference_inhibitors[ref_smi_col]:
+                    mol = Chem.MolFromSmiles(str(smi)) if smi else None
+                    if mol:
+                        ref_fps.append(AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048))
+
         rows, nn_rows, scaf_rows = [], [], []
-        threshold = self.validated_payload.get("threshold_percentile", 95.0) / 100.0
 
         for _, row in df.iterrows():
             smi = str(row[smiles_column])
             cid = str(row[cid_col])
             mol = Chem.MolFromSmiles(smi) if smi else None
             if not mol or not train_fps:
-                rows.append({"candidate_id": cid, "canonical_smiles": smi, "domain_score": 0.0,
-                             "domain_label": "out_of_domain", "nearest_training_similarity": 0.0,
-                             "descriptor_method": "ecfp4_2048"})
+                rows.append({
+                    "candidate_id": cid, 
+                    "canonical_smiles": smi, 
+                    "domain_score": 0.0,
+                    "domain_label": "out_of_domain", 
+                    "nearest_training_similarity": 0.0,
+                    "nearest_active_similarity": None,
+                    "nearest_reference_inhibitor_similarity": None,
+                    "murcko_scaffold": None,
+                    "scaffold_seen_in_training": False,
+                    "scaffold_novel": True,
+                    "descriptor_method": "ecfp4_2048",
+                    "claim_boundary": "Computational applicability domain guard proxy only; not an experimental validation.",
+                })
                 continue
+                
             fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048)
             sims = DataStructs.BulkTanimotoSimilarity(fp, train_fps)
             max_sim = max(sims) if sims else 0.0
-            top3_idx = sorted(range(len(sims)), key=lambda i: sims[i], reverse=True)[:3]
+            
+            # Active similarity
+            max_active_sim = None
+            if active_fps:
+                active_sims = DataStructs.BulkTanimotoSimilarity(fp, active_fps)
+                max_active_sim = round(max(active_sims), 4) if active_sims else None
+                
+            # Reference similarity
+            max_ref_sim = None
+            if ref_fps:
+                ref_sims = DataStructs.BulkTanimotoSimilarity(fp, ref_fps)
+                max_ref_sim = round(max(ref_sims), 4) if ref_sims else None
+                
+            # Murcko scaffold
+            try:
+                cand_scaffold = MurckoScaffoldSmiles(smi)
+                scaffold_seen = cand_scaffold in train_scaffolds
+            except Exception:
+                cand_scaffold = "error"
+                scaffold_seen = False
+                
             # Domain label
             if max_sim >= 0.6:
                 label = "high"
@@ -396,19 +553,26 @@ class ApplicabilityDomainGuardRunner(BaseModuleRunner):
             else:
                 label = "out_of_domain"
 
-            rows.append({"candidate_id": cid, "canonical_smiles": smi, "domain_score": round(max_sim, 4),
-                         "domain_label": label, "nearest_training_similarity": round(max_sim, 4),
-                         "descriptor_method": "ecfp4_2048"})
+            rows.append({
+                "candidate_id": cid, 
+                "canonical_smiles": smi, 
+                "domain_score": round(max_sim, 4),
+                "domain_label": label, 
+                "nearest_training_similarity": round(max_sim, 4),
+                "nearest_active_similarity": max_active_sim,
+                "nearest_reference_inhibitor_similarity": max_ref_sim,
+                "murcko_scaffold": cand_scaffold,
+                "scaffold_seen_in_training": scaffold_seen,
+                "scaffold_novel": not scaffold_seen,
+                "descriptor_method": "ecfp4_2048",
+                "claim_boundary": "Computational applicability domain guard proxy only; not an experimental validation.",
+            })
+            
+            top3_idx = sorted(range(len(sims)), key=lambda i: sims[i], reverse=True)[:3]
             nn_rows.append({"candidate_id": cid, "nearest_similarity": round(max_sim, 4),
                             "top3_similarities": [round(sims[i], 4) for i in top3_idx]})
-            # Scaffold novelty
-            try:
-                cand_scaffold = MurckoScaffoldSmiles(smi)
-                is_novel = cand_scaffold not in train_scaffolds
-                scaf_rows.append({"candidate_id": cid, "scaffold": cand_scaffold,
-                                  "scaffold_novel": is_novel})
-            except Exception:
-                scaf_rows.append({"candidate_id": cid, "scaffold": "error", "scaffold_novel": True})
+            scaf_rows.append({"candidate_id": cid, "scaffold": cand_scaffold,
+                              "scaffold_novel": not scaffold_seen})
 
         self.domain = pd.DataFrame(rows)
         self.nearest_neighbors = nn_rows
@@ -422,10 +586,18 @@ class ApplicabilityDomainGuardRunner(BaseModuleRunner):
         domain_score = ((qed_score + alert_penalty) / 2).clip(0, 1)
         labels = pd.cut(domain_score, bins=[-0.01, 0.35, 0.6, 0.8, 1.01], labels=["out_of_domain", "low", "medium", "high"])
         self.domain = pd.DataFrame({
-            "candidate_id": df[cid_col].astype(str), "canonical_smiles": df[smiles_column].astype(str),
-            "domain_score": domain_score.round(4), "domain_label": labels.astype(str),
+            "candidate_id": df[cid_col].astype(str), 
+            "canonical_smiles": df[smiles_column].astype(str),
+            "domain_score": domain_score.round(4), 
+            "domain_label": labels.astype(str),
             "nearest_training_similarity": None,
+            "nearest_active_similarity": None,
+            "nearest_reference_inhibitor_similarity": None,
+            "murcko_scaffold": None,
+            "scaffold_seen_in_training": None,
+            "scaffold_novel": None,
             "descriptor_method": "proxy_qed_alerts",
+            "claim_boundary": "Computational applicability domain guard proxy only; not an experimental validation.",
         })
         self.add_usage_actual("molecule_count", len(self.domain))
 

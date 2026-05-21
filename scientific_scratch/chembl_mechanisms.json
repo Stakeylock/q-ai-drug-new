@@ -1,0 +1,137 @@
+{
+  "mechanisms": [
+    {
+      "action_type": "INHIBITOR",
+      "binding_site_comment": null,
+      "direct_interaction": 1,
+      "disease_efficacy": 1,
+      "max_phase": 4,
+      "mec_id": 241,
+      "mechanism_comment": null,
+      "mechanism_of_action": "Epidermal growth factor receptor erbB1 inhibitor",
+      "mechanism_refs": [
+        {
+          "ref_id": "setid=e0fa4bca-f245-4d92-ae29-b0c630a315c2",
+          "ref_type": "DailyMed",
+          "ref_url": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e0fa4bca-f245-4d92-ae29-b0c630a315c2"
+        }
+      ],
+      "molecular_mechanism": 1,
+      "molecule_chembl_id": "CHEMBL1201827",
+      "parent_molecule_chembl_id": "CHEMBL1201827",
+      "record_id": 1390843,
+      "selectivity_comment": null,
+      "site_id": null,
+      "target_chembl_id": "CHEMBL203",
+      "variant_sequence": null
+    },
+    {
+      "action_type": "INHIBITOR",
+      "binding_site_comment": null,
+      "direct_interaction": 1,
+      "disease_efficacy": 1,
+      "max_phase": 4,
+      "mec_id": 242,
+      "mechanism_comment": null,
+      "mechanism_of_action": "Epidermal growth factor receptor erbB1 inhibitor",
+      "mechanism_refs": [
+        {
+          "ref_id": "setid=8bc6397e-4bd8-4d37-a007-a327e4da34d9",
+          "ref_type": "DailyMed",
+          "ref_url": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=8bc6397e-4bd8-4d37-a007-a327e4da34d9"
+        }
+      ],
+      "molecular_mechanism": 1,
+      "molecule_chembl_id": "CHEMBL1201577",
+      "parent_molecule_chembl_id": "CHEMBL1201577",
+      "record_id": 1344036,
+      "selectivity_comment": null,
+      "site_id": null,
+      "target_chembl_id": "CHEMBL203",
+      "variant_sequence": null
+    },
+    {
+      "action_type": "INHIBITOR",
+      "binding_site_comment": null,
+      "direct_interaction": 1,
+      "disease_efficacy": 1,
+      "max_phase": 4,
+      "mec_id": 243,
+      "mechanism_comment": null,
+      "mechanism_of_action": "Epidermal growth factor receptor erbB1 inhibitor",
+      "mechanism_refs": [
+        {
+          "ref_id": "setid=57bccb29-1c47-4c64-ab6a-77960a91cc20#section-13",
+          "ref_type": "DailyMed",
+          "ref_url": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=57bccb29-1c47-4c64-ab6a-77960a91cc20#section-13"
+        }
+      ],
+      "molecular_mechanism": 1,
+      "molecule_chembl_id": "CHEMBL1079742",
+      "parent_molecule_chembl_id": "CHEMBL553",
+      "record_id": 1344174,
+      "selectivity_comment": null,
+      "site_id": null,
+      "target_chembl_id": "CHEMBL203",
+      "variant_sequence": null
+    },
+    {
+      "action_type": "INHIBITOR",
+      "binding_site_comment": null,
+      "direct_interaction": 1,
+      "disease_efficacy": 1,
+      "max_phase": 4,
+      "mec_id": 244,
+      "mechanism_comment": null,
+      "mechanism_of_action": "Epidermal growth factor receptor erbB1 inhibitor",
+      "mechanism_refs": [
+        {
+          "ref_id": "setid=827d60e8-7e07-41b7-c28b-49ef1c4a5a41",
+          "ref_type": "DailyMed",
+          "ref_url": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=827d60e8-7e07-41b7-c28b-49ef1c4a5a41"
+        }
+      ],
+      "molecular_mechanism": 1,
+      "molecule_chembl_id": "CHEMBL939",
+      "parent_molecule_chembl_id": "CHEMBL939",
+      "record_id": 1344994,
+      "selectivity_comment": null,
+      "site_id": null,
+      "target_chembl_id": "CHEMBL203",
+      "variant_sequence": null
+    },
+    {
+      "action_type": "INHIBITOR",
+      "binding_site_comment": null,
+      "direct_interaction": 1,
+      "disease_efficacy": 1,
+      "max_phase": 4,
+      "mec_id": 245,
+      "mechanism_comment": null,
+      "mechanism_of_action": "Epidermal growth factor receptor erbB1 inhibitor",
+      "mechanism_refs": [
+        {
+          "ref_id": "setid=63319b01-cad6-4d0a-c39b-938fa951a808#section-13",
+          "ref_type": "DailyMed",
+          "ref_url": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=63319b01-cad6-4d0a-c39b-938fa951a808#section-13"
+        }
+      ],
+      "molecular_mechanism": 1,
+      "molecule_chembl_id": "CHEMBL1201179",
+      "parent_molecule_chembl_id": "CHEMBL554",
+      "record_id": 1343218,
+      "selectivity_comment": null,
+      "site_id": null,
+      "target_chembl_id": "CHEMBL203",
+      "variant_sequence": null
+    }
+  ],
+  "page_meta": {
+    "limit": 5,
+    "next": "/chembl/api/data/mechanism.json?limit=5&offset=5&target_chembl_id=CHEMBL203",
+    "offset": 0,
+    "previous": null,
+    "total_count": 90
+  },
+  "_license_notice": "Data from the ChEMBL Database. Please review the licensing terms at https://www.ebi.ac.uk/chembl/"
+}

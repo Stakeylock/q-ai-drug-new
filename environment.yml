@@ -15,12 +15,12 @@ dependencies:
   - pyyaml
   - requests
   - tqdm
-  - rdkit
   - openbabel
   - openmm
   - pdbfixer
   - pytorch
   - pip:
+      - rdkit-pypi
       - -e .
       - torch-geometric
       - fastapi

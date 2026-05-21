@@ -1,0 +1,26 @@
+{
+  "ensembl_id": "ENSG00000146648",
+  "gene_symbol": "EGFR",
+  "subcellular_locations": [
+    "Golgi apparatus",
+    "Plasma membrane",
+    "Cell Junctions",
+    "Primary cilium",
+    "Basal body",
+    "Mid piece",
+    "Principal piece",
+    "End piece"
+  ],
+  "main_locations": [
+    "Golgi apparatus",
+    "Plasma membrane"
+  ],
+  "additional_locations": [
+    "Cell Junctions",
+    "Primary cilium",
+    "Basal body",
+    "Mid piece",
+    "Principal piece",
+    "End piece"
+  ]
+}

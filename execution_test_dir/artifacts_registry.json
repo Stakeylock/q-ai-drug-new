@@ -336,5 +336,31 @@
     "metadata": {},
     "created_at": "2026-05-16T06:13:22.606223+00:00",
     "is_private": true
+  },
+  "efede6a405f9ef882fcf7ebf": {
+    "artifact_id": "efede6a405f9ef882fcf7ebf",
+    "project_id": "E:\\q-ai-drug-new\\execution_test_dir",
+    "module_id": "onco_data_builder",
+    "run_id": "run_1",
+    "artifact_type": "csv",
+    "file_path": "uploads\\assay_dataset.csv",
+    "file_size_bytes": 257,
+    "row_count": null,
+    "metadata": {},
+    "created_at": "2026-05-21T17:52:50.887112+00:00",
+    "is_private": true
+  },
+  "ad0bad1596edbb0916aa0453": {
+    "artifact_id": "ad0bad1596edbb0916aa0453",
+    "project_id": "E:\\q-ai-drug-new\\execution_test_dir",
+    "module_id": "activity_model_studio",
+    "run_id": "train_run_1",
+    "artifact_type": "joblib",
+    "file_path": "module_runs\\activity_model_studio\\train_run_1\\trained_model.joblib",
+    "file_size_bytes": 83286,
+    "row_count": null,
+    "metadata": {},
+    "created_at": "2026-05-21T17:52:57.046878+00:00",
+    "is_private": true
   }
 }
