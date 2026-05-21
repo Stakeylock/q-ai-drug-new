@@ -50,6 +50,7 @@ def test_q_report_payload_accepts_evidence_artifacts():
             "triage_upload_file": "wet_lab_triage_board.csv",
             "evidence_status_upload_file": "evidence_status_report.csv",
             "rank_ablation_upload_file": "rank_ablation.csv",
+            "literature_evidence_upload_file": "target_literature_evidence.csv",
             "report_template": "comprehensive",
         },
     )
@@ -57,6 +58,7 @@ def test_q_report_payload_accepts_evidence_artifacts():
     assert payload["ranked_candidates_upload_file"] == "ranked_candidates.csv"
     assert payload["evidence_status_upload_file"] == "evidence_status_report.csv"
     assert payload["rank_ablation_upload_file"] == "rank_ablation.csv"
+    assert payload["literature_evidence_upload_file"] == "target_literature_evidence.csv"
 
 
 def test_q_rank_routes_to_scientific_runner():

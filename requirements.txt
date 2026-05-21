@@ -1,2 +1,2 @@
 httpx
-rdkit-pypi
+rdkit>=2024.9.1

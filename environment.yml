@@ -19,8 +19,8 @@ dependencies:
   - openmm
   - pdbfixer
   - pytorch
+  - rdkit
   - pip:
-      - rdkit-pypi
       - -e .
       - torch-geometric
       - fastapi

@@ -71,6 +71,7 @@ def _schema() -> dict[str, Any]:
             "admet",
             "medchem",
             "applicability_domain",
+            "literature",
             "docking",
             "interactions",
             "qm",
@@ -81,6 +82,29 @@ def _schema() -> dict[str, Any]:
         ],
         "claim_boundary": "Computational candidate evidence document; not an experimental hit record.",
     }
+
+
+def _literature_by_target(project_dir: Path) -> dict[str, dict[str, Any]]:
+    summary = _read_csv(project_dir / "literature" / "target_literature_summary.csv")
+    if summary.empty or "target_id" not in summary.columns:
+        return {}
+    records: dict[str, dict[str, Any]] = {}
+    for row in summary.astype(object).where(pd.notna(summary), None).to_dict("records"):
+        target_id = str(row.get("target_id") or "")
+        if not target_id:
+            continue
+        records[target_id] = {
+            "source_database": "PubMed",
+            "status": row.get("evidence_status") or "context_available",
+            "record_count": row.get("records"),
+            "unique_pmids": row.get("unique_pmids"),
+            "clinical_trial_records": row.get("clinical_trial_records"),
+            "review_records": row.get("review_records"),
+            "preclinical_records": row.get("preclinical_records"),
+            "latest_year": row.get("latest_year"),
+            "claim_boundary": "Target-level automated literature context only; not candidate validation.",
+        }
+    return records
 
 
 def build_candidate_evidence_documents(project_dir: str | Path, project_id: str | None = None) -> dict[str, Any]:
@@ -97,6 +121,7 @@ def build_candidate_evidence_documents(project_dir: str | Path, project_id: str 
     triage = _read_csv(project_dir / "triage" / "wet_lab_triage_board.csv")
     inhibitors = _read_csv(project_dir / "inhibitors" / "candidate_inhibitor_proximity.csv")
     redocking = _read_csv(project_dir / "docking" / "redocking_validation.csv")
+    literature = _literature_by_target(project_dir)
     documents: list[dict[str, Any]] = []
     now = datetime.now(timezone.utc).isoformat()
     for _, row in ranked.astype(object).where(pd.notna(ranked), None).iterrows():
@@ -136,6 +161,15 @@ def build_candidate_evidence_documents(project_dir: str | Path, project_id: str 
                 "risk_points": medchem_row.get("medchem_risk_points"),
             },
             "applicability_domain": app_row,
+            "literature": literature.get(
+                target_id,
+                {
+                    "source_database": "PubMed",
+                    "status": "missing",
+                    "record_count": 0,
+                    "claim_boundary": "No automated target-level literature context was attached for this run.",
+                },
+            ),
             "inhibitor_proximity": inhibitor_row,
             "docking": [
                 {
@@ -214,6 +248,7 @@ def build_candidate_evidence_documents(project_dir: str | Path, project_id: str 
                 "admet_risk_class": doc["admet"]["risk_class"],
                 "interaction_quality": doc["interactions"].get("interaction_quality") if isinstance(doc["interactions"], dict) else None,
                 "nearest_inhibitor_similarity": doc["inhibitor_proximity"].get("nearest_inhibitor_similarity") if isinstance(doc["inhibitor_proximity"], dict) else None,
+                "literature_records": doc["literature"].get("record_count") if isinstance(doc["literature"], dict) else None,
                 "artifact_count": len(doc["artifacts"]),
             }
             for doc in documents

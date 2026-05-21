@@ -67,6 +67,7 @@ class QReportRunner(BaseModuleRunner):
         self.triage = pd.DataFrame()
         self.evidence_status = pd.DataFrame()
         self.rank_ablation = pd.DataFrame()
+        self.literature = pd.DataFrame()
         self.selected = pd.DataFrame()
         self.claim_matrix = pd.DataFrame()
         self.report_manifest: dict[str, Any] = {}
@@ -83,6 +84,7 @@ class QReportRunner(BaseModuleRunner):
         self.triage = _safe_read_csv(_resolve_path(self.project_dir, payload.get("triage_artifact_id"), payload.get("triage_upload_file"), "triage"))
         self.evidence_status = _safe_read_csv(_resolve_path(self.project_dir, payload.get("evidence_status_artifact_id"), payload.get("evidence_status_upload_file"), "evidence_status"))
         self.rank_ablation = _safe_read_csv(_resolve_path(self.project_dir, payload.get("rank_ablation_artifact_id"), payload.get("rank_ablation_upload_file"), "rank_ablation"))
+        self.literature = _safe_read_csv(_resolve_path(self.project_dir, payload.get("literature_evidence_artifact_id"), payload.get("literature_evidence_upload_file"), "literature_evidence"))
         self.add_usage_requested("candidate_count", len(payload.get("candidate_ids", [])))
 
     def run(self) -> None:
@@ -99,6 +101,7 @@ class QReportRunner(BaseModuleRunner):
         status = _filter_candidates(self.evidence_status, ids) if not self.evidence_status.empty else pd.DataFrame()
         triage = _filter_candidates(self.triage, ids) if not self.triage.empty else pd.DataFrame()
         ablation = _filter_candidates(self.rank_ablation, ids) if not self.rank_ablation.empty else pd.DataFrame()
+        literature = self._filter_literature_context()
 
         claim_rows: list[dict[str, Any]] = []
         for cid in ids:
@@ -145,17 +148,33 @@ class QReportRunner(BaseModuleRunner):
             "triage_rows": len(triage),
             "evidence_status_rows": len(status),
             "rank_ablation_rows": len(ablation),
+            "literature_context_rows": len(literature),
             "claim_boundary": "Computational candidate dossier only. Wet-lab validation is required before any therapeutic or activity claim.",
             "included_artifacts": {
                 "ranked_candidates": not self.ranked.empty,
                 "triage": not self.triage.empty,
                 "evidence_status": not self.evidence_status.empty,
                 "rank_ablation": not self.rank_ablation.empty,
+                "literature_evidence": not self.literature.empty,
             },
         }
         self._triage = triage
         self._ablation = ablation
+        self._literature = literature
         self.add_usage_actual("candidate_count", len(ids))
+
+    def _filter_literature_context(self) -> pd.DataFrame:
+        if self.literature.empty:
+            return pd.DataFrame()
+        if "target_id" not in self.literature.columns:
+            return self.literature.copy()
+        target_ids: set[str] = set()
+        for frame in [self.selected, self.triage, self.evidence_status]:
+            if not frame.empty and "target_id" in frame.columns:
+                target_ids.update(frame["target_id"].dropna().astype(str))
+        if not target_ids:
+            return self.literature.copy()
+        return self.literature[self.literature["target_id"].astype(str).isin(target_ids)].copy()
 
     def write_outputs(self) -> None:
         ids = self.report_manifest.get("candidate_ids", [])
@@ -165,6 +184,9 @@ class QReportRunner(BaseModuleRunner):
             self.register_artifact(self.write_csv(self.claim_matrix.to_dict("records"), "claim_matrix"), "csv", "claim_matrix")
         if not self.selected.empty:
             self.register_artifact(self.write_csv(self.selected.to_dict("records"), "report_ranked_candidates_subset"), "csv", "report_ranked_candidates_subset")
+        literature = getattr(self, "_literature", pd.DataFrame())
+        if not literature.empty:
+            self.register_artifact(self.write_csv(literature.to_dict("records"), "report_literature_context"), "csv", "report_literature_context")
 
         markdown = [
             f"# Q-AI Drug Candidate Report ({self.report_manifest['report_template']})",
@@ -189,9 +211,13 @@ class QReportRunner(BaseModuleRunner):
             "## Score Ablation",
             *_markdown_table(getattr(self, "_ablation", pd.DataFrame()), ["candidate_id", "activity_component", "docking_component", "admet_component", "domain_component", "qm_component", "evidence_quality_multiplier", "final_score"]),
             "",
+            "## Literature Context",
+            *_markdown_table(getattr(self, "_literature", pd.DataFrame()), ["target_id", "query_role", "pmid", "title", "publication_year", "evidence_tags", "evidence_tier"]),
+            "",
             "## Limitations",
             "- Computational hypotheses only; no therapeutic claim is made.",
             "- Mock docking, fallback QM, missing evidence, and out-of-domain predictions must be treated as lower-confidence evidence.",
+            "- Automated literature records provide target context only and require manual scientific review.",
             "- Wet-lab validation is required before any biological activity or safety claim.",
         ]
         md_path = self.output_dir / "report.md"

@@ -248,6 +248,8 @@ class QReportPayload(BaseModel):
     evidence_status_upload_file: Optional[str] = None
     rank_ablation_artifact_id: Optional[str] = None
     rank_ablation_upload_file: Optional[str] = None
+    literature_evidence_artifact_id: Optional[str] = None
+    literature_evidence_upload_file: Optional[str] = None
     report_template: Literal["standard", "investor", "wet_lab_brief", "comprehensive"] = "standard"
     include_evidence: list[str] = Field(default_factory=list)
     include_limitations: bool = True

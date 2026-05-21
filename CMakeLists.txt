@@ -13,6 +13,8 @@ set(QAI_GNINA_DEPTH_MODE "quick" CACHE STRING "GNINA depth mode: quick, investor
 option(QAI_SKIP_DOWNLOAD "Skip public dataset download during run_research." OFF)
 option(QAI_FORCE_REFRESH "Force refresh public dataset downloads." OFF)
 option(QAI_INCLUDE_BINDINGDB "Include BindingDB retrieval in download_data." OFF)
+option(QAI_INCLUDE_LITERATURE "Include PubMed literature evidence retrieval during run_research." OFF)
+set(QAI_MAX_LITERATURE_RECORDS_PER_QUERY "20" CACHE STRING "Maximum PubMed records to retrieve per generated literature query.")
 
 set(QAI_RUN_ARGS
     run-cancer-proof
@@ -27,6 +29,10 @@ endif()
 
 if(QAI_FORCE_REFRESH)
   list(APPEND QAI_RUN_ARGS --force-refresh)
+endif()
+
+if(QAI_INCLUDE_LITERATURE)
+  list(APPEND QAI_RUN_ARGS --include-literature --max-literature-records-per-query ${QAI_MAX_LITERATURE_RECORDS_PER_QUERY})
 endif()
 
 if(NOT "${QAI_N_GENERATE}" STREQUAL "")
@@ -46,6 +52,13 @@ endif()
 if(QAI_FORCE_REFRESH)
   list(APPEND QAI_DOWNLOAD_ARGS --force-refresh)
 endif()
+
+set(QAI_LITERATURE_ARGS
+    build-literature-evidence
+    --config ${QAI_CONFIG}
+    --out "${QAI_OUTPUT}/literature"
+    --max-records-per-query ${QAI_MAX_LITERATURE_RECORDS_PER_QUERY}
+)
 
 add_custom_target(setup_python
   COMMAND ${Python3_EXECUTABLE} -m pip install -e ".[research]"
@@ -101,6 +114,14 @@ add_custom_target(download_data
   COMMENT "Downloading and caching public oncology datasets and structures."
 )
 add_dependencies(download_data setup_python)
+
+add_custom_target(build_literature_evidence
+  COMMAND ${Python3_EXECUTABLE} -m q_ai_drug.cli ${QAI_LITERATURE_ARGS}
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  VERBATIM
+  COMMENT "Fetching automated PubMed target-context literature evidence."
+)
+add_dependencies(build_literature_evidence setup_python)
 
 add_custom_target(curate_legacy_structures
   COMMAND ${Python3_EXECUTABLE} "${CMAKE_SOURCE_DIR}/scripts/curate_legacy_structures.py"

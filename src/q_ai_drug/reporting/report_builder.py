@@ -291,6 +291,8 @@ def build_html_report(project_dir: str | Path, out_html: str | Path) -> Path:
     claims = _read_optional(project_dir / "scientific_claim_matrix.csv")
     rediscovery = _read_optional(project_dir / "models" / "rediscovery_metrics.csv")
     model_cards = _read_optional(project_dir / "models" / "model_cards.csv")
+    literature_summary = _read_optional(project_dir / "literature" / "target_literature_summary.csv")
+    literature = _read_optional(project_dir / "literature" / "target_literature_evidence.csv")
     validation = _validation_summary(project_dir)
 
     sections = [
@@ -306,6 +308,8 @@ def build_html_report(project_dir: str | Path, out_html: str | Path) -> Path:
         ("Applicability Domain", applicability),
         ("Medicinal Chemistry Risk", medchem),
         ("Validation and Critique", validation),
+        ("Literature Evidence Summary", literature_summary),
+        ("Literature Evidence Records", literature[["target_id", "query_role", "pmid", "title", "publication_year", "evidence_tags", "evidence_tier"]] if not literature.empty and {"target_id", "query_role", "pmid", "title", "publication_year", "evidence_tags", "evidence_tier"}.issubset(literature.columns) else literature),
         ("Docking Summary", docking.groupby("target_id").head(5) if not docking.empty else docking),
         ("Pose Interaction Fingerprints", interactions),
         ("GNINA CNN Docking", gnina),
@@ -366,6 +370,7 @@ def build_pdf_report(project_dir: str | Path, out_pdf: str | Path) -> Path:
     curation = _read_optional(project_dir / "curation" / "dataset_curation_summary.csv")
     interactions = _read_optional(project_dir / "docking" / "interaction_fingerprints.csv")
     q_ablation = _read_optional(project_dir / "qml" / "quantum_ablation_benchmark.csv")
+    literature = _read_optional(project_dir / "literature" / "target_literature_evidence.csv")
     out_path = Path(out_pdf)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with PdfPages(out_path) as pdf:
@@ -379,7 +384,8 @@ def build_pdf_report(project_dir: str | Path, out_pdf: str | Path) -> Path:
         fig.text(0.08, 0.48, f"GNINA CNN pose rows: {len(gnina)}", fontsize=12)
         fig.text(0.08, 0.43, f"Curated target summaries: {len(curation)}", fontsize=12)
         fig.text(0.08, 0.38, f"Interaction fingerprints: {len(interactions)}", fontsize=12)
-        fig.text(0.08, 0.33, f"Quantum/ranking ablations: {len(q_ablation)}", fontsize=12)
+        fig.text(0.08, 0.33, f"Literature context records: {len(literature)}", fontsize=12)
+        fig.text(0.08, 0.28, f"Quantum/ranking ablations: {len(q_ablation)}", fontsize=12)
         plt.axis("off")
         pdf.savefig(fig)
         plt.close(fig)
@@ -419,6 +425,8 @@ def build_reports(project_dir: str | Path, config_path: str | Path, out_dir: str
         project_dir / "qml" / "quantum_kernel_scores.csv",
         project_dir / "models" / "model_cards.csv",
         project_dir / "models" / "admet_model_metrics.csv",
+        project_dir / "literature" / "target_literature_summary.csv",
+        project_dir / "literature" / "target_literature_evidence.csv",
     ]
     manifest = write_run_manifest(out_dir, Path(config_path), assets)
     html = build_html_report(project_dir, out_dir / "report.html")

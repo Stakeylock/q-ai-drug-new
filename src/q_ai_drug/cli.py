@@ -9,6 +9,7 @@ import pandas as pd
 
 from q_ai_drug.config import ensure_project_dirs, load_config
 from q_ai_drug.data.build_oncology_benchmark import build_oncology_benchmark
+from q_ai_drug.data.literature import collect_target_literature_evidence
 from q_ai_drug.data.retrieve_public_oncology_data import retrieve_for_config
 from q_ai_drug.docking.vina_runner import run_real_docking
 from q_ai_drug.filters.medchem_filters import filter_candidates
@@ -48,6 +49,8 @@ def run_cancer_proof(
     n_generate: int | None = None,
     skip_download: bool = False,
     force_refresh: bool = False,
+    include_literature: bool = False,
+    max_literature_records_per_query: int = 20,
 ) -> dict:
     config = load_config(config_path)
     project_dir = ensure_project_dirs(config, output_dir)
@@ -147,6 +150,13 @@ def run_cancer_proof(
     prepare_ligand_assets(project_dir / "top_candidates.csv", assets_dir, limit=50 * len(config.primary_targets))
     build_candidate_gallery(project_dir / "top_candidates.csv", assets_dir / "candidate_gallery.html")
 
+    if include_literature:
+        summary["literature_evidence"] = collect_target_literature_evidence(
+            config,
+            out_dir=project_dir / "literature",
+            max_records_per_query=max_literature_records_per_query,
+        )
+
     reports = build_reports(project_dir, config_path)
     summary["reports"] = {key: str(value) for key, value in reports.items()}
 
@@ -166,6 +176,8 @@ def main(argv: list[str] | None = None) -> None:
     run_parser.add_argument("--n-generate", type=int, default=None)
     run_parser.add_argument("--skip-download", action="store_true")
     run_parser.add_argument("--force-refresh", action="store_true")
+    run_parser.add_argument("--include-literature", action="store_true")
+    run_parser.add_argument("--max-literature-records-per-query", type=int, default=20)
 
     download_parser = sub.add_parser("download-data", help="Download public oncology datasets and structures.")
     download_parser.add_argument("--config", default="configs/cancer_targets.yaml")
@@ -175,6 +187,14 @@ def main(argv: list[str] | None = None) -> None:
 
     benchmark_parser = sub.add_parser("build-benchmark", help="Build canonicalized oncology benchmark.")
     benchmark_parser.add_argument("--config", default="configs/cancer_targets.yaml")
+
+    literature_parser = sub.add_parser("build-literature-evidence", help="Fetch PubMed target-context literature artifacts.")
+    literature_parser.add_argument("--config", default="configs/cancer_targets.yaml")
+    literature_parser.add_argument("--out", default=None)
+    literature_parser.add_argument("--targets", nargs="*", default=None)
+    literature_parser.add_argument("--max-records-per-query", type=int, default=20)
+    literature_parser.add_argument("--skip-reference-drugs", action="store_true")
+    literature_parser.add_argument("--max-reference-drugs-per-target", type=int, default=3)
 
     harden_parser = sub.add_parser("harden-scientific-study", help="Build strict scientific validation artifacts over an existing proof run.")
     harden_parser.add_argument("--project", default="outputs/cancer_proof_v1")
@@ -191,6 +211,8 @@ def main(argv: list[str] | None = None) -> None:
             n_generate=args.n_generate,
             skip_download=args.skip_download,
             force_refresh=args.force_refresh,
+            include_literature=args.include_literature,
+            max_literature_records_per_query=args.max_literature_records_per_query,
         )
         print(json.dumps(summary, indent=2, default=str))
     elif args.command == "download-data":
@@ -207,6 +229,19 @@ def main(argv: list[str] | None = None) -> None:
         config = load_config(args.config)
         df = build_oncology_benchmark(config)
         print(f"Wrote {len(df)} benchmark rows to {config.paths.processed_dir / 'oncology_benchmark.csv'}")
+    elif args.command == "build-literature-evidence":
+        config = load_config(args.config)
+        project_dir = ensure_project_dirs(config)
+        out_dir = Path(args.out) if args.out else project_dir / "literature"
+        summary = collect_target_literature_evidence(
+            config,
+            target_ids=args.targets,
+            out_dir=out_dir,
+            max_records_per_query=args.max_records_per_query,
+            include_reference_drugs=not args.skip_reference_drugs,
+            max_reference_drugs_per_target=args.max_reference_drugs_per_target,
+        )
+        print(json.dumps(summary, indent=2, default=str))
     elif args.command == "harden-scientific-study":
         summary = harden_scientific_study(args.project, config_path=args.config, benchmark_csv=args.benchmark, reference_csv=args.references)
         print(json.dumps(summary, indent=2, default=str))

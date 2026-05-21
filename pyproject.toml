@@ -26,7 +26,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-chem = ["rdkit-pypi>=2023.9"]
+chem = ["rdkit>=2024.9.1"]
 postgres = ["alembic>=1.13", "psycopg[binary]>=3.1"]
 qm = ["qiskit>=1.0"]
 data = ["chembl-webresource-client>=0.10"]
@@ -45,7 +45,7 @@ research = [
   "prolif>=2.0",
   "pytest>=7.4",
   "qiskit>=1.0",
-  "rdkit-pypi>=2023.9",
+  "rdkit>=2024.9.1",
 ]
 
 [project.scripts]

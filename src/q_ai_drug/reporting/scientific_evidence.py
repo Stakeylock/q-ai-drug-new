@@ -61,6 +61,8 @@ def build_scientific_evidence(project_dir: str | Path = "outputs/cancer_proof_v1
     gnina = _read_csv(project_dir / "gnina" / "results.csv")
     qml = _read_csv(project_dir / "qml" / "quantum_kernel_scores.csv")
     qprefilter = _read_csv(project_dir / "qml" / "quantum_prefilter_scores.csv")
+    literature = _read_csv(project_dir / "literature" / "target_literature_evidence.csv")
+    literature_summary = _read_csv(project_dir / "literature" / "target_literature_summary.csv")
 
     high_confidence_redocking = 0
     if not redocking.empty and "redocking_rmsd_angstrom" in redocking.columns:
@@ -126,11 +128,35 @@ def build_scientific_evidence(project_dir: str | Path = "outputs/cancer_proof_v1
             "top_promoted_by_quantum": promoted_top30,
             "current_claim": "Quantum kernels are used for portfolio diversity and reranking with classical ablations; this is not claimed as hardware superiority.",
         },
+        "literature_evidence": {
+            "source_database": "PubMed",
+            "records": int(len(literature)),
+            "targets": int(literature["target_id"].nunique()) if "target_id" in literature.columns else 0,
+            "summary": _records(
+                literature_summary,
+                [
+                    "target_id",
+                    "gene",
+                    "records",
+                    "unique_pmids",
+                    "clinical_trial_records",
+                    "review_records",
+                    "preclinical_records",
+                    "latest_year",
+                    "evidence_status",
+                ],
+            ),
+            "example_records": _records(
+                literature,
+                ["target_id", "query_role", "pmid", "title", "publication_year", "evidence_tags", "evidence_tier"],
+            )[:10],
+            "current_claim": "Automated literature retrieval provides target and reference-drug context only; it is not validation of generated candidates.",
+        },
         "architecture": [
             {
                 "tier": "Data and target selection",
-                "implemented": "ChEMBL/oncology benchmark, EGFR/PARP1/PIK3CA target workspace, reference inhibitors, scaffold-aware splits.",
-                "paper_basis": ["TDC", "ChEMBL", "AlphaFold DB", "RCSB PDB"],
+                "implemented": "ChEMBL/oncology benchmark, EGFR/PARP1/PIK3CA target workspace, reference inhibitors, scaffold-aware splits, automated PubMed literature context.",
+                "paper_basis": ["TDC", "ChEMBL", "PubMed", "AlphaFold DB", "RCSB PDB"],
             },
             {
                 "tier": "Molecule generation and filtering",
@@ -162,6 +188,7 @@ def build_scientific_evidence(project_dir: str | Path = "outputs/cancer_proof_v1
             "The ranked molecules remain computational hypotheses until synthesis and biochemical assays are completed.",
             "Vina/Smina/GNINA agreement is useful triage evidence, but not a substitute for selectivity, resistance-mutant, and ADMET experiments.",
             "The current quantum layer is a rigorous simulated-kernel workflow with ablations; hardware acceleration should be treated as a future backend, not a current speedup claim.",
+            "Automated literature hits are useful target context, but must be manually reviewed before being treated as biological rationale.",
             "The next scientific upgrade is explicit-solvent complex MD and FEP-style relative binding free energy for the hybrid top set.",
         ],
         "coverage": {
