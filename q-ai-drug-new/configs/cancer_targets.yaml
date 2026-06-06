@@ -1,0 +1,46 @@
+project_name: cancer_proof_v1
+primary_targets:
+  EGFR:
+    gene: EGFR
+    uniprot_id: P00533
+    cancer_types: [NSCLC, breast_cancer, colorectal_cancer, solid_tumor]
+    reference_drugs: [erlotinib, gefitinib, osimertinib, afatinib, dacomitinib]
+    activity_types: [IC50, EC50, Ki, Kd, AC50]
+    preferred_pdb_ids: []
+  PARP1:
+    gene: PARP1
+    uniprot_id: P09874
+    cancer_types: [breast_cancer, ovarian_cancer, prostate_cancer]
+    reference_drugs: [olaparib, rucaparib, niraparib, talazoparib]
+    activity_types: [IC50, EC50, Ki, Kd, AC50]
+    preferred_pdb_ids: []
+  PIK3CA:
+    gene: PIK3CA
+    uniprot_id: P42336
+    cancer_types: [breast_cancer, solid_tumor]
+    reference_drugs: [alpelisib]
+    activity_types: [IC50, EC50, Ki, Kd, AC50]
+    preferred_pdb_ids: []
+
+paths:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  structure_dir: data/structures
+  cache_dir: data/cache
+
+filters:
+  max_mw: 650
+  max_logp: 6.0
+  max_tpsa: 180
+  max_rotatable_bonds: 14
+  min_qed: 0.25
+  remove_pains: true
+  remove_brenk: true
+
+proof_run:
+  n_generate: 5000
+  n_filter: 500
+  n_dock: 100
+  n_md: 10
+  n_qm: 10
+  active_threshold_pic50: 6.0

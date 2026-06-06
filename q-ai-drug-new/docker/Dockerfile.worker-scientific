@@ -1,0 +1,35 @@
+FROM python:3.11-slim
+
+ARG GNINA_VERSION=1.3.2
+ARG GNINA_ASSET=gnina.1.3.2
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV APP_ENV=local
+ENV QAI_OUTPUT_DIR=/app/outputs/cancer_proof_v1
+ENV QAI_MODELS_DIR=/app/models
+
+WORKDIR /app
+
+RUN apt-get update \
+    && env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential ca-certificates cmake curl git gnupg libgomp1 lsb-release openbabel autodock-vina xtb \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -L --fail --show-error -o /usr/local/bin/smina "https://sourceforge.net/projects/smina/files/smina.static/download" \
+    && chmod +x /usr/local/bin/smina \
+    && curl -L --fail --show-error -o /usr/local/bin/gnina "https://github.com/gnina/gnina/releases/download/v${GNINA_VERSION}/${GNINA_ASSET}" \
+    && chmod +x /usr/local/bin/gnina
+
+COPY pyproject.toml README.md ./
+COPY src ./src
+COPY configs ./configs
+COPY scripts ./scripts
+COPY migrations ./migrations
+COPY alembic.ini ./alembic.ini
+COPY data ./data
+COPY models ./models
+
+RUN python -m pip install --upgrade pip \
+    && python -m pip install -e ".[research]"
+
+CMD ["python", "-m", "q_ai_drug.service.worker_loop", "--queue", "docking", "--queue", "gnina", "--queue", "qm", "--queue", "qml"]

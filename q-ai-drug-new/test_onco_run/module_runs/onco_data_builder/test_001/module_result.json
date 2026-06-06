@@ -1,0 +1,44 @@
+{
+  "module_id": "onco_data_builder",
+  "module_name": "OncoData Builder",
+  "project_id": "test_onco_run",
+  "run_id": "test_001",
+  "status": "succeeded",
+  "execution_mode": "standard",
+  "queue": "data",
+  "artifacts": [
+    {
+      "type": "csv",
+      "name": "curated_activity",
+      "uri": "test_onco_run/module_runs/onco_data_builder/test_001/curated_activity.csv",
+      "relative_path": "module_runs/onco_data_builder/test_001/curated_activity.csv",
+      "size_bytes": 897299,
+      "checksum": "7315931c7229b793",
+      "created_at": "2026-05-15T05:18:34.558987+00:00"
+    },
+    {
+      "type": "csv",
+      "name": "activity_distribution_by_target",
+      "uri": "test_onco_run/module_runs/onco_data_builder/test_001/activity_distribution_by_target.csv",
+      "relative_path": "module_runs/onco_data_builder/test_001/activity_distribution_by_target.csv",
+      "size_bytes": 317,
+      "checksum": "15192c1277dd344c",
+      "created_at": "2026-05-15T05:18:34.565988+00:00"
+    }
+  ],
+  "warnings": [],
+  "claim_boundary": "Public/private data curation evidence only; not expert manual assay review.",
+  "usage": {
+    "requested": {
+      "targets_requested": 3,
+      "curation_profile": "standard",
+      "data_sources": "public_only"
+    },
+    "actual": {
+      "curated_records": 1637,
+      "unique_molecules": 1629,
+      "active_records": "1637"
+    }
+  },
+  "created_at": "2026-05-15T05:18:34.567497+00:00"
+}

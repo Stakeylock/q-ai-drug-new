@@ -1,0 +1,247 @@
+[
+  {
+    "tissue": "Adipose tissue",
+    "organ": "Connective & soft tissue",
+    "level": "low"
+  },
+  {
+    "tissue": "Adrenal gland",
+    "organ": "Endocrine tissues",
+    "level": "not detected"
+  },
+  {
+    "tissue": "Appendix",
+    "organ": "Bone marrow & lymphoid tissues",
+    "level": "low"
+  },
+  {
+    "tissue": "Bone marrow",
+    "organ": "Bone marrow & lymphoid tissues",
+    "level": "not detected"
+  },
+  {
+    "tissue": "Breast",
+    "organ": "Female tissues",
+    "level": "low"
+  },
+  {
+    "tissue": "Bronchus",
+    "organ": "Respiratory system",
+    "level": "high"
+  },
+  {
+    "tissue": "Caudate",
+    "organ": "Brain",
+    "level": "low"
+  },
+  {
+    "tissue": "Cerebellum",
+    "organ": "Brain",
+    "level": "not detected"
+  },
+  {
+    "tissue": "Cerebral cortex",
+    "organ": "Brain",
+    "level": "not detected"
+  },
+  {
+    "tissue": "Cervix",
+    "organ": "Female tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Colon",
+    "organ": "Gastrointestinal tract",
+    "level": "low"
+  },
+  {
+    "tissue": "Duodenum",
+    "organ": "Gastrointestinal tract",
+    "level": "low"
+  },
+  {
+    "tissue": "Endometrium 1",
+    "organ": "Female tissues",
+    "level": "low"
+  },
+  {
+    "tissue": "Endometrium 2",
+    "organ": "Female tissues",
+    "level": "low"
+  },
+  {
+    "tissue": "Epididymis",
+    "organ": "Male tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Esophagus",
+    "organ": "Proximal digestive tract",
+    "level": "medium"
+  },
+  {
+    "tissue": "Fallopian tube",
+    "organ": "Female tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Gallbladder",
+    "organ": "Liver & gallbladder",
+    "level": "medium"
+  },
+  {
+    "tissue": "Heart muscle",
+    "organ": "Muscle & vascular tissue",
+    "level": "low"
+  },
+  {
+    "tissue": "Hippocampus",
+    "organ": "Brain",
+    "level": "not detected"
+  },
+  {
+    "tissue": "Kidney",
+    "organ": "Kidney & urinary bladder",
+    "level": "medium"
+  },
+  {
+    "tissue": "Liver",
+    "organ": "Liver & gallbladder",
+    "level": "medium"
+  },
+  {
+    "tissue": "Lung",
+    "organ": "Respiratory system",
+    "level": "low"
+  },
+  {
+    "tissue": "Lymph node",
+    "organ": "Bone marrow & lymphoid tissues",
+    "level": "low"
+  },
+  {
+    "tissue": "Nasopharynx",
+    "organ": "Respiratory system",
+    "level": "high"
+  },
+  {
+    "tissue": "Oral mucosa",
+    "organ": "Proximal digestive tract",
+    "level": "medium"
+  },
+  {
+    "tissue": "Ovary",
+    "organ": "Female tissues",
+    "level": "low"
+  },
+  {
+    "tissue": "Pancreas",
+    "organ": "Pancreas",
+    "level": "medium"
+  },
+  {
+    "tissue": "Parathyroid gland",
+    "organ": "Endocrine tissues",
+    "level": "low"
+  },
+  {
+    "tissue": "Placenta",
+    "organ": "Female tissues",
+    "level": "high"
+  },
+  {
+    "tissue": "Prostate",
+    "organ": "Male tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Rectum",
+    "organ": "Gastrointestinal tract",
+    "level": "medium"
+  },
+  {
+    "tissue": "Salivary gland",
+    "organ": "Proximal digestive tract",
+    "level": "low"
+  },
+  {
+    "tissue": "Seminal vesicle",
+    "organ": "Male tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Skeletal muscle",
+    "organ": "Muscle & vascular tissue",
+    "level": "low"
+  },
+  {
+    "tissue": "Skin 1",
+    "organ": "Skin",
+    "level": "medium"
+  },
+  {
+    "tissue": "Skin 2",
+    "organ": "Skin",
+    "level": "medium"
+  },
+  {
+    "tissue": "Small intestine",
+    "organ": "Gastrointestinal tract",
+    "level": "low"
+  },
+  {
+    "tissue": "Smooth muscle",
+    "organ": "Muscle & vascular tissue",
+    "level": "low"
+  },
+  {
+    "tissue": "Soft tissue 1",
+    "organ": "Connective & soft tissue",
+    "level": "low"
+  },
+  {
+    "tissue": "Soft tissue 2",
+    "organ": "Connective & soft tissue",
+    "level": "low"
+  },
+  {
+    "tissue": "Spleen",
+    "organ": "Bone marrow & lymphoid tissues",
+    "level": "not detected"
+  },
+  {
+    "tissue": "Stomach 1",
+    "organ": "Gastrointestinal tract",
+    "level": "low"
+  },
+  {
+    "tissue": "Stomach 2",
+    "organ": "Gastrointestinal tract",
+    "level": "low"
+  },
+  {
+    "tissue": "Testis",
+    "organ": "Male tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Thyroid gland",
+    "organ": "Endocrine tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Tonsil",
+    "organ": "Bone marrow & lymphoid tissues",
+    "level": "medium"
+  },
+  {
+    "tissue": "Urinary bladder",
+    "organ": "Kidney & urinary bladder",
+    "level": "medium"
+  },
+  {
+    "tissue": "Vagina",
+    "organ": "Female tissues",
+    "level": "medium"
+  }
+]

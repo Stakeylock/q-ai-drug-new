@@ -1,0 +1,64 @@
+{
+  "refsnp_id": "121434568",
+  "variant_type": "snv",
+  "genes": [
+    "EGFR"
+  ],
+  "clinical_significances": [
+    "likely-pathogenic",
+    "drug-response",
+    "drug-response",
+    "drug-response",
+    "drug-response",
+    "pathogenic",
+    "pathogenic",
+    "pathogenic"
+  ],
+  "minor_allele_frequencies": [
+    {
+      "study": "PAGE_STUDY",
+      "allele_count": 78697,
+      "total_count": 78700
+    },
+    {
+      "study": "dbGaP_PopFreq",
+      "allele_count": 660,
+      "total_count": 660
+    },
+    {
+      "study": "PAGE_STUDY",
+      "allele_count": 3,
+      "total_count": 78700
+    },
+    {
+      "study": "dbGaP_PopFreq",
+      "allele_count": 0,
+      "total_count": 660
+    }
+  ],
+  "placements": [
+    {
+      "seq_id": "NC_000007.14",
+      "alleles": [
+        {
+          "deleted_sequence": "T",
+          "inserted_sequence": "T",
+          "position": 55191821,
+          "is_variant": false
+        },
+        {
+          "deleted_sequence": "T",
+          "inserted_sequence": "A",
+          "position": 55191821,
+          "is_variant": true
+        },
+        {
+          "deleted_sequence": "T",
+          "inserted_sequence": "G",
+          "position": 55191821,
+          "is_variant": true
+        }
+      ]
+    }
+  ]
+}

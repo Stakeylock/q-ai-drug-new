@@ -1,0 +1,70 @@
+[
+  {
+    "variant_id": "4842929",
+    "clinical_significance": "Uncertain significance",
+    "review_status": "criteria provided, single submitter",
+    "last_evaluated": "2026/01/13 00:00",
+    "phenotypes": [
+      "Hereditary cancer-predisposing syndrome"
+    ],
+    "title": "NM_005228.5(EGFR):c.1204A>C (p.Thr402Pro)",
+    "genes": [
+      {
+        "gene_id": "1956",
+        "symbol": "EGFR",
+        "strand": "+"
+      },
+      {
+        "gene_id": "126860048",
+        "symbol": "LOC126860048",
+        "strand": "+"
+      }
+    ],
+    "variation_type": "single nucleotide variant",
+    "molecular_consequences": [
+      "missense variant"
+    ]
+  },
+  {
+    "variant_id": "4842928",
+    "clinical_significance": "Likely benign",
+    "review_status": "criteria provided, single submitter",
+    "last_evaluated": "2026/01/12 00:00",
+    "phenotypes": [
+      "Hereditary cancer-predisposing syndrome"
+    ],
+    "title": "NM_005228.5(EGFR):c.1362G>A (p.Lys454=)",
+    "genes": [
+      {
+        "gene_id": "1956",
+        "symbol": "EGFR",
+        "strand": "+"
+      }
+    ],
+    "variation_type": "single nucleotide variant",
+    "molecular_consequences": [
+      "synonymous variant"
+    ]
+  },
+  {
+    "variant_id": "4842927",
+    "clinical_significance": "Uncertain significance",
+    "review_status": "criteria provided, single submitter",
+    "last_evaluated": "2026/01/10 00:00",
+    "phenotypes": [
+      "Hereditary cancer-predisposing syndrome"
+    ],
+    "title": "NM_005228.5(EGFR):c.2735C>G (p.Ser912Cys)",
+    "genes": [
+      {
+        "gene_id": "1956",
+        "symbol": "EGFR",
+        "strand": "+"
+      }
+    ],
+    "variation_type": "single nucleotide variant",
+    "molecular_consequences": [
+      "missense variant"
+    ]
+  }
+]

@@ -1,0 +1,46 @@
+pockets:
+  - target_id: EGFR
+    pdb_id: 1M17
+    source: rcsb_cocrystal_ligand_centroid
+    center_x: 22.013689655172417
+    center_y: 0.2528275862068965
+    center_z: 52.79403448275862
+    size_x: 24.0
+    size_y: 20.0
+    size_z: 20.0
+    reference_ligand: erlotinib
+    reference_ligand_code: AQ4
+    reference_ligand_chain: A
+    reference_ligand_resseq: "999"
+    provenance_note: RCSB 1M17 EGFR tyrosine kinase domain co-crystal ligand centroid, used to avoid blind AlphaFold centroid docking.
+    method_tier: CURATED
+  - target_id: PARP1
+    pdb_id: 7KK4
+    source: rcsb_cocrystal_ligand_centroid
+    center_x: -9.29359375
+    center_y: 6.12965625
+    center_z: 26.34784375
+    size_x: 26.0
+    size_y: 22.0
+    size_z: 22.0
+    reference_ligand: olaparib
+    reference_ligand_code: 09L
+    reference_ligand_chain: A
+    reference_ligand_resseq: "9001"
+    provenance_note: RCSB 7KK4 PARP1 catalytic domain co-crystal ligand centroid for olaparib pocket localization.
+    method_tier: CURATED
+  - target_id: PIK3CA
+    pdb_id: 7MYO
+    source: rcsb_cocrystal_ligand_centroid
+    center_x: 86.22093333333333
+    center_y: 120.24123333333334
+    center_z: 101.58876666666667
+    size_x: 24.0
+    size_y: 24.0
+    size_z: 20.0
+    reference_ligand: alpelisib
+    reference_ligand_code: 1LT
+    reference_ligand_chain: A
+    reference_ligand_resseq: "1101"
+    provenance_note: RCSB 7MYO PI3K-alpha/alpelisib cryo-EM ligand centroid, used as a curated binding-site anchor.
+    method_tier: CURATED

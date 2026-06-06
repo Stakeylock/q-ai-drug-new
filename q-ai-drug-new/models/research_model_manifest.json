@@ -1,0 +1,29 @@
+{
+  "config_path": "configs/cancer_targets.yaml",
+  "project_dir": "outputs\\cancer_proof_v1",
+  "models_dir": "models",
+  "activity": {
+    "metrics_path": "models\\activity\\baseline_activity_metrics.csv",
+    "model_paths": {
+      "EGFR": "models\\activity\\EGFR_baseline_activity.joblib",
+      "PARP1": "models\\activity\\PARP1_baseline_activity.joblib",
+      "PIK3CA": "models\\activity\\PIK3CA_baseline_activity.joblib"
+    },
+    "metrics_rows": 3
+  },
+  "admet": {
+    "bundle_path": "models\\admet\\admet_models.joblib",
+    "metrics_path": "models\\admet\\admet_model_metrics.csv",
+    "trained_endpoints": 14
+  },
+  "copied_to_project_models": [
+    "outputs\\cancer_proof_v1\\models\\EGFR_baseline_activity.joblib",
+    "outputs\\cancer_proof_v1\\models\\PARP1_baseline_activity.joblib",
+    "outputs\\cancer_proof_v1\\models\\PIK3CA_baseline_activity.joblib",
+    "outputs\\cancer_proof_v1\\models\\baseline_activity_metrics.csv",
+    "outputs\\cancer_proof_v1\\models\\baseline_activity_manifest.json",
+    "outputs\\cancer_proof_v1\\models\\admet_models.joblib",
+    "outputs\\cancer_proof_v1\\models\\admet_model_metrics.csv",
+    "outputs\\cancer_proof_v1\\models\\admet_model_manifest.json"
+  ]
+}

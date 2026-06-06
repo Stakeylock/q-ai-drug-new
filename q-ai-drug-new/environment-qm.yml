@@ -1,0 +1,21 @@
+name: qai-drug-qm
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - rdkit
+  - pandas
+  - numpy
+  - scipy
+  - psi4
+  - xtb
+  - pip:
+      - -e .
+      - py3Dmol
+      - pyyaml
+      - qiskit
+      - pyarrow
+      - httpx
+      - pytest

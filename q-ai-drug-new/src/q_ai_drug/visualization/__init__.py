@@ -1,0 +1,1 @@
+"""Visualization asset generation."""

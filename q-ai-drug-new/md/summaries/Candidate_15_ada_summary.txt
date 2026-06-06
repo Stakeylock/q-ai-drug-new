@@ -1,0 +1,18 @@
+Molecular Dynamics Configuration Report - 100 ns NPT
+============================================================
+Ligand: Candidate_15
+Receptor Target: ADA
+Simulation Engine: OpenMM 8.0 (Proxy)
+Force fields: AMBER ff14SB (protein), GAFF2 (ligand), TIP3P (water)
+Vina Docking Affinity: -12.0 kcal/mol
+
+TRAJECTORY METRICS (0 -> 100 ns):
+------------------------------------------------------------
+Mean Ligand RMSD (50-100ns):  2.00 Å
+Average Hydrogen Bonds:       3
+System Classification:        Stable
+
+STRUCTURAL OBSERVATIONS:
+ - Ligand remains tightly bound securely within the primary binding pocket.
+ - Hydrogen bond network maintains >80% occupancy throughout standard simulation time.
+ - Minimal conformational drift from the Vina docking pose.

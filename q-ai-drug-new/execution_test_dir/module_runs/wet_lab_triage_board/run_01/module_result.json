@@ -1,0 +1,57 @@
+{
+  "module_id": "wet_lab_triage_board",
+  "module_name": "Wet-Lab Triage Board",
+  "project_id": "execution_test_dir",
+  "run_id": "run_01",
+  "status": "succeeded",
+  "execution_mode": "small_or_production",
+  "queue": "decision",
+  "artifacts": [
+    {
+      "type": "csv",
+      "name": "wet_lab_triage_board",
+      "uri": "execution_test_dir/module_runs/wet_lab_triage_board/run_01/wet_lab_triage_board.csv",
+      "relative_path": "module_runs/wet_lab_triage_board/run_01/wet_lab_triage_board.csv",
+      "size_bytes": 13843,
+      "checksum": "26d4236389949486",
+      "created_at": "2026-05-16T06:13:22.567358+00:00",
+      "artifact_id": "acbce56c33ce04b8127cbca5"
+    },
+    {
+      "type": "csv",
+      "name": "watchlist",
+      "uri": "execution_test_dir/module_runs/wet_lab_triage_board/run_01/watchlist.csv",
+      "relative_path": "module_runs/wet_lab_triage_board/run_01/watchlist.csv",
+      "size_bytes": 13843,
+      "checksum": "26d4236389949486",
+      "created_at": "2026-05-16T06:13:22.576948+00:00",
+      "artifact_id": "345fc7851a0d8b5c88070dfe"
+    },
+    {
+      "type": "markdown",
+      "name": "assay_pack",
+      "uri": "execution_test_dir/module_runs/wet_lab_triage_board/run_01/assay_pack.md",
+      "relative_path": "module_runs/wet_lab_triage_board/run_01/assay_pack.md",
+      "size_bytes": 6567,
+      "checksum": "c00de731ea6540d2",
+      "created_at": "2026-05-16T06:13:22.591596+00:00",
+      "artifact_id": "c0c19057fa74e11878eb4b4e"
+    }
+  ],
+  "warnings": [],
+  "limitations": [
+    "Wet-lab triage is a research planning aid, not an instruction to treat or dose patients."
+  ],
+  "next_actions": [],
+  "credits_used": 1.0,
+  "claim_boundary": "Computational research hypothesis only. Wet-lab validation is required.",
+  "usage": {
+    "requested": {
+      "candidate_count": 50
+    },
+    "actual": {
+      "candidate_count": 50
+    }
+  },
+  "created_at": "2026-05-16T06:13:22.599129+00:00"
+}

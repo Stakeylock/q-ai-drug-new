@@ -1,0 +1,20 @@
+{
+  "module_id": "q_dock_studio",
+  "module_name": "Q-Dock Studio",
+  "project_id": "test_disclaimers",
+  "run_id": "test_dock",
+  "status": "failed",
+  "execution_mode": "mock_docking",
+  "queue": "docking",
+  "artifacts": [],
+  "warnings": [],
+  "claim_boundary": "Mock docking output for plumbing test only. Not scientific docking evidence. Real Vina/Smina/GNINA execution not yet wired.",
+  "usage": {
+    "requested": {},
+    "actual": {}
+  },
+  "created_at": "2026-05-15T05:41:24.795060+00:00",
+  "failure_code": "invalid_input",
+  "failure_message": "Invalid Q-Dock Studio payload: 1 validation error for QDockStudioPayload\npocket_box\n  Value error, pocket_box required when pocket_source=uploaded_box [type=value_error, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.12/v/value_error",
+  "actionable_message": "Define a docking pocket (box coordinates or reference ligand)."
+}

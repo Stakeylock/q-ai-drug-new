@@ -1,0 +1,53 @@
+{
+  "dataset_version": "2.0",
+  "created_from": "onco_data_builder",
+  "targets": [
+    "EGFR"
+  ],
+  "curation_profile": "standard",
+  "data_sources_requested": "public_only",
+  "source_mode": "benchmark_fallback",
+  "record_count": 737,
+  "unique_molecules": 737,
+  "dataset_hash": "9e96208c851db43e",
+  "schema_columns": [
+    "target_chembl_id",
+    "compound_id",
+    "canonical_smiles",
+    "standard_type",
+    "standard_relation",
+    "standard_value_nm",
+    "standard_units",
+    "assay_chembl_id",
+    "document_chembl_id",
+    "p_activity",
+    "label_active",
+    "target_id",
+    "murcko_scaffold",
+    "split",
+    "source",
+    "assay_confidence",
+    "assay_type",
+    "organism",
+    "target_variant",
+    "activity_relation",
+    "activity_value_raw",
+    "activity_unit_raw",
+    "standardized_activity_nM",
+    "curation_flag",
+    "curation_kept",
+    "active_threshold_p_activity",
+    "inactive_threshold_p_activity",
+    "pActivity",
+    "activity_type",
+    "scaffold"
+  ],
+  "duplicate_groups": 0,
+  "conflict_groups": 0,
+  "split_method": "scaffold",
+  "limitations": [
+    "Computational public/uploaded data curation only",
+    "SMILES canonicalization and activity normalization may vary by dependency versions",
+    "Activity values are source-reported or user-uploaded; no independent wet-lab validation"
+  ]
+}

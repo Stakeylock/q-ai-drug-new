@@ -1,0 +1,14 @@
+Phase 4 Quantum Calculation Report
+==================================================
+Candidate: Candidate_8
+Target: CAH2
+
+DFT Results (B3LYP/6-31G*):
+  System Energy:     -1245.1238 a.u.
+  HOMO Energy:       -6.855 eV
+  LUMO Energy:       -3.355 eV
+  Frontier Gap:      3.5 eV
+  Max Mulliken Q:    -0.506 e
+
+Quantum Machine Learning (Qiskit ZZFeatureMap):
+  Active Binding Prob: 99.0 %
