@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "q-ai-drug"
+version = "0.1.0"
+description = "Cancer-first quantum-augmented AI drug discovery proof platform."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "boto3>=1.34",
+  "fastapi>=0.100",
+  "joblib>=1.3",
+  "matplotlib>=3.7",
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "python-multipart>=0.0.9",
+  "pydantic>=2.0",
+  "pyyaml>=6.0",
+  "requests>=2.31",
+  "rq>=1.16",
+  "scikit-learn>=1.3",
+  "sqlalchemy>=2.0",
+  "uvicorn>=0.23",
+]
+
+[project.optional-dependencies]
+chem = ["rdkit>=2024.9.1"]
+postgres = ["alembic>=1.13", "psycopg[binary]>=3.1"]
+qm = ["qiskit>=1.0"]
+data = ["chembl-webresource-client>=0.10"]
+interactions = ["prolif>=2.0"]
+dev = [
+  "pytest>=7.4",
+  "httpx>=0.24",
+]
+research = [
+  "alembic>=1.13",
+  "chembl-webresource-client>=0.10",
+  "meeko>=0.6",
+  "openmm>=8.0",
+  "psycopg[binary]>=3.1",
+  "py3Dmol>=2.0",
+  "prolif>=2.0",
+  "pytest>=7.4",
+  "qiskit>=1.0",
+  "rdkit>=2024.9.1",
+]
+
+[project.scripts]
+q-ai-drug = "q_ai_drug.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["q_ai_drug*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

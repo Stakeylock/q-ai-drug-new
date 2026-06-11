@@ -1,0 +1,105 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env.example
+    ports:
+      - "${QAI_API_PORT:-8000}:8000"
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data:ro
+      - ./models:/app/models:ro
+    depends_on:
+      - postgres
+      - redis
+      - minio
+
+  worker-base:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker-base
+    image: q-ai-drug-worker-base:latest
+    env_file: .env.example
+    command: ["python", "-m", "q_ai_drug.service.worker_loop", "--queue", "default", "--queue", "data", "--queue", "training", "--queue", "generation", "--queue", "reporting"]
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data:ro
+      - ./models:/app/models:ro
+    depends_on:
+      - redis
+      - postgres
+
+  worker-docking:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker-scientific
+    env_file: .env.example
+    command: ["python", "-m", "q_ai_drug.service.worker_loop", "--queue", "docking", "--queue", "md"]
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data:ro
+      - ./models:/app/models:ro
+    depends_on:
+      - redis
+      - postgres
+
+  worker-gnina:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker-scientific
+    env_file: .env.example
+    command: ["python", "-m", "q_ai_drug.service.worker_loop", "--queue", "gnina"]
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data:ro
+      - ./models:/app/models:ro
+    depends_on:
+      - redis
+      - postgres
+
+  worker-quantum:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker-scientific
+    env_file: .env.example
+    command: ["python", "-m", "q_ai_drug.service.worker_loop", "--queue", "qm", "--queue", "qml"]
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data:ro
+      - ./models:/app/models:ro
+    depends_on:
+      - redis
+      - postgres
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-qai_drug}
+      POSTGRES_USER: ${POSTGRES_USER:-qai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-qai_dev_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-qaiadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-qaiadmin123}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  postgres_data:
+  minio_data:

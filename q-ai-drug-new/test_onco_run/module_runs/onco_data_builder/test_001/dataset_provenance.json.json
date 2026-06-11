@@ -1,0 +1,23 @@
+{
+  "source_benchmark": "data/processed/oncology_benchmark.csv",
+  "targets_selected": [
+    "EGFR",
+    "PIK3CA",
+    "PARP1"
+  ],
+  "curation_steps": [
+    "Load benchmark CSV",
+    "Standardize SMILES via RDKit canonicalization",
+    "Calculate assay confidence scores",
+    "Flag missing/malformed records",
+    "Filter by profile: standard",
+    "Generate activity distributions"
+  ],
+  "config_path": "configs/cancer_targets.yaml",
+  "output_location": "test_onco_run/module_runs/onco_data_builder/test_001",
+  "next_steps": [
+    "Review curated_activity.csv",
+    "Load into Activity Model Studio for model training",
+    "Use for Q-Filter or Q-Dock input validation"
+  ]
+}

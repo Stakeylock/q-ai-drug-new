@@ -1,0 +1,7 @@
+{
+  "models": {
+    "EGFR": "outputs\\cancer_proof_v1\\models\\EGFR_baseline_activity.joblib",
+    "PARP1": "outputs\\cancer_proof_v1\\models\\PARP1_baseline_activity.joblib",
+    "PIK3CA": "outputs\\cancer_proof_v1\\models\\PIK3CA_baseline_activity.joblib"
+  }
+}

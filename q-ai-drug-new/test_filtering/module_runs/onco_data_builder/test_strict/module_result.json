@@ -1,0 +1,20 @@
+{
+  "module_id": "onco_data_builder",
+  "module_name": "OncoData Builder",
+  "project_id": "test_filtering",
+  "run_id": "test_strict",
+  "status": "failed",
+  "execution_mode": "standard",
+  "queue": "data",
+  "artifacts": [],
+  "warnings": [],
+  "claim_boundary": "Public/private data curation evidence only; not expert manual assay review.",
+  "usage": {
+    "requested": {},
+    "actual": {}
+  },
+  "created_at": "2026-05-15T05:41:24.796060+00:00",
+  "failure_code": "invalid_input",
+  "failure_message": "Invalid OncoDataBuilder payload: 'OncoDataBuilderPayload' object has no attribute 'uploaded_assay_csv_artifact_id'",
+  "actionable_message": "Error: Invalid OncoDataBuilder payload: 'OncoDataBuilderPayload' object has no attribute 'uploaded_assay_csv_artifact_id'. Please check your inputs and try again."
+}

@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Q-AI Research Console</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail" aria-label="Research navigation">
+      <div class="brand">
+        <span class="brand-mark">Q</span>
+        <div>
+          <strong>Q-AI</strong>
+          <span>Oncology Research</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="overview">Overview</button>
+        <button class="nav-item" data-view="targets">Targets</button>
+        <button class="nav-item" data-view="candidates">Candidates</button>
+        <button class="nav-item" data-view="models">Models</button>
+        <button class="nav-item" data-view="quantum">Quantum</button>
+        <button class="nav-item" data-view="research">Research</button>
+        <button class="nav-item" data-view="experiments">Experiments</button>
+        <button class="nav-item" data-view="gnina">GNINA</button>
+        <button class="nav-item" data-view="viewer">3D Viewer</button>
+        <button class="nav-item" data-view="tools">Modules</button>
+        <button class="nav-item" data-view="investor">Investor</button>
+        <button class="nav-item" data-view="validation">Validation</button>
+      </nav>
+      <div class="rail-card">
+        <span class="eyebrow">Primary Targets</span>
+        <div class="target-stack">
+          <span>EGFR</span>
+          <span>PARP1</span>
+          <span>PIK3CA</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Research console</p>
+          <h1>Quantum-AI Cancer Drug Discovery</h1>
+        </div>
+        <div class="top-actions">
+          <a class="action ghost" href="/artifacts/report.html" target="_blank" rel="noreferrer">Report</a>
+          <a class="action ghost" href="/investor" target="_blank" rel="noreferrer">Investor Site</a>
+          <a class="action ghost" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
+          <button class="action" id="refresh-btn">Refresh</button>
+        </div>
+      </header>
+
+      <section class="status-strip" id="status-strip">
+        <div><span class="muted">Run</span><strong id="run-status">Loading</strong></div>
+        <div><span class="muted">Proof Gate</span><strong id="proof-status">Loading</strong></div>
+        <div><span class="muted">Research Evidence</span><strong id="production-status">Loading</strong></div>
+      </section>
+      <section class="artifact-banner" id="artifact-banner">
+        <div class="empty">Loading active server and artifact health.</div>
+      </section>
+
+      <section class="view active" id="view-overview">
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Pipeline Evidence</h2>
+            </div>
+            <div class="timeline" id="pipeline-timeline"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Top Signals</h2>
+            </div>
+            <div id="top-signals" class="signal-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-targets">
+        <article class="panel">
+          <div class="panel-head split">
+            <div>
+              <h2>Target Workspace</h2>
+              <span class="muted">Disease context, public structure evidence, benchmark coverage, and best computational hypotheses.</span>
+            </div>
+          </div>
+          <div class="target-workspace" id="target-workspace"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-candidates">
+        <div class="panel">
+          <div class="panel-head split">
+            <div>
+              <h2>Ranked Candidates</h2>
+              <span class="muted" id="candidate-count"></span>
+            </div>
+            <div class="segmented" id="target-filter">
+              <button class="active" data-target="all">All</button>
+              <button data-target="EGFR">EGFR</button>
+              <button data-target="PARP1">PARP1</button>
+              <button data-target="PIK3CA">PIK3CA</button>
+            </div>
+          </div>
+          <div class="candidate-grid" id="candidate-grid"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-models">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Model Playground</h2>
+          </div>
+          <form class="predictor" id="predictor-form">
+            <label>
+              <span>Target</span>
+              <select id="predict-target">
+                <option value="EGFR">EGFR</option>
+                <option value="PARP1">PARP1</option>
+                <option value="PIK3CA">PIK3CA</option>
+              </select>
+            </label>
+            <label class="wide">
+              <span>SMILES</span>
+              <input id="predict-smiles" value="CN(C)c1cc2ncnc(Nc3cccc(Br)c3)c2cn1" autocomplete="off">
+            </label>
+            <button class="action" type="submit">Run Model</button>
+          </form>
+          <div id="predict-result" class="predict-result"></div>
+        </article>
+        <div class="grid two model-layout">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Model Files</h2>
+            </div>
+            <div class="model-list" id="model-files"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Model Registry</h2>
+            </div>
+            <div id="model-cards"></div>
+          </article>
+        </div>
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Activity Models</h2>
+            </div>
+            <div id="activity-metrics"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>ADMET Models</h2>
+            </div>
+            <div id="admet-metrics"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-quantum">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Quantum Prefilter</h2>
+            </div>
+            <div id="quantum-prefilter-table"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>xTB Quantum Chemistry</h2>
+            </div>
+            <div id="qm-table"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Qiskit Kernel Reranking</h2>
+            </div>
+            <div id="qml-table"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-research">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Scientific Evidence</h2>
+            </div>
+            <div class="stats-grid compact" id="scientific-evidence-metrics"></div>
+            <div id="scientific-evidence-architecture" class="log-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Quantum Scope</h2>
+            </div>
+            <div id="scientific-quantum-scope" class="signal-list"></div>
+          </article>
+        </div>
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Redocking Validation</h2>
+            </div>
+            <div id="scientific-redocking"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Scientist Critique</h2>
+            </div>
+            <div id="scientific-critique" class="log-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-experiments">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head split">
+              <div>
+                <h2>Research Experiment Matrix</h2>
+                <span class="muted">100+ ranking, safety, structure, quantum, and consensus stress tests.</span>
+              </div>
+              <a class="action ghost" id="experiment-report-link" href="#" target="_blank" rel="noreferrer">Experiment Report</a>
+            </div>
+            <div class="stats-grid compact" id="experiment-metrics"></div>
+            <div id="best-experiments" class="log-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Hybrid Top 5</h2>
+            </div>
+            <div id="hybrid-top5" class="model-list"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Warning Analysis</h2>
+          </div>
+          <div id="experiment-warning-analysis"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-viewer">
+        <article class="panel">
+          <div class="panel-head split">
+            <div>
+              <h2>Protein-Ligand Docking Workbench</h2>
+              <span class="muted">Closeable sticky viewer. Docked Vina/Smina poses load by default; GNINA and conformer fallbacks are selectable.</span>
+            </div>
+            <button class="action" id="viewer-open">Open 3D Viewer</button>
+          </div>
+          <div id="viewer-quick-list" class="model-list"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Structures To Review</h2>
+          </div>
+          <div id="legacy-structures" class="model-list"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-gnina">
+        <article class="panel">
+          <div class="panel-head split">
+            <div>
+              <h2>GNINA CNN Docking</h2>
+              <span class="muted">Live CPU GNINA screen with CNN pose/affinity scoring and docked SDF poses</span>
+            </div>
+            <div class="top-actions">
+              <select id="gnina-depth-mode" class="compact-select">
+                <option value="quick">Quick: top 1 / target</option>
+                <option value="investor">Investor: top 3 / target</option>
+                <option value="scientific">Scientific: top 10 / target</option>
+              </select>
+              <button class="action" id="gnina-start">Run GNINA</button>
+            </div>
+          </div>
+          <div class="gnina-status" id="gnina-summary"></div>
+          <div class="progress-track" aria-label="GNINA progress">
+            <div class="progress-fill" id="gnina-progress"></div>
+          </div>
+        </article>
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>GNINA Results</h2>
+            </div>
+            <div id="gnina-results"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Live Run Log</h2>
+            </div>
+            <div id="gnina-log" class="log-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-tools">
+        <article class="panel">
+          <div class="panel-head split">
+            <div>
+              <h2>Scientist Module Console</h2>
+              <span class="muted">Use and test every module contract across tiers with project-scoped jobs, credits, logs, and result artifacts.</span>
+            </div>
+            <div class="top-actions">
+              <button class="action ghost" id="module-demo-setup">Start Local Demo</button>
+              <button class="action" id="module-refresh">Refresh Modules</button>
+              <a class="action ghost" href="/artifacts/platform/module_registry.json" target="_blank" rel="noreferrer">Registry JSON</a>
+              <a class="action ghost" href="/artifacts/triage/wet_lab_triage_board.html" target="_blank" rel="noreferrer">Triage Board</a>
+            </div>
+          </div>
+          <div class="module-status-strip" id="module-status-strip"></div>
+          <div class="module-auth-grid">
+            <form class="module-auth-box" id="module-login-form">
+              <h3>Login</h3>
+              <label><span>Email</span><input id="module-login-email" type="email" autocomplete="email" placeholder="researcher@example.com"></label>
+              <label><span>Password</span><input id="module-login-password" type="password" autocomplete="current-password" placeholder="Minimum 8 characters"></label>
+              <button class="download" type="submit">Login</button>
+            </form>
+            <form class="module-auth-box" id="module-signup-form">
+              <h3>Create Research Account</h3>
+              <label><span>Email</span><input id="module-signup-email" type="email" autocomplete="email" placeholder="scientist@qai.local"></label>
+              <label><span>Password</span><input id="module-signup-password" type="password" autocomplete="new-password" placeholder="Minimum 8 characters"></label>
+              <label><span>Organization</span><input id="module-signup-org" value="Q-AI Oncology Lab" autocomplete="organization"></label>
+              <button class="download" type="submit">Sign Up</button>
+            </form>
+            <form class="module-auth-box" id="module-project-form">
+              <h3>Project</h3>
+              <label><span>Active Project</span><select id="module-project-select"></select></label>
+              <label><span>New Project Name</span><input id="module-project-name" value="cancer_proof_v1"></label>
+              <button class="download" type="submit">Create / Connect</button>
+            </form>
+          </div>
+          <div id="module-message" class="empty">Sign in or start a local demo to run authenticated project modules.</div>
+        </article>
+
+        <div class="grid two module-layout">
+          <article class="panel">
+            <div class="panel-head split">
+              <div>
+                <h2>Tier And Access Test</h2>
+                <span class="muted">Switch plan tiers, estimate quotas, and dry-run the module contracts without scientific compute.</span>
+              </div>
+              <button class="action" id="module-bulk-test">Dry-Run Tier</button>
+            </div>
+            <div class="module-tier-grid" id="module-tier-grid"></div>
+            <div class="module-depth-row">
+              <label>
+                <span>Compute Depth</span>
+                <select id="module-depth"></select>
+              </label>
+              <label>
+                <span>Mode</span>
+                <select id="module-run-mode">
+                  <option value="dry">Dry run: contract, auth, quota, logging</option>
+                  <option value="run">Use module: write/read scientific artifacts</option>
+                </select>
+              </label>
+            </div>
+            <div id="module-bulk-results" class="module-test-grid"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Usage And Queue</h2>
+            </div>
+            <div class="stats-grid compact" id="module-usage-grid"></div>
+            <div id="module-job-list" class="log-list"></div>
+          </article>
+        </div>
+
+        <div class="module-workbench">
+          <article class="panel module-browser">
+            <div class="panel-head split">
+              <div>
+                <h2>All Modules</h2>
+                <span class="muted" id="module-count-label"></span>
+              </div>
+              <select class="compact-select" id="module-filter">
+                <option value="all">All queues</option>
+                <option value="data">Data</option>
+                <option value="structure">Structure</option>
+                <option value="generation">Generation</option>
+                <option value="training">Training</option>
+                <option value="scoring">Scoring</option>
+                <option value="qml">QML</option>
+                <option value="docking">Docking</option>
+                <option value="visual">Visual</option>
+                <option value="md">MD / Relaxation</option>
+                <option value="qm">QM</option>
+                <option value="ranking">Ranking</option>
+                <option value="decision">Decision</option>
+                <option value="reporting">Reporting</option>
+                <option value="collaboration">Collaboration</option>
+              </select>
+            </div>
+            <div class="module-grid" id="module-grid"></div>
+          </article>
+
+          <article class="panel module-detail-panel">
+            <div class="panel-head split">
+              <div>
+                <h2 id="module-detail-title">Select A Module</h2>
+                <span class="muted" id="module-detail-purpose"></span>
+              </div>
+              <div id="module-detail-badges" class="tag-row"></div>
+            </div>
+            <div class="module-detail-grid">
+              <div id="module-contract"></div>
+              <form id="module-run-form" class="module-run-form">
+                <label>
+                  <span>Run Payload JSON</span>
+                  <textarea id="module-payload" spellcheck="false"></textarea>
+                </label>
+                <div class="module-action-row">
+                  <button class="download" id="module-reset-payload" type="button">Reset Payload</button>
+                  <button class="download" id="module-estimate" type="button">Estimate</button>
+                  <button class="action" id="module-run" type="submit">Run Module</button>
+                </div>
+              </form>
+            </div>
+          </article>
+        </div>
+
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Estimate And Run Result</h2>
+            </div>
+            <div id="module-estimate-result"></div>
+            <div id="module-result"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Live Job Logs</h2>
+            </div>
+            <div id="module-live-job"></div>
+            <div id="module-live-log" class="log-list"></div>
+          </article>
+        </div>
+
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Community Tools</h2>
+            </div>
+            <div class="tool-grid" id="tool-grid"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Smoke Tests</h2>
+            </div>
+            <div class="tool-grid" id="smoke-grid"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-investor">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Investor Proof Metrics</h2>
+            </div>
+            <div class="stats-grid compact" id="investor-proof-metrics"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Demo Flow</h2>
+            </div>
+            <div id="investor-demo-flow" class="log-list"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-head split">
+            <div>
+              <h2>Product Readiness</h2>
+              <span class="muted">Method tiers and limitations are shown explicitly for investor credibility.</span>
+            </div>
+            <div class="top-actions">
+              <a class="action ghost" href="/completion-report" target="_blank" rel="noreferrer">Completion Report</a>
+              <a class="action ghost" href="/artifacts/product_readiness_report.json" target="_blank" rel="noreferrer">Readiness JSON</a>
+            </div>
+          </div>
+          <div class="tool-grid" id="investor-tool-suite"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-validation">
+        <div class="grid two">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Proof Gate</h2>
+            </div>
+            <div id="proof-validation"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Research Evidence Gate</h2>
+            </div>
+            <div id="production-validation"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="viewer-backdrop" class="viewer-backdrop hidden"></div>
+  <aside id="viewer-drawer" class="viewer-drawer hidden" aria-label="Docked protein ligand pose viewer">
+    <div class="drawer-head">
+      <div>
+        <p class="eyebrow">Docking evidence</p>
+        <h2 id="drawer-title">3D Pose Viewer</h2>
+      </div>
+      <button class="icon-action" id="viewer-close" aria-label="Close viewer">Close</button>
+    </div>
+    <div class="viewer-controls">
+      <select id="viewer-target"></select>
+      <div class="candidate-picker">
+        <input id="viewer-candidate-search" list="viewer-candidate-options" placeholder="Search candidate">
+        <datalist id="viewer-candidate-options"></datalist>
+        <input id="viewer-candidate" type="hidden">
+      </div>
+      <select id="viewer-pose-source">
+        <option value="docked">Vina/Smina docked pose</option>
+        <option value="gnina">GNINA docked pose</option>
+        <option value="conformer">Generated conformer</option>
+      </select>
+      <button class="action" id="viewer-load">Load</button>
+    </div>
+    <div class="viewer-toolbar">
+      <button class="download" id="viewer-reset">Reset Camera</button>
+      <button class="download" id="viewer-zoom-ligand">Zoom Ligand</button>
+      <button class="download active" id="viewer-toggle-cartoon">Cartoon</button>
+      <button class="download active" id="viewer-toggle-surface">Surface</button>
+      <button class="download" id="viewer-toggle-spheres">Ligand Spheres</button>
+    </div>
+    <div id="viewer-warning" class="empty"></div>
+    <div class="viewer-layout">
+      <div id="mol-viewer"></div>
+      <aside class="viewer-evidence" id="viewer-evidence"></aside>
+    </div>
+    <div class="viewer-downloads" id="viewer-downloads"></div>
+  </aside>
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

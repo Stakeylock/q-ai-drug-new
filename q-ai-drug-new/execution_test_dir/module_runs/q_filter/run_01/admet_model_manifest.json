@@ -1,0 +1,6 @@
+{
+  "model_available": false,
+  "endpoint_mapping_known": false,
+  "claim_boundary": "ADMET predictions are computational estimates; not safety or toxicology claims.",
+  "note": "ADMET model unavailable; scores not computed. Set ADMET_MODEL_PATH or provide best_tox_model.pt."
+}

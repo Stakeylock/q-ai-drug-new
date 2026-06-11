@@ -1,0 +1,107 @@
+{
+  "status": "success",
+  "total_found": 206200,
+  "results_count": 5,
+  "pagination": {
+    "start": 0,
+    "rows": 5,
+    "has_more": true
+  },
+  "terms": [
+    {
+      "iri": "http://purl.obolibrary.org/obo/NCIT_C17068",
+      "label": "Epidermal Growth Factor Receptor",
+      "description": [
+        "Epidermal growth factor receptor (1210 aa, ~134 kDa) is encoded by the human EGFR gene. This protein plays a role in cell-cell adhesion, cell migration, cell proliferation and signal transduction."
+      ],
+      "ontology_name": "ncit",
+      "ontology_prefix": "NCIT",
+      "obo_id": "NCIT:C17068",
+      "short_form": "NCIT_C17068",
+      "type": "class",
+      "is_defining_ontology": false,
+      "exact_synonyms": [
+        "Cell Growth Inhibiting Protein 40",
+        "Cell Proliferation-Inducing Protein 61",
+        "EC 2.7.10.1",
+        "EGF Receptor",
+        "EGFR",
+        "ERBB Protein",
+        "Epidermal Growth Factor Receptor Protein-Tyrosine Kinase",
+        "Epidermal Growth Factor Receptor",
+        "Erb-B2 Receptor Tyrosine Kinase 1",
+        "ErbB1",
+        "HER-1",
+        "HER1",
+        "Proto-Oncogene c-erbB-1",
+        "Receptor Tyrosine-Protein Kinase erbB-1",
+        "Urogastrone Receptor",
+        "c-erbB-1",
+        "epidermal growth factor receptor",
+        "erbB-1"
+      ]
+    },
+    {
+      "iri": "http://www.orpha.net/ORDO/Orphanet_121311",
+      "label": "epidermal growth factor receptor",
+      "description": [],
+      "ontology_name": "ordo",
+      "ontology_prefix": "ORDO",
+      "obo_id": "ORDO:121311",
+      "short_form": "ORDO_121311",
+      "type": "class",
+      "is_defining_ontology": false,
+      "exact_synonyms": []
+    },
+    {
+      "iri": "http://purl.obolibrary.org/obo/PR_000006933",
+      "label": "epidermal growth factor receptor",
+      "description": [
+        "Category=gene.",
+        "An EGF receptor type tyrosine-protein kinase that is a translation product of the human EGFR gene or a 1:1 ortholog thereof."
+      ],
+      "ontology_name": "pr",
+      "ontology_prefix": "PR",
+      "obo_id": "PR:000006933",
+      "short_form": "PR_000006933",
+      "type": "class",
+      "is_defining_ontology": false,
+      "exact_synonyms": [
+        "proto-oncogene c-ErbB-1",
+        "receptor tyrosine-protein kinase erbB-1",
+        "EGFR"
+      ]
+    },
+    {
+      "iri": "http://snomed.info/id/86960007",
+      "label": "Epidermal growth factor receptor",
+      "description": [],
+      "ontology_name": "snomed",
+      "ontology_prefix": "SNOMED",
+      "obo_id": "SNOMED:86960007",
+      "short_form": "SNOMED_86960007",
+      "type": "class",
+      "is_defining_ontology": false,
+      "exact_synonyms": []
+    },
+    {
+      "iri": "http://purl.obolibrary.org/obo/PR_000006933",
+      "label": "epidermal growth factor receptor",
+      "description": [
+        "An EGF receptor type tyrosine-protein kinase that is a translation product of the human EGFR gene or a 1:1 ortholog thereof.",
+        "Category=gene."
+      ],
+      "ontology_name": "bmont",
+      "ontology_prefix": "BMONT",
+      "obo_id": "PR:000006933",
+      "short_form": "PR_000006933",
+      "type": "class",
+      "is_defining_ontology": false,
+      "exact_synonyms": [
+        "EGFR",
+        "proto-oncogene c-ErbB-1",
+        "receptor tyrosine-protein kinase erbB-1"
+      ]
+    }
+  ]
+}

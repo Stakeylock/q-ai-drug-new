@@ -1,0 +1,141 @@
+{
+  "module_id": "onco_data_builder",
+  "module_name": "OncoData Builder",
+  "project_id": "execution_test_dir",
+  "run_id": "run_01",
+  "status": "succeeded",
+  "execution_mode": "small_or_production",
+  "queue": "data",
+  "artifacts": [
+    {
+      "type": "csv",
+      "name": "curated_activity",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/curated_activity.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/curated_activity.csv",
+      "size_bytes": 321638,
+      "checksum": "55d1a1432416187f",
+      "created_at": "2026-05-16T06:13:03.379121+00:00",
+      "artifact_id": "9116afa2786f915aafb4e97f"
+    },
+    {
+      "type": "csv",
+      "name": "uploaded_assay_normalized",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/uploaded_assay_normalized.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/uploaded_assay_normalized.csv",
+      "size_bytes": 1382234487,
+      "checksum": "866e28ca48498606",
+      "created_at": "2026-05-16T06:13:20.093762+00:00",
+      "artifact_id": "c6e210a7663fd3bc4494205b"
+    },
+    {
+      "type": "csv",
+      "name": "duplicate_resolution",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/duplicate_resolution.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/duplicate_resolution.csv",
+      "size_bytes": 29350,
+      "checksum": "973c3de240fedeaf",
+      "created_at": "2026-05-16T06:13:20.106810+00:00",
+      "artifact_id": "aae1bec1d241406f8c19f31c"
+    },
+    {
+      "type": "csv",
+      "name": "target_coverage_summary",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/target_coverage_summary.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/target_coverage_summary.csv",
+      "size_bytes": 208,
+      "checksum": "ee70928ed866d9f2",
+      "created_at": "2026-05-16T06:13:20.113357+00:00",
+      "artifact_id": "ed9fb788cb43662791b28d44"
+    },
+    {
+      "type": "csv",
+      "name": "scaffold_split_summary",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/scaffold_split_summary.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/scaffold_split_summary.csv",
+      "size_bytes": 106,
+      "checksum": "7bf06e7a6e604e5d",
+      "created_at": "2026-05-16T06:13:20.120899+00:00",
+      "artifact_id": "71ef093d6c412cfb7e7c772a"
+    },
+    {
+      "type": "csv",
+      "name": "curated_activity_with_split",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/curated_activity_with_split.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/curated_activity_with_split.csv",
+      "size_bytes": 321638,
+      "checksum": "55d1a1432416187f",
+      "created_at": "2026-05-16T06:13:20.133925+00:00",
+      "artifact_id": "6eac66d149b03c3d8b7178b3"
+    },
+    {
+      "type": "csv",
+      "name": "train",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/train.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/train.csv",
+      "size_bytes": 246978,
+      "checksum": "3899ae82369b91f0",
+      "created_at": "2026-05-16T06:13:20.147089+00:00",
+      "artifact_id": "4cd6bceadd54ff32c4add617"
+    },
+    {
+      "type": "csv",
+      "name": "valid",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/valid.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/valid.csv",
+      "size_bytes": 36209,
+      "checksum": "6a4f523c1a7a45c0",
+      "created_at": "2026-05-16T06:13:20.156118+00:00",
+      "artifact_id": "b9e3b055e80fc86f7600d586"
+    },
+    {
+      "type": "csv",
+      "name": "test",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/test.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/test.csv",
+      "size_bytes": 39279,
+      "checksum": "8e8071ee4c11cf04",
+      "created_at": "2026-05-16T06:13:20.165710+00:00",
+      "artifact_id": "9b945d39ef9022783270365e"
+    },
+    {
+      "type": "csv",
+      "name": "activity_distribution_by_target",
+      "uri": "execution_test_dir/module_runs/onco_data_builder/run_01/activity_distribution_by_target.csv",
+      "relative_path": "module_runs/onco_data_builder/run_01/activity_distribution_by_target.csv",
+      "size_bytes": 250,
+      "checksum": "7d5c993dff159c86",
+      "created_at": "2026-05-16T06:13:20.172281+00:00",
+      "artifact_id": "01762b1ff058120f07974c4b"
+    }
+  ],
+  "warnings": [
+    "Found 285 duplicate groups; 0 have conflicting measurements (>1 log unit spread)."
+  ],
+  "limitations": [
+    "Public/private data curation evidence only; not expert manual assay review."
+  ],
+  "next_actions": [],
+  "credits_used": 501.0,
+  "claim_boundary": "Computational research hypothesis only. Wet-lab validation is required.",
+  "usage": {
+    "requested": {
+      "targets_requested": 2,
+      "curation_profile": "standard",
+      "data_sources": "uploaded_only",
+      "uploaded_assay_rows": 2391483,
+      "merged_source": "unknown_plus_uploaded"
+    },
+    "actual": {
+      "uploaded_assay_usable_rows": 2391483,
+      "uploaded_assay_rejected_rows": 0,
+      "duplicate_groups": 285,
+      "conflict_groups": 0,
+      "split_method": "scaffold",
+      "curated_records": 659,
+      "unique_molecules": 356,
+      "kept_records": 659,
+      "dataset_hash": "575a9676570fcfc8"
+    }
+  },
+  "created_at": "2026-05-16T06:13:20.177807+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "dataset_version": "1.0",
+  "created_from": "curate_activity_benchmark",
+  "targets": [
+    "EGFR"
+  ],
+  "curation_profile": "standard",
+  "data_sources": "public_only",
+  "record_count": 737,
+  "unique_molecules": 737,
+  "provenance": "Public ChEMBL/PubChem/MoleculeNet standardization. Not expert manual review.",
+  "limitations": [
+    "Computational public-data curation only",
+    "SMILES canonicalization may vary by RDKit version",
+    "Activity values are as-reported in source; no independent validation"
+  ]
+}

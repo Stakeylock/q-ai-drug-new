@@ -1,0 +1,20 @@
+{
+  "module_id": "q_orbital_analyzer",
+  "module_name": "Q-Orbital Analyzer",
+  "project_id": "test_disclaimers",
+  "run_id": "test_orbital",
+  "status": "failed",
+  "execution_mode": "rdkit_descriptor_fallback",
+  "queue": "qm",
+  "artifacts": [],
+  "warnings": [],
+  "claim_boundary": "RDKit descriptor fallback mode active. xTB quantum descriptor execution pending. HOMO/LUMO/orbital_gap not computed.",
+  "usage": {
+    "requested": {},
+    "actual": {}
+  },
+  "created_at": "2026-05-15T05:41:24.795060+00:00",
+  "failure_code": "invalid_input",
+  "failure_message": "Upload file not found: test_molecules.csv",
+  "actionable_message": "Error: Upload file not found: test_molecules.csv. Please check your inputs and try again."
+}
