@@ -6,7 +6,7 @@ services:
     volumes:
       - mongodb_data:/data/db
     healthcheck:
-      test: ['CMD', 'mongosh', '--eval', 'db.adminCommand(\"ping\")']
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -14,9 +14,9 @@ services:
   postgres:
     image: postgres:16
     environment:
-      POSTGRES_DB: qudrugforge
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-qudrugforge}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - '5433:5432'
     volumes:
@@ -41,8 +41,8 @@ services:
     image: minio/minio:latest
     command: server /data --console-address ':9001'
     environment:
-      MINIO_ROOT_USER: qaiadmin
-      MINIO_ROOT_PASSWORD: qaiadmin123
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-qaiadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-qaiadmin123}
     ports:
       - '9000:9000'
       - '9001:9001'
@@ -59,7 +59,7 @@ services:
       context: ./backend-mnl/qudrugforge-backend
       dockerfile: Dockerfile
     env_file:
-      - ./backend-mnl/qudrugforge-backend/.env
+      - ./backend-mnl/qudrugforge-backend/.env.production
     ports:
       - '8001:8001'
     depends_on:
@@ -80,7 +80,7 @@ services:
       context: ./frontend-mnl
       dockerfile: Dockerfile
     env_file:
-      - ./frontend-mnl/.env.local
+      - ./frontend-mnl/.env.production
     ports:
       - '3001:3001'
     depends_on:

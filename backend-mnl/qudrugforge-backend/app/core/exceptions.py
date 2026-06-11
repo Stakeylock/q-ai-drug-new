@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
+from app.core.config import settings
 from app.core.responses import error_response
 
 logger = logging.getLogger("qudrugforge-exceptions")
@@ -35,10 +36,15 @@ async def generic_exception_handler(request: Request, exc: Exception) -> JSONRes
     Catches all unexpected unhandled runtime exceptions, preventing leaks of server logs.
     """
     logger.exception(f"Unhandled Exception caught on request {request.url.path}: {str(exc)}")
+    
+    details = {}
+    if settings.APP_ENV != "production":
+        details["error_detail"] = str(exc)
+        
     return error_response(
         code="INTERNAL_SERVER_ERROR",
         message="An unexpected system error occurred on the server.",
-        details={"error_detail": str(exc)},
+        details=details,
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
     )
 

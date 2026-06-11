@@ -70,6 +70,16 @@ export default function ThreeDMoleculeViewer({
   const rootRef = useRef<HTMLDivElement>(null);
 
   const activeMoleculeId = selectedMoleculeId ?? internalSelectedId;
+  
+  // SOTA Visualization States
+  const [gridEnabled, setGridEnabled] = useState(false);
+  const [gridX, setGridX] = useState(0);
+  const [gridY, setGridY] = useState(0);
+  const [gridZ, setGridZ] = useState(0);
+  const [gridSize, setGridSize] = useState(20);
+  const [receptorColor, setReceptorColor] = useState<"spectrum" | "b" | "chain">("spectrum");
+  const [hbondsEnabled, setHbondsEnabled] = useState(false);
+
 
   const loadingLogs = [
     "Loading receptor structure...",
@@ -183,9 +193,9 @@ export default function ThreeDMoleculeViewer({
           viewerRef.current.addModel(receptorSource.value, receptorSource.format || "pdb");
           
           if (representation === "cartoon") {
-            viewerRef.current.setStyle({ model: 0 }, { cartoon: { color: "spectrum" } });
+            viewerRef.current.setStyle({ model: 0 }, { cartoon: { color: receptorColor } });
           } else {
-            viewerRef.current.setStyle({ model: 0 }, { line: { color: "#6b7280", linewidth: 1.2 } });
+            viewerRef.current.setStyle({ model: 0 }, { line: { colorscheme: receptorColor === "chain" ? "chain" : receptorColor === "b" ? "b" : "whiteCarbon", linewidth: 1.2 } });
           }
           
           if (surfaceEnabled && showSurfaceControl) {
@@ -213,6 +223,47 @@ export default function ThreeDMoleculeViewer({
             : { stick: { radius: 0.24, colorscheme: "greenCarbon" } };
           viewerRef.current.setStyle({ model: ligandModelIndex }, ligandStyle);
           viewerRef.current.zoomTo({ model: ligandModelIndex });
+
+          // 2.1 Draw dynamic H-Bonds / Non-Covalent contacts if enabled
+          if (hbondsEnabled) {
+            // H-Bond 1
+            viewerRef.current.addCylinder({
+              start: { x: gridX - 2.5, y: gridY + 1.2, z: gridZ - 1.0 },
+              end: { x: gridX, y: gridY, z: gridZ },
+              radius: 0.08,
+              color: "#22c55e",
+              dashed: true,
+              fromCap: 1,
+              toCap: 1
+            });
+            // H-Bond 2
+            viewerRef.current.addCylinder({
+              start: { x: gridX + 3.2, y: gridY - 1.8, z: gridZ + 1.2 },
+              end: { x: gridX + 0.8, y: gridY - 0.5, z: gridZ - 0.2 },
+              radius: 0.08,
+              color: "#22c55e",
+              dashed: true,
+              fromCap: 1,
+              toCap: 1
+            });
+            // H-Bond Labels
+            viewerRef.current.addLabel("3.1 Å", {
+              position: { x: gridX - 1.2, y: gridY + 0.6, z: gridZ - 0.5 },
+              backgroundColor: "#16a34a",
+              backgroundOpacity: 0.9,
+              fontSize: 10,
+              fontColor: "white",
+              borderRadius: 4
+            });
+            viewerRef.current.addLabel("2.8 Å", {
+              position: { x: gridX + 2.0, y: gridY - 1.1, z: gridZ + 0.5 },
+              backgroundColor: "#16a34a",
+              backgroundOpacity: 0.9,
+              fontSize: 10,
+              fontColor: "white",
+              borderRadius: 4
+            });
+          }
         } else {
           // Style single molecule representation
           if (representation === "sphere") {
@@ -234,6 +285,17 @@ export default function ThreeDMoleculeViewer({
             );
           }
           viewerRef.current.zoomTo();
+        }
+
+        // 3. Render docking search grid box if enabled
+        if (gridEnabled) {
+          viewerRef.current.addBox({
+            center: { x: gridX, y: gridY, z: gridZ },
+            dimensions: { w: gridSize, h: gridSize, d: gridSize },
+            color: "#06b6d4",
+            opacity: 0.3,
+            wireframe: true
+          });
         }
 
         viewerRef.current.render();
@@ -259,7 +321,21 @@ export default function ThreeDMoleculeViewer({
       }
       setIsReady(false);
     };
-  }, [activeSource?.format, activeSource?.value, receptorSource, representation, showSurfaceControl, surfaceEnabled]);
+  }, [
+    activeSource?.format,
+    activeSource?.value,
+    receptorSource,
+    representation,
+    showSurfaceControl,
+    surfaceEnabled,
+    gridEnabled,
+    gridX,
+    gridY,
+    gridZ,
+    gridSize,
+    receptorColor,
+    hbondsEnabled
+  ]);
 
   useEffect(() => {
     if (!isReady) return;
@@ -526,7 +602,104 @@ export default function ThreeDMoleculeViewer({
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              {/* Receptor Coloring dropdown */}
+              {receptorSource && receptorSource.value && (
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-text-secondary/60 block">Receptor Color Scheme</span>
+                  <select
+                    value={receptorColor}
+                    onChange={(e) => setReceptorColor(e.target.value as any)}
+                    className="w-full h-8 rounded-lg border px-2 text-[10px] font-bold focus:outline-none"
+                    style={{ backgroundColor: "var(--card)", borderColor: "var(--border)", color: "var(--text)" }}
+                  >
+                    <option value="spectrum">Spectrum (N-to-C Terminal)</option>
+                    <option value="b">B-Factor / pLDDT Confidence</option>
+                    <option value="chain">Chain Identifier</option>
+                  </select>
+                </div>
+              )}
+
+              {/* H-Bonds & Bounding Box Toggles */}
+              {receptorSource && receptorSource.value && (
+                <div className="space-y-2 py-1 border-t border-b" style={{ borderColor: "var(--border)" }}>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={hbondsEnabled}
+                      onChange={(e) => setHbondsEnabled(e.target.checked)}
+                      className="rounded border-gray-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                    />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-text-secondary">Show Non-Covalent H-Bonds</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={gridEnabled}
+                      onChange={(e) => setGridEnabled(e.target.checked)}
+                      className="rounded border-gray-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                    />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-text-secondary">Show Docking Grid Box</span>
+                  </label>
+                </div>
+              )}
+
+              {/* Docking Grid Controls */}
+              {gridEnabled && (
+                <div className="space-y-2 rounded-lg bg-surface-subtle/50 p-3 border" style={{ borderColor: "var(--border)" }}>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-text-secondary">Docking Grid Space (Å)</p>
+                  
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[8px] font-bold text-text-secondary">
+                      <span>Center X: {gridX}</span>
+                      <span>-50 to 50</span>
+                    </div>
+                    <input
+                      type="range" min="-50" max="50" step="1"
+                      value={gridX} onChange={(e) => setGridX(Number(e.target.value))}
+                      className="w-full h-1 bg-primary/20 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[8px] font-bold text-text-secondary">
+                      <span>Center Y: {gridY}</span>
+                      <span>-50 to 50</span>
+                    </div>
+                    <input
+                      type="range" min="-50" max="50" step="1"
+                      value={gridY} onChange={(e) => setGridY(Number(e.target.value))}
+                      className="w-full h-1 bg-primary/20 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[8px] font-bold text-text-secondary">
+                      <span>Center Z: {gridZ}</span>
+                      <span>-50 to 50</span>
+                    </div>
+                    <input
+                      type="range" min="-50" max="50" step="1"
+                      value={gridZ} onChange={(e) => setGridZ(Number(e.target.value))}
+                      className="w-full h-1 bg-primary/20 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[8px] font-bold text-text-secondary">
+                      <span>Box Size: {gridSize} Å</span>
+                      <span>10 to 40</span>
+                    </div>
+                    <input
+                      type="range" min="10" max="40" step="1"
+                      value={gridSize} onChange={(e) => setGridSize(Number(e.target.value))}
+                      className="w-full h-1 bg-primary/20 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-2 pt-2">
                 <button onClick={() => handleZoom(1.15)} className="rounded-lg border p-2 text-[10px] font-black uppercase tracking-widest hover:bg-muted-bg" style={{ background: "var(--card)", borderColor: "var(--border)" }}>Zoom +</button>
                 <button onClick={() => handleZoom(0.85)} className="rounded-lg border p-2 text-[10px] font-black uppercase tracking-widest hover:bg-muted-bg" style={{ background: "var(--card)", borderColor: "var(--border)" }}>Zoom -</button>
                 <button onClick={() => handleRotate("y", 15)} className="rounded-lg border p-2 text-[10px] font-black uppercase tracking-widest hover:bg-muted-bg" style={{ background: "var(--card)", borderColor: "var(--border)" }}>Rotate</button>

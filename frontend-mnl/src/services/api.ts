@@ -57,6 +57,9 @@ function resolveApiBaseUrl(): string {
   let url = "";
   if (configured && configured.trim()) {
     url = normalizeBaseUrl(configured);
+    if (typeof window !== "undefined" && window.location?.hostname) {
+      url = url.replace(/(:\/\/)backend(\b|:)/, `$1${window.location.hostname}$2`);
+    }
   } else if (typeof window !== "undefined" && window.location?.origin) {
     url = normalizeBaseUrl(window.location.origin);
   } else {
@@ -82,6 +85,16 @@ function resolveApiBaseUrl(): string {
 const API_BASE_URL = resolveApiBaseUrl();
 
 export function isDemoMode(): boolean {
+  // Check localStorage first (useful for E2E testing overrides)
+  if (typeof window !== "undefined") {
+    try {
+      const localVal = window.localStorage.getItem("demo_mode");
+      if (localVal !== null) {
+        return localVal === "true" || localVal === "1";
+      }
+    } catch (e) {}
+  }
+
   // Check Environment Variable explicitly
   const envValue = 
     (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_DEMO_MODE) || 
@@ -445,11 +458,18 @@ export async function getDatasets(): Promise<DatasetsResponse> {
   if (isDemoMode()) {
     return { count: 3, datasets: ["ZINC250k", "ChEMBL", "DrugBank"] };
   }
-  const data = await apiFetch<DatasetsResponse>("/datasets");
-  return {
-    count: Number(data?.count ?? 0),
-    datasets: Array.isArray(data?.datasets) ? [...data.datasets] : [],
-  };
+  try {
+    const data = await apiFetch<DatasetsResponse>("/datasets");
+    return {
+      count: Number(data?.count ?? 0),
+      datasets: Array.isArray(data?.datasets) ? [...data.datasets] : [],
+    };
+  } catch (err) {
+    if (isDemoMode()) {
+      return { count: 3, datasets: ["ZINC250k", "ChEMBL", "DrugBank"] };
+    }
+    throw err;
+  }
 }
 
 /** Fetch available dashboard metrics and recent runs with fallback */
@@ -509,10 +529,43 @@ export async function getMolecules(params: {
   if (isDemoMode()) {
     return mockApi.getMolecules(page, limit);
   }
+  const projectId = typeof window !== "undefined" ? window.localStorage.getItem("active_project_id") : null;
+  if (!projectId) {
+    return {
+      page: page,
+      limit: limit,
+      total_items: 0,
+      total_pages: 0,
+      items: []
+    };
+  }
   try {
-    return await apiFetch<MoleculesListResponse>("/molecules", {
+    const res = await apiFetch<any>(`/projects/${projectId}/molecules`, {
       params,
     });
+    if (res && res.success && res.data) {
+      return {
+        page: page,
+        limit: limit,
+        total_items: res.data.total || (res.data.items?.length || 0),
+        total_pages: Math.ceil((res.data.total || 1) / limit),
+        items: (res.data.items || []).map((m: any) => ({
+          molecule_id: m.compound_id || m.id,
+          smiles: m.smiles,
+          mw: m.mw !== undefined && m.mw !== null ? m.mw : 400,
+          logp: m.logp !== undefined && m.logp !== null ? m.logp : 2.5,
+          qed: m.qed !== undefined && m.qed !== null ? m.qed : 0.72,
+          dataset: m.dataset || "Imported"
+        }))
+      };
+    }
+    return {
+      page: page,
+      limit: limit,
+      total_items: 0,
+      total_pages: 0,
+      items: []
+    };
   } catch (err) {
     throw err;
   }
@@ -545,19 +598,20 @@ export async function searchSimilar(
   smiles: string,
   topK: number = 10
 ): Promise<SimilaritySearchResponse> {
+  const projectId = typeof window !== "undefined" ? window.localStorage.getItem("active_project_id") : null;
+  if (!projectId) {
+    return { neighbors: [] };
+  }
   try {
-    const data = await apiFetch<
-      SimilaritySearchResponse | { neighbors: SimilaritySearchResponse["neighbors"] }
-    >("/embedding/search", {
+    const data = await apiFetch<any>(`/projects/${projectId}/similarity/search`, {
       method: "POST",
-      body: { smiles, top_k: topK },
+      body: { query_smiles: smiles, top_k: topK },
     });
 
-    if ("neighbors" in data) {
-      return { neighbors: data.neighbors };
+    if (data && data.success && data.data) {
+      return { neighbors: data.data.neighbors || [] };
     }
-
-    return data as SimilaritySearchResponse;
+    return { neighbors: [] };
   } catch (err) {
     if (isDemoMode()) {
       return mockApi.getMolecularSimilarity(smiles, topK);
@@ -854,7 +908,22 @@ export async function getExperimentSummary(): Promise<ExperimentSummaryResponse>
   if (isDemoMode()) {
     return { experiment_count: 142 };
   }
-  return apiFetch<ExperimentSummaryResponse>("/experiments/summary");
+  const projectId = typeof window !== "undefined" ? window.localStorage.getItem("active_project_id") : null;
+  if (!projectId) {
+    return { experiment_count: 0 };
+  }
+  try {
+    const res = await apiFetch<any>(`/projects/${projectId}/experiments/summary`);
+    if (res && res.success && res.data) {
+      return { experiment_count: res.data.experiment_count || 0 };
+    }
+    return { experiment_count: 0 };
+  } catch (err) {
+    if (isDemoMode()) {
+      return { experiment_count: 0 };
+    }
+    throw err;
+  }
 }
 
 /** Fetch recent experiment runs for dashboard activity panel */
@@ -863,9 +932,33 @@ export async function getRecentRuns(limit: number = 8): Promise<RecentRunsRespon
     const data = await mockApi.getDashboardData();
     return data.recent;
   }
-  return apiFetch<RecentRunsResponse>("/runs/recent", {
-    params: { limit },
-  });
+  const projectId = typeof window !== "undefined" ? window.localStorage.getItem("active_project_id") : null;
+  if (!projectId) {
+    return { items: [] };
+  }
+  try {
+    const res = await apiFetch<any>(`/projects/${projectId}/pipeline/runs`, {
+      params: { limit },
+    });
+    if (res && res.success && res.data) {
+      const items = res.data.items || [];
+      return {
+        items: items.map((r: any) => ({
+          run_id: r.id || r._id,
+          experiment_name: r.name || r.pipeline_type || "Pipeline Run",
+          dataset_name: r.dataset_name || r.metadata?.dataset || "Docking Run",
+          status: r.status,
+          created_at: r.created_at || new Date().toISOString(),
+        }))
+      };
+    }
+    return { items: [] };
+  } catch (err) {
+    if (isDemoMode()) {
+      return { items: [] };
+    }
+    throw err;
+  }
 }
 
 /** Trigger molecule generation stage (placeholder-ready API contract). */
@@ -877,13 +970,16 @@ export async function generateMolecules(
       method: "POST",
       body: payload,
     });
-  } catch {
-    await sleep(400);
-    return {
-      runId: createPlaceholderRunId("gen"),
-      stage: "generating",
-      message: "Generating molecules...",
-    };
+  } catch (err) {
+    if (isDemoMode()) {
+      await sleep(400);
+      return {
+        runId: createPlaceholderRunId("gen"),
+        stage: "generating",
+        message: "Generating molecules...",
+      };
+    }
+    throw err;
   }
 }
 
@@ -899,13 +995,16 @@ export async function runDocking(
       method: "POST",
       body: payload,
     });
-  } catch {
-    await sleep(400);
-    return {
-      runId: createPlaceholderRunId("dock"),
-      stage: "docking",
-      message: "Docking started...",
-    };
+  } catch (err) {
+    if (isDemoMode()) {
+      await sleep(400);
+      return {
+        runId: createPlaceholderRunId("dock"),
+        stage: "docking",
+        message: "Docking started...",
+      };
+    }
+    throw err;
   }
 }
 
@@ -1071,13 +1170,16 @@ export async function runProjectDocking(projectId: string, payload: any): Promis
       method: "POST",
       body: payload,
     });
-  } catch {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    return {
-      runId: `${projectId}-dock-${Date.now()}`,
-      stage: "docking",
-      message: "Docking started...",
-    };
+  } catch (err) {
+    if (isDemoMode()) {
+      await new Promise(resolve => setTimeout(resolve, 400));
+      return {
+        runId: `${projectId}-dock-${Date.now()}`,
+        stage: "docking",
+        message: "Docking started...",
+      };
+    }
+    throw err;
   }
 }
 

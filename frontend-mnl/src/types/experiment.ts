@@ -68,3 +68,12 @@ export interface ExperimentPipelineStages {
 export interface ExperimentRecord extends Experiment {
   pipelineStages: ExperimentPipelineStages;
 }
+
+export interface ExperimentInput {
+  protein: string;
+  constraints: {
+    logP: number;
+    qed: number;
+    toxicity: string;
+  };
+}

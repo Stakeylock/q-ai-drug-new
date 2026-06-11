@@ -15,6 +15,16 @@ const nextConfig = {
 	images: {
 		formats: ['image/avif', 'image/webp'],
 	},
+	async redirects() {
+		return [
+			{
+				source: '/history',
+				destination: '/dashboard/history',
+				permanent: true,
+			},
+		];
+	},
 };
 
 module.exports = nextConfig;
+

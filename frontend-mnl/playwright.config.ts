@@ -5,6 +5,9 @@ import path from 'path';
 // Load E2E custom environment variables if present
 dotenv.config({ path: path.resolve(__dirname, '.env.e2e') });
 
+const isMock = (process.env.E2E_MODE || 'mock').toLowerCase() === 'mock';
+process.env.NEXT_PUBLIC_DEMO_MODE = isMock ? 'true' : 'false';
+
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3001';
 
 export default defineConfig({

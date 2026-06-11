@@ -26,7 +26,7 @@ export const ProjectRoutes = {
 
   // Global cross-project views (used outside of specific project context)
   global: {
-    history: () => '/history',
+    history: () => '/dashboard/history',
     reports: () => '/results',
     researchProjects: () => '/research-projects'
   }

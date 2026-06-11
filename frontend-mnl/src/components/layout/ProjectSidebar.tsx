@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { type ReactNode } from "react";
 import { ProjectRoutes } from "@/lib/projectRoutes";
-import logo from "../../../logo.png";
+import logo from "../../../public/logo.png";
 
 type IconName =
   | "activity" | "archive" | "atom" | "bell" | "blocks" | "box" | "brain"

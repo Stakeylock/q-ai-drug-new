@@ -1,4 +1,4 @@
-import { ApiError, apiClient } from "./api";
+import { ApiError, apiClient, isDemoMode } from "./api";
 
 export interface AuthSuccessResponse {
   token: string;
@@ -94,6 +94,13 @@ export async function login(email: string, password: string): Promise<AuthSucces
     throw new Error("Email and password are required.");
   }
 
+  if (isDemoMode()) {
+    return {
+      token: "mock-demo-token-12345",
+      message: "Signed in successfully under Demo Mode."
+    };
+  }
+
   const payload = await apiClient.post<unknown>("/auth/login", {
     body: { email: normalizedEmail, password: normalizedPassword },
   });
@@ -107,6 +114,13 @@ export async function signup(
   fullName: string,
   workspaceName: string
 ): Promise<AuthSuccessResponse> {
+  if (isDemoMode()) {
+    return {
+      token: "mock-demo-token-12345",
+      message: "Account created successfully under Demo Mode."
+    };
+  }
+
   const payload = await apiClient.post<unknown>("/auth/register", {
     body: {
       email: email.trim(),
@@ -120,6 +134,12 @@ export async function signup(
 }
 
 export async function requestPasswordReset(email: string): Promise<AuthActionResponse> {
+  if (isDemoMode()) {
+    return {
+      message: "Password reset link sent (Simulated)."
+    };
+  }
+
   const payload = await apiClient.post<unknown>("/auth/forgot-password", {
     body: { email },
   });

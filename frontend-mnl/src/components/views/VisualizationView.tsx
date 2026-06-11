@@ -9,7 +9,7 @@ import ActionButtonGroup, { ActionButton } from "@/components/ui/ActionButtonGro
 import StatusBadge from "@/components/ui/StatusBadge";
 import SectionHeader from "@/components/ui/SectionHeader";
 import EmptyState from "@/components/ui/EmptyState";
-import { isDemoMode, apiClient } from "@/services/api";
+import { isDemoMode, apiClient, buildFileDownloadUrl } from "@/services/api";
 
 const ThreeDMoleculeViewer = dynamic(() => import("@/components/molecules/ThreeDMoleculeViewer"), {
   ssr: false,
@@ -216,7 +216,7 @@ function VisualizationViewContent({ projectId: propProjectId }: { projectId?: st
 
           // Download visualizable structure file content
           const token = localStorage.getItem("auth_token") || localStorage.getItem("qai_access_token") || "";
-          const downloadUrl = `/api/v1/files/${data.pose_file_id}/download`;
+          const downloadUrl = buildFileDownloadUrl(data.pose_file_id);
           
           const fileRes = await fetch(downloadUrl, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
@@ -241,7 +241,10 @@ function VisualizationViewContent({ projectId: propProjectId }: { projectId?: st
           ) || proteins[0];
 
           if (proteinAsset) {
-            const proteinRes = await fetch(proteinAsset.download_url || `/api/v1/files/${proteinAsset.file_id}/download`, {
+            const resolvedProteinUrl = proteinAsset.download_url && !proteinAsset.download_url.startsWith("/api/v1")
+              ? proteinAsset.download_url
+              : buildFileDownloadUrl(proteinAsset.file_id || proteinAsset.asset_id);
+            const proteinRes = await fetch(resolvedProteinUrl, {
               headers: token ? { Authorization: `Bearer ${token}` } : {}
             });
             if (proteinRes.ok) {

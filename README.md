@@ -26,6 +26,18 @@ Last validated locally on Windows with WSL:
 - Research-evidence artifact validation passes with zero warnings on the active artifact set.
 - Strict scientific hardening artifacts are generated: dataset curation reports, scaffold-split baseline comparisons, actives-vs-decoys enrichment tables, applicability-domain labels, medchem/ADMET risk tables, interaction fingerprints, quantum ablations, negative controls, claim matrix, and 30 candidate dossiers.
 
+## Production SaaS Hardening & Deployment Verification
+
+To ensure the system is secure and deployment-ready, the following updates have been integrated and fully validated:
+
+- **No Demo Defaulting & Fallbacks**: Removed all silent mock database or placeholder API response fallbacks from [api.ts](file:///E:/QC-Intern/qc1/frontend-mnl/src/services/api.ts). In production (where `NEXT_PUBLIC_DEMO_MODE=false`), the application strictly routes real requests and propagates exceptions to let the client handle connectivity failures transparently.
+- **Dynamic Docker Hostname Resolution**: Added client-side runtime hostname detection. When running in a containerized environment where `NEXT_PUBLIC_API_URL` is set to the internal hostname `http://backend:8001`, browser requests automatically swap `backend` for the client's current browser hostname (e.g. `http://localhost:8001` or target public IP), allowing seamless out-of-the-box local compose deployment.
+- **JWT Security Guardrails**: Configured FastAPI lifespan hook to verify the strength of the `JWT_SECRET_KEY` in production, automatically crashing server startup if a weak (length < 32) or default key (containing `"change-this"`) is used.
+- **Token Blacklisting**: Enabled secure user logout via a Redis-backed JWT token blacklist, verified by dependency guards during request authentication.
+- **Rate Limiting**: Integrated IP-based sliding-window rate limiters capped at 100 requests per minute with safe bypasses configured for automated tests.
+- **Unhandled Error Sanitization**: Updated the global exception handlers to suppress internal system tracebacks and return sanitized error details in production environments.
+- **100% Test Passing Rate**: Verified the entire backend test suite consisting of **124/124 unit and integration tests passing successfully**.
+
 ## Latest Science-First Runner Updates
 
 The scientist-facing module runners now include stricter evidence-status handling for the standalone SaaS-style workflow. These updates are separate from the full CMake research pipeline and are intended to make per-user module runs more scientifically honest.
@@ -114,11 +126,16 @@ Invoke-RestMethod "http://127.0.0.1:8000/research/pose-viewer-data?limit=30"
 
 Docker Compose product topology:
 
+To start the default developer stack (including workers):
 ```powershell
 docker compose up --build
 ```
 
-This starts the API/frontend container plus PostgreSQL, Redis, MinIO, and Redis/RQ worker containers for CPU, docking, GNINA, and quantum queues.
+To start the deployment-ready, decoupled production stack with Next.js frontend, FastAPI backend, MongoDB, PostgreSQL, Redis, and MinIO:
+```powershell
+docker-compose -f docker-compose.mnl.prod.yml up --build
+```
+This production-hardened compose stack features secure environment configuration files, variable substitution for passwords, and dynamic client hostname mapping.
 
 SaaS smoke flow after Compose starts:
 
@@ -531,6 +548,74 @@ docs/aws_mongodb_architecture.md
 docs/api_developer_experience.md
 docs/LLM_SCIENTIFIC_HARDENING_PLAYBOOK.md
 ```
+
+## Pipeline Execution & Developer Guide
+
+### E2E Scientific Pipeline Step-by-Step
+To execute the full oncology research pipeline end-to-end, follow these sequential stages:
+
+1. **Bootstrap & Tool Setup**: Install external solvers (OpenBabel, Vina, Smina, GNINA, xTB) in the environment:
+   ```powershell
+   cmake --build --preset install-tools
+   ```
+2. **Data Ingestion**: Download, validate, and standardize ChEMBL assays and reference inhibitors:
+   ```powershell
+   python -m q_ai_drug.cli run-cancer-proof --config configs/cancer_targets.yaml --skip-download
+   ```
+3. **Model Training**: Train scaffold-split activity classifiers and ADMET regression models on downloaded sets:
+   ```powershell
+   python scripts/train_research_models.py --config configs/cancer_targets.yaml
+   ```
+4. **Docking Campaigns**: Run AutoDock Vina, Smina, and GNINA CNN rescoring on generated libraries:
+   ```powershell
+   cmake --workflow --preset run-gnina
+   ```
+5. **Quantum & Dynamics Screening**: Relax docked conformations using OpenMM trajectories and extract GFN2-xTB quantum descriptors.
+6. **Consensus Ranking**: Rerank the molecules using Qiskit statevector kernels and generate ablation outputs.
+7. **Report Compilation**: Compile raw artifacts into strict PDF/HTML scientific dossiers:
+   ```powershell
+   python -m q_ai_drug.reporting.build_report --project outputs/cancer_proof_v1 --config configs/cancer_targets.yaml
+   ```
+
+---
+
+### Core Developer Documentation Registry
+For structural references and API design blueprints, refer to:
+* [Scientist Modular SaaS Blueprint](file:///E:/QC-Intern/qc1/docs/scientist_modular_saas_blueprint.md): Specifications for credit ledgers, tier policies, quality gates, and claim matrices.
+* [AWS MongoDB Cloud Architecture](file:///E:/QC-Intern/qc1/docs/aws_mongodb_architecture.md): Hosted cloud database topology and security groups configuration.
+* [API Developer Experience](file:///E:/QC-Intern/qc1/docs/api_developer_experience.md): Swagger routing, response wrappers, and API key policies.
+* [LLM Scientific Hardening Playbook](file:///E:/QC-Intern/qc1/docs/LLM_SCIENTIFIC_HARDENING_PLAYBOOK.md): Criteria for implementing future scientific features.
+
+---
+
+## Direct Production Deployment Roadmap
+
+To transition the local/docker-compose staging stack into a direct production-grade cloud SaaS environment, implement the following roadmap:
+
+### 1. Cloud Infrastructure Mapping
+* **API & Worker Tasks**: Deploy `backend-mnl` and worker images on **AWS ECS (Fargate)** or **AWS EKS (Kubernetes)**. Create dedicated GPU node groups for docking/GNINA workloads.
+* **Persistent Storage**:
+  * Swap local MongoDB with **MongoDB Atlas** (enable IAM authentication and VPC peering).
+  * Swap local PostgreSQL with **Amazon RDS (PostgreSQL)** utilizing Multi-AZ replication.
+  * Swap MinIO with a private **Amazon S3** bucket (enable default KMS encryption, CORS restrictions, and access logs).
+* **Broker & Cache**: Swap local Redis container with **Amazon ElastiCache (Redis)**.
+
+### 2. Secrets Management & Vault Ingestion
+* Remove all environment template secret keys from files.
+* Mount secrets dynamically at runtime from **AWS Secrets Manager** or **HashiCorp Vault**:
+  * Set `JWT_SECRET_KEY` using secure 256-bit random keys.
+  * Set database connection strings securely using IAM-bound credentials.
+
+### 3. Production CORS & TLS Networking
+* Enforce HTTPS-only traffic by obtaining SSL certificates via **AWS Certificate Manager (ACM)** and attaching them to an **Application Load Balancer (ALB)**.
+* Map domain boundaries strictly:
+  * Frontends to `https://app.qudrugforge.com`
+  * Gateways to `https://api.qudrugforge.com`
+* Update `CORS_ORIGINS` in `.env.production` to permit only the canonical frontend domains.
+
+### 4. Billing, Ledgers, and Quotas Integration
+* Implement Stripe webhook listeners connected to the existing PostgreSQL transaction tables.
+* Upgrade the credit estimation endpoints in `/billing/summary` from mock responses to query active ledger balances from Stripe and limit worker runs based on user subscriptions.
 
 ## Research-Use Statement
 

@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState, Suspense } from "react";
 import { isAuthenticated, removeToken, apiClient } from "@/services";
 import { ThemeToggle, PharmaAssistantWidget } from "@/components/shared";
 import { BackendStatusBanner, ConnectionHealthIndicator } from "@/components/ui";
-import logo from "../../../logo.png";
+import logo from "../../../public/logo.png";
 
 type IconName =
   | "activity"
@@ -61,7 +61,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Dashboard", href: "/dashboard", icon: "circleGauge" },
       { label: "Investor Hub", href: "/investor", icon: "sparkles" },
       { label: "Research Projects", href: "/research-projects", icon: "folderKanban" },
-      { label: "Experiments", href: "/history", icon: "flask" },
+      { label: "Experiments", href: "/dashboard/history", icon: "flask" },
       { label: "Reports", href: "/results", icon: "fileText" },
     ],
   },
@@ -116,7 +116,6 @@ const PAGE_CONTEXTS: Array<{ href: string; title: string; breadcrumb: string }> 
   { href: "/dashboard/history", title: "Experiment History", breadcrumb: "Research Projects / Pipeline history" },
   { href: "/research-projects", title: "Research Projects", breadcrumb: "QuDrugForge™ / Research Projects" },
   { href: "/investor", title: "Investor Hub", breadcrumb: "Research OS / Investor Pitch" },
-  { href: "/history", title: "Experiments", breadcrumb: "Research Projects / Experiment history" },
   { href: "/results", title: "Reports", breadcrumb: "Reports / Candidate evidence packages" },
   { href: "/targets", title: "Targets", breadcrumb: "Research / Target intelligence" },
   { href: "/molecules", title: "Molecules", breadcrumb: "Research / Molecular library" },
@@ -269,8 +268,8 @@ function isSidebarItemActive(pathname: string, currentSearch: string, label: str
              normPath === "/projects" || 
              normPath.startsWith("/projects/");
     case "Experiments":
-      return normPath === "/history" || 
-             normPath.startsWith("/history/") || 
+      return normPath === "/dashboard/history" || 
+             normPath.startsWith("/dashboard/history/") || 
              normPath === "/experiments" || 
              normPath.startsWith("/experiments/");
     case "Reports":

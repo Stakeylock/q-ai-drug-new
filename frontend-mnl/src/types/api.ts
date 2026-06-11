@@ -154,12 +154,13 @@ export interface ApiErrorResponse {
 
 export interface BaseScientificResult {
   schema_version?: string;
-  source: string;
-  experiment_id: string;
-  pipeline_stage: string;
-  engine: string;
-  created_at: string;
-  provenance: ProvenanceMetadata;
+  source?: string;
+  experiment_id?: string;
+  pipeline_stage?: string;
+  engine?: string;
+  created_at?: string;
+  provenance?: ProvenanceMetadata;
+  disclaimer?: string;
 
   // Uncertainty Normalization
   confidence_score?: number;

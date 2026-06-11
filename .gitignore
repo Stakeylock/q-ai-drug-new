@@ -16,6 +16,7 @@ tests.rar
 *.dcd
 *.xtc
 .env
+.env.local
 .pytest_cache/
 .vscode/
 .venv/  
@@ -26,3 +27,7 @@ qc1.rar
 existing_candidates_ranked.csv
 generated_candidates.csv
 *.csv
+build.log
+tsc_errors.txt
+tsc_errors.log
+

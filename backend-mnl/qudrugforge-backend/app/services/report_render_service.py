@@ -150,7 +150,8 @@ class ReportRenderService:
         rows = []
         for candidate in candidates:
             rows.append("<tr>" + "".join(f"<td>{self._e(candidate.get(col))}</td>" for col in columns) + "</tr>")
-        return f"<table><thead><tr>{header}</tr></thead><tbody>{''.join(rows) or '<tr><td colspan=\"7\">No candidates available.</td></tr>'}</tbody></table>"
+        table_body = "".join(rows) or '<tr><td colspan="7">No candidates available.</td></tr>'
+        return f"<table><thead><tr>{header}</tr></thead><tbody>{table_body}</tbody></table>"
 
     def _top_candidate_list(self, candidates: List[Dict[str, Any]]) -> str:
         if not candidates:
@@ -164,7 +165,8 @@ class ReportRenderService:
         columns = ["compound_id", "lipinski_violations", "ames_toxicity_risk", "herg_risk", "hepatotoxicity_risk", "overall_risk", "admet_recommendation"]
         header = "".join(f"<th>{self._e(col)}</th>" for col in columns)
         rows = ["<tr>" + "".join(f"<td>{self._e(c.get(col))}</td>" for col in columns) + "</tr>" for c in candidates]
-        return f"<table><thead><tr>{header}</tr></thead><tbody>{''.join(rows) or '<tr><td colspan=\"7\">No ADMET records available.</td></tr>'}</tbody></table>"
+        table_body = "".join(rows) or '<tr><td colspan="7">No ADMET records available.</td></tr>'
+        return f"<table><thead><tr>{header}</tr></thead><tbody>{table_body}</tbody></table>"
 
     def _files_list(self, files: List[Dict[str, Any]]) -> str:
         if not files:

@@ -1,8 +1,10 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, Body
+from fastapi.security import HTTPAuthorizationCredentials
 from app.schemas.auth import RegisterRequest, LoginRequest, RefreshRequest, AuthResponse, MeResponse
 from app.services.auth_service import auth_service
 from app.services.workspace_service import workspace_service
-from app.core.dependencies import get_current_active_user
+from app.core.dependencies import get_current_active_user, security
 from app.schemas.user import UserResponse
 from app.schemas.workspace import WorkspaceResponse
 from app.core.security import decode_token, create_access_token, create_refresh_token
@@ -68,7 +70,25 @@ async def refresh(request: RefreshRequest = Body(...)):
         raise AppException(status_code=401, code="UNAUTHORIZED", message="Invalid refresh token")
 
 @router.post("/logout")
-async def logout():
+async def logout(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)
+):
+    if credentials:
+        token = credentials.credentials
+        try:
+            import time
+            payload = decode_token(token)
+            exp = payload.get("exp")
+            if exp:
+                ttl = int(exp - time.time())
+                if ttl > 0:
+                    from app.services.pipeline_execution_service import get_redis_client
+                    r = get_redis_client()
+                    if r:
+                        r.setex(f"blacklist:{token}", ttl, "true")
+        except Exception:
+            pass # Ignore if token is already expired or Redis is down
+
     return {
         "success": True,
         "data": {},

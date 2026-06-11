@@ -22,6 +22,12 @@ async def lifespan(app: FastAPI):
     # Startup tasks
     logger.info("Initializing QuDrugForge platform backend...")
     
+    # Enforce JWT security checks in production
+    if settings.APP_ENV == "production":
+        if "change-this" in settings.JWT_SECRET_KEY.lower() or len(settings.JWT_SECRET_KEY) < 32:
+            logger.critical("Insecure or default JWT_SECRET_KEY configured for production environment!")
+            raise ValueError("Insecure or default JWT_SECRET_KEY configured for production environment! Please set a unique, 32+ character key.")
+    
     # Create local storage directories if missing
     try:
         from app.storage.service import storage_service
@@ -48,6 +54,8 @@ app = FastAPI(
 )
 
 # 4. CORS Setup
+from app.core.rate_limit import RateLimitMiddleware
+
 origins = settings.cors_origins_list
 logger.info(f"CORS origins configured: {origins}")
 app.add_middleware(
@@ -56,6 +64,11 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+app.add_middleware(
+    RateLimitMiddleware,
+    limit=100,
+    window_seconds=60
 )
 
 # 5. Global custom exceptions mapping

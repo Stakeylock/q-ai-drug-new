@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/shared";
-import logo from "../../../logo.png";
+import logo from "../../../public/logo.png";
 import { MolecularVisualPanel, AuthFeatureList } from "./_components";
 
 export default function AuthLayout({

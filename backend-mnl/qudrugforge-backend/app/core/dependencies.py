@@ -12,6 +12,16 @@ security = HTTPBearer(auto_error=False)
 async def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)) -> dict:
     if credentials is None:
         raise AppException(status_code=401, code="UNAUTHORIZED", message="Not authenticated")
+    
+    # Check if token is blacklisted in Redis
+    try:
+        from app.services.pipeline_execution_service import get_redis_client
+        r = get_redis_client()
+        if r and r.get(f"blacklist:{credentials.credentials}"):
+            raise AppException(status_code=401, code="UNAUTHORIZED", message="Token has been blacklisted")
+    except Exception:
+        pass # Graceful fallback if Redis is offline/disconnected
+
     try:
         payload = decode_token(credentials.credentials)
         user_id: str = payload.get("sub")
