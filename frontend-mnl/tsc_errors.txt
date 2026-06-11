@@ -1,0 +1,123 @@
+src/app/(dashboard)/dashboard/history/page.tsx(21,5): error TS2820: Type '"Completed"' is not assignable to type 'ExperimentStatus'. Did you mean '"completed"'?
+src/app/(dashboard)/dashboard/history/page.tsx(47,5): error TS2820: Type '"Running"' is not assignable to type 'ExperimentStatus'. Did you mean '"running"'?
+src/app/(dashboard)/dashboard/history/page.tsx(73,5): error TS2820: Type '"Failed"' is not assignable to type 'ExperimentStatus'. Did you mean '"failed"'?
+src/app/(dashboard)/dashboard/history/page.tsx(99,5): error TS2820: Type '"Completed"' is not assignable to type 'ExperimentStatus'. Did you mean '"completed"'?
+src/app/(dashboard)/dashboard/history/page.tsx(125,5): error TS2820: Type '"Running"' is not assignable to type 'ExperimentStatus'. Did you mean '"running"'?
+src/app/(dashboard)/dashboard/history/page.tsx(152,30): error TS2820: Type '"Completed"' is not assignable to type 'ExperimentStatus'. Did you mean '"completed"'?
+src/app/(dashboard)/dashboard/history/page.tsx(153,48): error TS2820: Type '"Failed"' is not assignable to type 'ExperimentStatus'. Did you mean '"failed"'?
+src/app/(dashboard)/dashboard/history/page.tsx(154,3): error TS2820: Type '"Running"' is not assignable to type 'ExperimentStatus'. Did you mean '"running"'?
+src/app/(dashboard)/dashboard/history/page.tsx(158,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(166,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Failed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(185,3): error TS2740: Type '{ id: string; name: string; status: ExperimentStatus; createdAt: string; input: { protein: string; constraints: { source: string; }; }; pipelineStages: Record<"generated" | "docking" | "simulation" | "quantum", PipelineStageState>; resultsSummary: { ...; }; }' is missing the following properties from type 'ExperimentRecord': type, engine, progress, parameters, and 2 more.
+src/app/(dashboard)/dashboard/history/page.tsx(199,9): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(201,13): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Failed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(204,15): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(205,16): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(206,30): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(237,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(240,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Running"' have no overlap.
+src/app/(dashboard)/dashboard/history/page.tsx(366,66): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/(dashboard)/dashboard/history/page.tsx(428,29): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+src/app/(dashboard)/dashboard/history/page.tsx(429,30): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+src/app/(dashboard)/dashboard/history/page.tsx(541,84): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/(dashboard)/history/page.tsx(21,5): error TS2820: Type '"Completed"' is not assignable to type 'ExperimentStatus'. Did you mean '"completed"'?
+src/app/(dashboard)/history/page.tsx(47,5): error TS2820: Type '"Running"' is not assignable to type 'ExperimentStatus'. Did you mean '"running"'?
+src/app/(dashboard)/history/page.tsx(73,5): error TS2820: Type '"Failed"' is not assignable to type 'ExperimentStatus'. Did you mean '"failed"'?
+src/app/(dashboard)/history/page.tsx(99,5): error TS2820: Type '"Completed"' is not assignable to type 'ExperimentStatus'. Did you mean '"completed"'?
+src/app/(dashboard)/history/page.tsx(125,5): error TS2820: Type '"Running"' is not assignable to type 'ExperimentStatus'. Did you mean '"running"'?
+src/app/(dashboard)/history/page.tsx(152,30): error TS2820: Type '"Completed"' is not assignable to type 'ExperimentStatus'. Did you mean '"completed"'?
+src/app/(dashboard)/history/page.tsx(153,48): error TS2820: Type '"Failed"' is not assignable to type 'ExperimentStatus'. Did you mean '"failed"'?
+src/app/(dashboard)/history/page.tsx(154,3): error TS2820: Type '"Running"' is not assignable to type 'ExperimentStatus'. Did you mean '"running"'?
+src/app/(dashboard)/history/page.tsx(158,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(166,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Failed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(185,3): error TS2740: Type '{ id: string; name: string; status: ExperimentStatus; createdAt: string; input: { protein: string; constraints: { source: string; }; }; pipelineStages: Record<"generated" | "docking" | "simulation" | "quantum", PipelineStageState>; resultsSummary: { ...; }; }' is missing the following properties from type 'ExperimentRecord': type, engine, progress, parameters, and 2 more.
+src/app/(dashboard)/history/page.tsx(199,9): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(201,13): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Failed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(204,15): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(205,16): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(206,30): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(237,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Completed"' have no overlap.
+src/app/(dashboard)/history/page.tsx(240,7): error TS2367: This comparison appears to be unintentional because the types 'ExperimentStatus' and '"Running"' have no overlap.
+src/app/(dashboard)/history/page.tsx(366,66): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/(dashboard)/history/page.tsx(429,29): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+src/app/(dashboard)/history/page.tsx(430,30): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+src/app/(dashboard)/history/page.tsx(542,84): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/(dashboard)/research-projects/[id]/claim-matrix/page.tsx(63,54): error TS2322: Type '{ title: string; message: string; }' is not assignable to type 'IntrinsicAttributes & ErrorStateProps'.
+  Property 'message' does not exist on type 'IntrinsicAttributes & ErrorStateProps'.
+src/app/(dashboard)/research-projects/[id]/gnina/page.tsx(66,58): error TS2322: Type '{ title: string; message: string; }' is not assignable to type 'IntrinsicAttributes & ErrorStateProps'.
+  Property 'message' does not exist on type 'IntrinsicAttributes & ErrorStateProps'.
+src/app/(dashboard)/results/[experimentId]/page.tsx(170,3): error TS2322: Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }[]' is not assignable to type 'GeneratedMoleculeResult[]'.
+  Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }' is missing the following properties from type 'GeneratedMoleculeResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/app/(dashboard)/results/[experimentId]/page.tsx(183,3): error TS2322: Type '{ molecule_id: string; binding_affinity: number; h_bonds: number; target_protein: string; }[]' is not assignable to type 'DockingResult[]'.
+  Type '{ molecule_id: string; binding_affinity: number; h_bonds: number; target_protein: string; }' is missing the following properties from type 'DockingResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/app/(dashboard)/results/[experimentId]/page.tsx(195,3): error TS2322: Type '{ molecule_id: string; cnn_score: number; cnn_affinity: number; vina_score: number; pose_evidence: string; }[]' is not assignable to type 'GninaResult[]'.
+  Type '{ molecule_id: string; cnn_score: number; cnn_affinity: number; vina_score: number; pose_evidence: string; }' is missing the following properties from type 'GninaResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/app/(dashboard)/results/[experimentId]/page.tsx(208,3): error TS2322: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }[]' is not assignable to type 'SimulationResult[]'.
+  Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/app/(dashboard)/results/[experimentId]/page.tsx(235,3): error TS2322: Type '{ molecule_id: string; smiles: string; homo: number; lumo: number; homo_lumo_gap: number; qsvm_score: number; stability_score: number; interpretation: "Highly Stable" | "Stable" | "Monitor"; }[]' is not assignable to type 'QuantumResult[]'.
+  Type '{ molecule_id: string; smiles: string; homo: number; lumo: number; homo_lumo_gap: number; qsvm_score: number; stability_score: number; interpretation: "Highly Stable" | "Stable" | "Monitor"; }' is missing the following properties from type 'QuantumResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/app/(dashboard)/results/components/csv-utils.ts(19,7): error TS2367: This comparison appears to be unintentional because the types 'string | number | null | undefined' and 'boolean' have no overlap.
+src/app/(dashboard)/results/components/csv-utils.ts(21,7): error TS2367: This comparison appears to be unintentional because the types 'string | number | null | undefined' and 'boolean' have no overlap.
+src/app/(dashboard)/results/components/csv-utils.ts(24,7): error TS2367: This comparison appears to be unintentional because the types 'string | number | null | undefined' and 'boolean' have no overlap.
+src/app/(dashboard)/simulation/page.tsx(165,14): error TS2304: Cannot find name 'Button'.
+src/app/(dashboard)/simulation/page.tsx(171,15): error TS2304: Cannot find name 'Button'.
+src/app/(dashboard)/validation/page.tsx(199,20): error TS2304: Cannot find name 'Button'.
+src/app/(dashboard)/validation/page.tsx(199,106): error TS2304: Cannot find name 'Button'.
+src/services/api.ts(613,5): error TS2322: Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }[]' is not assignable to type 'GeneratedMoleculeResult[]'.
+  Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }' is missing the following properties from type 'GeneratedMoleculeResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/api.ts(640,5): error TS2322: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }[]' is not assignable to type 'SimulationResult[]'.
+  Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/experiments.ts(91,5): error TS2820: Type '"Running"' is not assignable to type 'ExperimentStatus'. Did you mean '"running"'?
+src/services/mockApi.ts(142,3): error TS2322: Type '{ molecule_id: string; binding_affinity: any; h_bonds: number; target_protein: string; }[]' is not assignable to type 'DockingResult[]'.
+  Type '{ molecule_id: string; binding_affinity: any; h_bonds: number; target_protein: string; }' is missing the following properties from type 'DockingResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/mockApi.ts(165,3): error TS2322: Type '{ molecule_id: string; smiles: string; homo: number; lumo: number; homo_lumo_gap: number; qsvm_score: number; stability_score: number; interpretation: "Highly Stable" | "Stable"; }[]' is not assignable to type 'QuantumResult[]'.
+  Type '{ molecule_id: string; smiles: string; homo: number; lumo: number; homo_lumo_gap: number; qsvm_score: number; stability_score: number; interpretation: "Highly Stable" | "Stable"; }' is missing the following properties from type 'QuantumResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(16,3): error TS2740: Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }' is missing the following properties from type 'GeneratedMoleculeResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(23,3): error TS2740: Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }' is missing the following properties from type 'GeneratedMoleculeResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(30,3): error TS2740: Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }' is missing the following properties from type 'GeneratedMoleculeResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(37,3): error TS2740: Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }' is missing the following properties from type 'GeneratedMoleculeResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(44,3): error TS2740: Type '{ molecule_id: string; smiles: string; molecular_weight: number; logp: number; qed: number; }' is missing the following properties from type 'GeneratedMoleculeResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(67,3): error TS2740: Type '{ molecule_id: string; binding_affinity: number; h_bonds: number; target_protein: string; }' is missing the following properties from type 'DockingResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(68,3): error TS2740: Type '{ molecule_id: string; binding_affinity: number; h_bonds: number; target_protein: string; }' is missing the following properties from type 'DockingResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(69,3): error TS2740: Type '{ molecule_id: string; binding_affinity: number; h_bonds: number; target_protein: string; }' is missing the following properties from type 'DockingResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(70,3): error TS2740: Type '{ molecule_id: string; binding_affinity: number; h_bonds: number; target_protein: string; }' is missing the following properties from type 'DockingResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(71,3): error TS2740: Type '{ molecule_id: string; binding_affinity: number; h_bonds: number; target_protein: string; }' is missing the following properties from type 'DockingResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(75,3): error TS2740: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(76,3): error TS2740: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(77,3): error TS2740: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(78,3): error TS2740: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(79,3): error TS2740: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(80,3): error TS2740: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(81,3): error TS2740: Type '{ molecule_id: string; smiles: string; time: number; rmsd: number; }' is missing the following properties from type 'SimulationResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(85,3): error TS2740: Type '{ molecule_id: string; smiles: string; homo: number; lumo: number; homo_lumo_gap: number; qsvm_score: number; stability_score: number; interpretation: "Highly Stable"; }' is missing the following properties from type 'QuantumResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(95,3): error TS2740: Type '{ molecule_id: string; smiles: string; homo: number; lumo: number; homo_lumo_gap: number; qsvm_score: number; stability_score: number; interpretation: "Stable"; }' is missing the following properties from type 'QuantumResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/services/pipelineDemo.ts(105,3): error TS2740: Type '{ molecule_id: string; smiles: string; homo: number; lumo: number; homo_lumo_gap: number; qsvm_score: number; stability_score: number; interpretation: "Stable"; }' is missing the following properties from type 'QuantumResult': source, experiment_id, pipeline_stage, engine, and 2 more.
+src/store/workspaceStore.ts(2,15): error TS2724: '"@/types"' has no exported member named 'ExperimentInput'. Did you mean 'Experiment'?

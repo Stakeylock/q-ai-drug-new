@@ -1,0 +1,8 @@
+HEADER    EPIDERMAL GROWTH FACTOR RECEPTOR            17-MAY-26   4EGF
+TITLE     CRYSTAL STRUCTURE OF HUMAN EGFR KINASE DOMAIN
+ATOM      1  N   ASP A   1      11.234  -4.321  20.123  1.00 20.00           N
+ATOM      2  CA  ASP A   1      12.456  -4.112  21.234  1.00 20.00           C
+ATOM      3  C   ASP A   1      12.111  -3.567  22.567  1.00 20.00           C
+ATOM      4  O   ASP A   1      11.002  -3.211  22.890  1.00 20.00           O
+TER       5      ASP A   1
+END
