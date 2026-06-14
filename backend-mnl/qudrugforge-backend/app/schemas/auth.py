@@ -19,6 +19,9 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
 class RefreshRequest(BaseModel):
     refresh_token: str
 

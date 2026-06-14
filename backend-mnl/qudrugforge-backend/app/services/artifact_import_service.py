@@ -380,6 +380,8 @@ class ArtifactImportService:
             "qml/quantum_kernel_scores.csv": ("quantum_score", "quantum", "csv", "text/csv", True),
             "final_ranked_candidates.csv": ("q_ai_drug_artifact", "molecules", "csv", "text/csv", True),
             "top_candidates.csv": ("q_ai_drug_artifact", "molecules", "csv", "text/csv", True),
+            "scientific_claim_matrix.csv": ("claim_matrix", "claim_matrix", "csv", "text/csv", True),
+            "claim_matrix.csv": ("claim_matrix", "claim_matrix", "csv", "text/csv", True),
             "report.pdf": ("generated_report", "reports", "pdf", "application/pdf", True),
             "report.html": ("generated_report", "reports", "html", "text/html", True)
         }

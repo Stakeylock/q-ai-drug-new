@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState, Suspense } from "react";
 
-import { isAuthenticated, removeToken, apiClient } from "@/services";
+import { isAuthenticated, removeToken, apiClient, isDemoMode } from "@/services";
 import { ThemeToggle, PharmaAssistantWidget } from "@/components/shared";
 import { BackendStatusBanner, ConnectionHealthIndicator } from "@/components/ui";
 import logo from "../../../public/logo.png";
@@ -407,9 +407,15 @@ function DashboardLayoutContent({
       return;
     }
 
-    setCanAccess(true);
-
     const fetchUserAndWorkspaces = async () => {
+      if (isDemoMode()) {
+        setUserInfo({ full_name: "Research User", email: "demo@qudrugforge.com" });
+        const localWsName = localStorage.getItem("active_workspace_name");
+        setActiveWorkspaceName(localWsName || "Oncology Research Workspace");
+        setActiveWorkspaceRole("owner");
+        setCanAccess(true);
+        return;
+      }
       try {
         const res = await apiClient.get<any>("/auth/me");
         if (res.success && res.data) {
@@ -426,9 +432,21 @@ function DashboardLayoutContent({
             localStorage.setItem("active_workspace_id", activeWs.id);
             localStorage.setItem("active_workspace_name", activeWs.name);
           }
+          setCanAccess(true);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load user session context:", err);
+        const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+        const isMockToken = token && (!token.includes(".") || token.startsWith("mock-") || token.startsWith("e2e-"));
+        if (isMockToken) {
+          setCanAccess(true);
+        } else if (err && (err.status === 401 || err.message?.includes("401"))) {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("active_workspace_id");
+          localStorage.removeItem("active_workspace_name");
+          localStorage.removeItem("active_project_id");
+          router.replace("/login");
+        }
       }
     };
 

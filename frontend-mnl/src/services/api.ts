@@ -368,6 +368,25 @@ export function getApiBaseUrl(): string {
   return API_BASE_URL;
 }
 
+function getActiveProjectId(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    return window.localStorage.getItem("active_project_id");
+  } catch {
+    return null;
+  }
+}
+
+function requireActiveProjectId(): string {
+  const projectId = getActiveProjectId();
+  if (!projectId) {
+    throw new ApiError("No active project selected.");
+  }
+  return projectId;
+}
+
 export const apiGet = get;
 export const apiPost = post;
 export const apiPatch = patch;
@@ -584,9 +603,33 @@ export async function getMoleculeById(
      };
   }
   try {
-    return await apiFetch<MoleculeDetails>(
-      `/molecule/${encodeURIComponent(id)}`
+    const projectId = getActiveProjectId();
+    if (!projectId) {
+      return null;
+    }
+    const response = await apiFetch<ApiEnvelope<any>>(
+      `/projects/${encodeURIComponent(projectId)}/molecules/${encodeURIComponent(id)}`
     );
+    const molecule = response.data;
+    return {
+      molecule_id: molecule.id || molecule.molecule_id || id,
+      dataset: molecule.dataset || molecule.source || "Project",
+      structures: {
+        smiles: molecule.smiles || "",
+        inchi: molecule.inchi || "",
+        sdf: molecule.sdf || "",
+        pdb: molecule.pdb || "",
+      },
+      properties: {
+        mw: Number(molecule.mw ?? molecule.molecular_weight ?? 0),
+        logp: Number(molecule.logp ?? 0),
+        tpsa: Number(molecule.tpsa ?? 0),
+        qed: Number(molecule.qed ?? 0),
+        hba: Number(molecule.hba ?? 0),
+        hbd: Number(molecule.hbd ?? 0),
+        rotatable_bonds: Number(molecule.rotatable_bonds ?? 0),
+      },
+    };
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) return null;
     throw err;
@@ -1015,6 +1058,7 @@ export async function runPipeline(
   if (isDemoMode()) {
     return { experimentId: `EXP-DEMO-${Date.now()}` };
   }
+  const projectId = requireActiveProjectId();
   const configuredCallback =
     typeof process !== "undefined" ? process.env?.NEXT_PUBLIC_PIPELINE_CALLBACK_URL : undefined;
   const callbackUrl =
@@ -1023,25 +1067,37 @@ export async function runPipeline(
       ? configuredCallback.trim()
       : undefined);
 
-  const requestPayload: WorkspacePipelineRequest = {
-    ...payload,
-    constraints: {
-      ...(payload.constraints ?? {}),
-      ...(callbackUrl ? { callback_url: callbackUrl } : {}),
-    },
-  };
-
-  const data = await apiFetch<{ experiment_id: string }>("/pipeline/run", {
+  const data = await apiFetch<ApiEnvelope<{ id: string; status: string }>>(`/projects/${encodeURIComponent(projectId)}/pipeline/run`, {
     method: "POST",
-    body: requestPayload,
+    body: {
+      pipeline: [
+        "molecule_generation",
+        "filtering",
+        "docking",
+        "gnina",
+        "quantum",
+        "admet",
+        "simulation",
+        "report",
+      ],
+      parameters: {
+        input: {
+          protein: payload.protein,
+          constraints: {
+            ...(payload.constraints ?? {}),
+            ...(callbackUrl ? { callback_url: callbackUrl } : {}),
+          },
+        },
+      },
+    },
   });
 
-  if (!data.experiment_id) {
+  if (!data.data?.id) {
     throw new ApiError("Invalid pipeline response", undefined, data);
   }
 
   return {
-    experimentId: data.experiment_id,
+    experimentId: data.data.id,
   };
 }
 
@@ -1049,24 +1105,85 @@ export async function runPipeline(
 export async function createPipelineExperiment(
   payload: CreatePipelineExperimentRequest
 ): Promise<PipelineExperimentItem> {
-  return apiFetch<PipelineExperimentItem>("/pipeline/experiments", {
+  const projectId = requireActiveProjectId();
+  const response = await apiFetch<ApiEnvelope<any>>(`/projects/${encodeURIComponent(projectId)}/experiments`, {
     method: "POST",
-    body: payload,
+    body: {
+      name: payload.protein || payload.experiment_id,
+      type: "pipeline",
+      engine: "q-ai-drug",
+      parameters: payload,
+      input_file_ids: [],
+      simulate: false,
+    },
   });
+  return {
+    experiment_id: response.data?.id || response.data?.experiment_id || payload.experiment_id,
+    protein: response.data?.name || payload.protein,
+    status: response.data?.status || "queued",
+    created_at: response.data?.created_at || new Date().toISOString(),
+  };
 }
 
 /** Fetch a pipeline result for a given experiment id. */
 export async function getPipelineResult(experimentId: string): Promise<unknown> {
-  return apiFetch<unknown>(`/pipeline/results/${encodeURIComponent(experimentId)}`);
+  const projectId = requireActiveProjectId();
+  const [summary, molecules, docking] = await Promise.allSettled([
+    apiFetch<any>(`/projects/${encodeURIComponent(projectId)}/pipeline/summary`),
+    apiFetch<any>(`/projects/${encodeURIComponent(projectId)}/molecules`, { params: { limit: 100 } }),
+    apiFetch<any>(`/projects/${encodeURIComponent(projectId)}/docking/results`, { params: { limit: 100 } }),
+  ]);
+
+  const summaryData = summary.status === "fulfilled" ? summary.value?.data ?? summary.value : {};
+  const moleculeRows =
+    molecules.status === "fulfilled" ? molecules.value?.data?.items ?? molecules.value?.items ?? [] : [];
+  const dockingRows =
+    docking.status === "fulfilled" ? docking.value?.data?.items ?? docking.value?.items ?? [] : [];
+
+  return {
+    experiment_id: experimentId,
+    summary: summaryData,
+    generated: moleculeRows,
+    filtered: moleculeRows,
+    docking: dockingRows,
+  };
 }
 
 /** Fetch current status for a given pipeline experiment id. */
 export async function getPipelineStatus(
   experimentId: string
 ): Promise<WorkspacePipelineStatusResponse> {
-  return apiFetch<WorkspacePipelineStatusResponse>(
-    `/pipeline/status/${encodeURIComponent(experimentId)}`
+  const projectId = requireActiveProjectId();
+  const response = await apiFetch<ApiEnvelope<any>>(
+    `/projects/${encodeURIComponent(projectId)}/pipeline/runs/${encodeURIComponent(experimentId)}`
   );
+  const run = response.data || {};
+  const stageStatuses = run.stage_statuses && typeof run.stage_statuses === "object"
+    ? Object.entries(run.stage_statuses as Record<string, any>)
+    : [];
+  const activeStage =
+    stageStatuses.find(([, value]) => value?.status === "running") ||
+    stageStatuses.find(([, value]) => value?.status === "failed") ||
+    [...stageStatuses].reverse().find(([, value]) => value?.status === "completed") ||
+    stageStatuses[0];
+  const progressValues = stageStatuses
+    .map(([, value]) => Number(value?.progress ?? 0))
+    .filter((value) => Number.isFinite(value));
+  const progress = progressValues.length
+    ? Math.round(progressValues.reduce((sum, value) => sum + value, 0) / progressValues.length)
+    : 0;
+  const logs = stageStatuses.map(([stage, value]) => {
+    const status = value?.status || "queued";
+    const error = value?.error ? `: ${value.error}` : "";
+    return `${stage}: ${status}${error}`;
+  });
+
+  return {
+    status: run.status || "queued",
+    stage: activeStage?.[0] || "queued",
+    progress,
+    logs,
+  };
 }
 
 /** Fetch validation status with fallback */
@@ -1088,7 +1205,7 @@ export async function getPipelineExperiments(projectId?: string): Promise<Pipeli
     return mockApi.getExperiments();
   }
   try {
-    const activeProj = projectId || (typeof window !== "undefined" ? localStorage.getItem("active_project_id") : undefined);
+    const activeProj = projectId || getActiveProjectId() || undefined;
     if (activeProj) {
       const res = await apiFetch<{ data?: { items?: any[] } }>(`/projects/${activeProj}/experiments`);
       if (res?.data?.items) {
@@ -1100,8 +1217,7 @@ export async function getPipelineExperiments(projectId?: string): Promise<Pipeli
         }));
       }
     }
-    const data = await apiFetch<PipelineExperimentsResponse>("/pipeline/experiments");
-    return Array.isArray(data.experiments) ? data.experiments : [];
+    return [];
   } catch (err) {
     console.error("DEBUG: getPipelineExperiments error:", err);
     throw err;
@@ -1159,17 +1275,30 @@ export async function getProjectSimilarityMatrix(projectId: string): Promise<any
 }
 
 export async function getProjectCandidates(projectId: string, limit: number = 10): Promise<RankedCandidatesResponse> {
-  return apiFetch<RankedCandidatesResponse>(`/projects/${encodeURIComponent(projectId)}/candidates`, {
+  const response = await apiFetch<RankedCandidatesResponse | ApiEnvelope<RankedCandidatesResponse>>(`/projects/${encodeURIComponent(projectId)}/candidates`, {
     params: { limit },
   });
+  if (response && typeof response === "object" && "success" in response && "data" in response) {
+    return (response as ApiEnvelope<RankedCandidatesResponse>).data;
+  }
+  return response as RankedCandidatesResponse;
 }
 
 export async function runProjectDocking(projectId: string, payload: any): Promise<WorkspacePipelineResponse> {
   try {
-    return await apiFetch<WorkspacePipelineResponse>(`/projects/${encodeURIComponent(projectId)}/docking/run`, {
+    const response = await apiFetch<ApiEnvelope<{ id: string; status: string }>>(`/projects/${encodeURIComponent(projectId)}/pipeline/run`, {
       method: "POST",
-      body: payload,
+      body: {
+        pipeline: ["docking"],
+        parameters: { docking: payload ?? {} },
+      },
     });
+    return {
+      experimentId: response.data?.id,
+      runId: response.data?.id,
+      stage: "docking",
+      message: "Docking pipeline started.",
+    };
   } catch (err) {
     if (isDemoMode()) {
       await new Promise(resolve => setTimeout(resolve, 400));

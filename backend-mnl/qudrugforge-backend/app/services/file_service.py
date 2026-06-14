@@ -27,7 +27,8 @@ class FileService:
         'organoid_response', 'generated_report', 'docking_pose', 'gnina_pose',
         'quantum_descriptor', 'simulation_trajectory', 'other',
         'generated_candidates', 'filtered_candidates', 'docking_results',
-        'gnina_results', 'quantum_score', 'simulation_result', 'q_ai_drug_artifact'
+        'gnina_results', 'quantum_score', 'simulation_result', 'q_ai_drug_artifact',
+        'claim_matrix'
     }
 
     async def check_workspace_access(self, workspace_id: str, user_id: str) -> dict:

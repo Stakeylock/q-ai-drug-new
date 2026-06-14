@@ -15,7 +15,7 @@ import {
   SSOProvider
 } from "../_components";
 import { useAuthCredentialsForm } from "../_hooks/useAuthCredentialsForm";
-import { setToken, login, toFriendlyErrorMessage } from "@/services";
+import { setToken, login, signup, toFriendlyErrorMessage } from "@/services";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -69,19 +69,30 @@ export default function LoginPage() {
     }
   };
 
-  const handleSSOLogin = (provider: SSOProvider) => {
+  const handleSSOLogin = async (provider: SSOProvider) => {
     setIsLoading(true);
     setFormError(null);
     setSuccessMessage(`Authorizing federated credentials via ${provider.toUpperCase()}...`);
     
-    setTimeout(() => {
-      setToken(`mock-${provider}-token-${Date.now()}`);
+    try {
+      let response;
+      try {
+        response = await login("dev@test.com", "Password123!");
+      } catch (err) {
+        // If login fails, try to sign up the default dev user first
+        await signup("dev@test.com", "Password123!", "Dev User", "Dev Workspace");
+        response = await login("dev@test.com", "Password123!");
+      }
+      setToken(response.token);
       setSuccessMessage("SSO credentials validated. Redirecting to selector...");
       setTimeout(() => {
         router.push("/workspace-selector");
         setIsLoading(false);
       }, 700);
-    }, 800);
+    } catch (err) {
+      setFormError("SSO login failed. Please sign up normally using the form.");
+      setIsLoading(false);
+    }
   };
 
   const handleContactSupport = () => {

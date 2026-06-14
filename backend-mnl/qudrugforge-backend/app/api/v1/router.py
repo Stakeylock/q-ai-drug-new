@@ -7,6 +7,7 @@ from app.api.v1.projects import router as projects_router
 from app.api.v1.files import router as files_router
 from app.api.v1.targets import router as targets_router
 from app.api.v1.molecules import router as molecules_router
+from app.api.v1.candidates import router as candidates_router
 from app.api.v1.q_ai_drug import router as q_ai_drug_router
 from app.api.v1.artifact_import import router as artifact_import_router
 from app.api.v1.experiments import router as experiments_router
@@ -20,6 +21,7 @@ from app.api.v1.chemical_space import router as chemical_space_router
 from app.api.v1.similarity import router as similarity_router
 from app.api.v1.reports import router as reports_router
 from app.api.v1.pipeline import router as pipeline_router
+from app.api.v1.claim_matrix import router as claim_matrix_router
 
 api_v1_router = APIRouter()
 
@@ -32,6 +34,7 @@ api_v1_router.include_router(projects_router, prefix="/projects")
 api_v1_router.include_router(files_router)
 api_v1_router.include_router(targets_router)
 api_v1_router.include_router(molecules_router)
+api_v1_router.include_router(candidates_router)
 api_v1_router.include_router(q_ai_drug_router)
 api_v1_router.include_router(experiments_router)
 api_v1_router.include_router(docking_router)
@@ -45,5 +48,6 @@ api_v1_router.include_router(chemical_space_router)
 api_v1_router.include_router(similarity_router)
 api_v1_router.include_router(reports_router)
 api_v1_router.include_router(pipeline_router)
+api_v1_router.include_router(claim_matrix_router)
 
 

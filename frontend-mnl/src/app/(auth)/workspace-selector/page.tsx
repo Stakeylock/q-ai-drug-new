@@ -96,35 +96,56 @@ export default function WorkspaceSelectorPage() {
     try {
       setErrorMessage(null);
       const res = await apiClient.get<{ success: boolean; data: any }>("/workspaces");
-      if (res.success && Array.isArray(res.data)) {
-        if (res.data.length === 0) {
-          // If no workspaces are returned, let's create a default one
-          setWorkspaces([]);
-        } else {
-          const mapped = res.data.map((ws: any) => ({
-            id: ws.id,
-            name: ws.name,
-            organization: "Quinfosys R&D Platform",
-            projects: 0,
-            members: 1,
-            lastActive: "Just now",
-            status: "Active" as const,
-          }));
-          setWorkspaces(mapped);
-        }
-      } else {
-        setWorkspaces(STATIC_WORKSPACES);
+      if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+        const mapped = res.data.map((ws: any) => ({
+          id: ws.id,
+          name: ws.name,
+          organization: "Quinfosys R&D Platform",
+          projects: 0,
+          members: 1,
+          lastActive: "Just now",
+          status: "Active" as const,
+        }));
+        setWorkspaces(mapped);
+        return;
       }
     } catch (err) {
-      console.error("Failed to fetch workspaces, falling back to demo:", err);
-      setWorkspaces(STATIC_WORKSPACES);
-    } finally {
-      setIsLoading(false);
+      console.warn("Failed to fetch /workspaces, trying /auth/me fallback:", err);
     }
+
+    // Fallback: try /auth/me which also returns workspace list
+    try {
+      const meRes = await apiClient.get<{ success: boolean; data: any }>("/auth/me");
+      if (meRes.success && meRes.data?.workspaces?.length > 0) {
+        const mapped = meRes.data.workspaces.map((ws: any) => ({
+          id: ws.id,
+          name: ws.name,
+          organization: "Quinfosys R&D Platform",
+          projects: 0,
+          members: 1,
+          lastActive: "Just now",
+          status: "Active" as const,
+        }));
+        setWorkspaces(mapped);
+        return;
+      }
+    } catch (err2) {
+      console.warn("Failed /auth/me fallback:", err2);
+    }
+
+    // Final fallback: show static demo workspaces
+    setWorkspaces(STATIC_WORKSPACES);
+    setIsLoading(false);
+  };
+
+  // Ensure loading state is cleared after fetch completes
+  const loadWorkspaces = async () => {
+    await fetchWorkspaces();
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchWorkspaces();
+    loadWorkspaces();
   }, []);
 
   const handleEnterWorkspace = async (workspace: Workspace) => {
@@ -170,7 +191,7 @@ export default function WorkspaceSelectorPage() {
   };
 
   const handleCreateWorkspace = async () => {
-    const name = prompt("Enter a name for the new research workspace:");
+    const name = prompt("Create Workspace Wizard:\n\nEnter a name for the new research workspace:");
     if (!name || !name.trim()) return;
     setIsLoading(true);
     try {

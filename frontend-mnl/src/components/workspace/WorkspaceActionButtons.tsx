@@ -205,7 +205,19 @@ export default function WorkspaceActionButtons() {
         const projectId = localStorage.getItem("active_project_id");
         if (!projectId) throw new Error("No active project");
         const response = await runProjectDocking(projectId, {});
+        if (response.runId || response.experimentId) {
+          const runId = response.runId || response.experimentId || "";
+          setLastExperimentId(runId);
+          setPipelineExecution({
+            status: "running",
+            stage: "docking",
+            progress: 0,
+            logs: [],
+          });
+          setPipelineState("running_full_pipeline");
+        }
         appendLog(timestamped(response.message ?? "Docking started..."));
+        return;
       }
 
       const finalized = useWorkspaceStore

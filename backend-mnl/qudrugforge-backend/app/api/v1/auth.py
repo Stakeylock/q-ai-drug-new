@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, Body
 from fastapi.security import HTTPAuthorizationCredentials
-from app.schemas.auth import RegisterRequest, LoginRequest, RefreshRequest, AuthResponse, MeResponse
+from app.schemas.auth import RegisterRequest, LoginRequest, PasswordResetRequest, RefreshRequest, AuthResponse, MeResponse
 from app.services.auth_service import auth_service
 from app.services.workspace_service import workspace_service
 from app.core.dependencies import get_current_active_user, security
@@ -43,6 +43,16 @@ async def login(request: LoginRequest = Body(...)):
         "success": True,
         "data": data,
         "message": "Login successful"
+    }
+
+@router.post("/forgot-password")
+async def forgot_password(request: PasswordResetRequest = Body(...)):
+    # Do not reveal whether the account exists. A real mailer/token flow can
+    # be connected behind this stable frontend contract.
+    return {
+        "success": True,
+        "data": {"email": request.email},
+        "message": "If an account exists for that email, password reset instructions will be sent."
     }
 
 @router.post("/refresh")

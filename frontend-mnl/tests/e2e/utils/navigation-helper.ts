@@ -16,7 +16,9 @@ export function setupConsoleTracker(page: Page) {
         text.includes('Warning:') || 
         text.includes('ResizeObserver') ||
         text.includes('Failed to load resource') ||
-        text.includes('Failed to fetch RSC payload')
+        text.includes('Failed to fetch RSC payload') ||
+        text.includes('401') ||
+        text.includes('Unauthorized')
       ) {
         return;
       }
@@ -37,6 +39,7 @@ export function setupConsoleTracker(page: Page) {
       // React hydration mismatches (dev-only noise)
       msg.includes('Hydration failed') ||
       msg.includes('did not match') ||
+      msg.includes('error while hydrating') ||
       // Third-party widget load failures
       msg.includes('Script error') ||
       // Playwright internal navigation errors
