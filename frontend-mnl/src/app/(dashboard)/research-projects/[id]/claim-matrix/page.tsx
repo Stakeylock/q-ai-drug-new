@@ -2,18 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { ClaimMatrixSummaryCards, ClaimMatrixTable } from "@/components/claim-matrix";
 import { claimMatrixApi, apiClient } from "@/services";
 import type { ClaimMatrixEntry, ClaimMatrixSummary } from "@/types/claimMatrix";
 import { LoadingState, ErrorState, ActionButtonGroup, ActionButton } from "@/components/ui";
 
-interface ClaimMatrixPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function ClaimMatrixPage({ params }: ClaimMatrixPageProps) {
+export default function ClaimMatrixPage() {
+  const params = useParams<{ id: string }>();
   const [project, setProject] = useState<any>(null);
   const [summary, setSummary] = useState<ClaimMatrixSummary | null>(null);
   const [claims, setClaims] = useState<ClaimMatrixEntry[]>([]);

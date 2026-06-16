@@ -1,13 +1,9 @@
-"use client";
-
 import MoleculesView from "@/components/views/MoleculesView";
 
-interface PageProps {
-  params: {
-    projectId: string;
-  };
-}
+type PageParams = Promise<{ projectId: string }>;
 
-export default function CandidatesPage({ params }: PageProps) {
-  return <MoleculesView projectId={params.projectId} />;
+export default async function CandidatesPage({ params }: { params: PageParams }) {
+  const { projectId } = await params;
+
+  return <MoleculesView projectId={projectId} />;
 }

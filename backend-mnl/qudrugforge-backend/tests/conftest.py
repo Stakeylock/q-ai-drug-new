@@ -13,6 +13,7 @@ os.environ["APP_ENV"] = "test"
 os.environ["MONGODB_DATABASE"] = "qudrugforge_test"
 os.environ["LOCAL_STORAGE_ROOT"] = "./storage_test"
 os.environ["JWT_SECRET_KEY"] = "test-secret-key"
+os.environ["PASSWORD_BCRYPT_ROUNDS"] = "4"
 os.environ["Q_AI_DRUG_ENABLED"] = "false"
 os.environ["Q_AI_DRUG_OUTPUT_ROOT"] = os.path.join(os.path.dirname(os.path.abspath(__file__)), "utils", "sample_q_ai_drug_outputs")
 os.environ["Q_AI_DRUG_IMPORT_ALLOW_ABSOLUTE_PATHS"] = "true"
@@ -91,6 +92,7 @@ def test_storage_root():
 @pytest.fixture(autouse=True)
 def clean_storage(test_storage_root):
     """Wipe all storage folders inside test storage between tests."""
+    os.makedirs(test_storage_root, exist_ok=True)
     for item in os.listdir(test_storage_root):
         item_path = os.path.join(test_storage_root, item)
         try:

@@ -71,7 +71,12 @@ def get_redis_client() -> redis.Redis:
     global _redis_client
     if _redis_client is None:
         redis_url = getattr(settings, "REDIS_URL", "redis://127.0.0.1:6379/0")
-        _redis_client = redis.from_url(redis_url, decode_responses=True)
+        _redis_client = redis.from_url(
+            redis_url,
+            decode_responses=True,
+            socket_connect_timeout=settings.REDIS_SOCKET_TIMEOUT_SECONDS,
+            socket_timeout=settings.REDIS_SOCKET_TIMEOUT_SECONDS,
+        )
     return _redis_client
 
 

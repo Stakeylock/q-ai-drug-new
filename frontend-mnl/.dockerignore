@@ -1,0 +1,13 @@
+.env
+.env.local
+.env.e2e
+.next
+node_modules
+playwright-report
+test-results
+coverage
+*.log
+tsconfig.tsbuildinfo
+tsc_errors.txt
+tsc_errors.log
+*.pdf

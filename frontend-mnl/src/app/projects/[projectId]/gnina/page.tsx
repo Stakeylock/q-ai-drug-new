@@ -2,18 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { GNINAMetricsCards, GNINARankingTable } from "@/components/gnina";
 import { apiClient } from "@/services";
 import type { GninaResult } from "@/types/api";
 import { LoadingState, ErrorState, ActionButtonGroup, ActionButton } from "@/components/ui";
 
-interface GNINAPageProps {
-  params: {
-    projectId: string;
-  };
-}
-
-export default function GNINAPage({ params }: GNINAPageProps) {
+export default function GNINAPage() {
+  const params = useParams<{ projectId: string }>();
   const [project, setProject] = useState<any>(null);
   const [gninaResults, setGninaResults] = useState<GninaResult[]>([]);
   const [loading, setLoading] = useState(true);

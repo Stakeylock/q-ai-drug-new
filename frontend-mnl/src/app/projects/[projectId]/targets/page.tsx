@@ -1,5 +1,9 @@
 import TargetsView from "@/components/views/TargetsView";
 
-export default function ProjectTargetsPage({ params }: { params: { projectId: string } }) {
-  return <TargetsView projectId={params.projectId} />;
+type PageParams = Promise<{ projectId: string }>;
+
+export default async function ProjectTargetsPage({ params }: { params: PageParams }) {
+  const { projectId } = await params;
+
+  return <TargetsView projectId={projectId} />;
 }

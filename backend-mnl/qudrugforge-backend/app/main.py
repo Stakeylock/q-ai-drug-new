@@ -55,6 +55,7 @@ app = FastAPI(
 
 # 4. CORS Setup
 from app.core.rate_limit import RateLimitMiddleware
+from app.core.security_headers import SecurityHeadersMiddleware
 
 origins = settings.cors_origins_list
 logger.info(f"CORS origins configured: {origins}")
@@ -67,9 +68,10 @@ app.add_middleware(
 )
 app.add_middleware(
     RateLimitMiddleware,
-    limit=100,
-    window_seconds=60
+    limit=settings.RATE_LIMIT_PER_MINUTE,
+    window_seconds=settings.RATE_LIMIT_WINDOW_SECONDS
 )
+app.add_middleware(SecurityHeadersMiddleware)
 
 # 5. Global custom exceptions mapping
 app.add_exception_handler(AppException, app_exception_handler)

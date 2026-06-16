@@ -2,6 +2,7 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError
+from app.core.config import settings
 from app.core.security import decode_token
 from app.core.exceptions import AppException
 from app.repositories.user_repository import user_repository
@@ -13,14 +14,17 @@ async def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] =
     if credentials is None:
         raise AppException(status_code=401, code="UNAUTHORIZED", message="Not authenticated")
     
-    # Check if token is blacklisted in Redis
-    try:
-        from app.services.pipeline_execution_service import get_redis_client
-        r = get_redis_client()
-        if r and r.get(f"blacklist:{credentials.credentials}"):
-            raise AppException(status_code=401, code="UNAUTHORIZED", message="Token has been blacklisted")
-    except Exception:
-        pass # Graceful fallback if Redis is offline/disconnected
+    # Check token blacklist when Redis is part of the active runtime.
+    if settings.APP_ENV != "test":
+        try:
+            from app.services.pipeline_execution_service import get_redis_client
+            r = get_redis_client()
+            if r and r.get(f"blacklist:{credentials.credentials}"):
+                raise AppException(status_code=401, code="UNAUTHORIZED", message="Token has been blacklisted")
+        except AppException:
+            raise
+        except Exception:
+            pass  # Graceful fallback if Redis is offline/disconnected
 
     try:
         payload = decode_token(credentials.credentials)

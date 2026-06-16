@@ -1,20 +1,30 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Q-AI Research Console</title>
-  <link rel="stylesheet" href="/static/styles.css">
+  <script>
+    const savedTheme = window.localStorage.getItem("qai_theme");
+    if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260615c">
 </head>
 <body>
   <div class="shell">
     <aside class="rail" aria-label="Research navigation">
       <div class="brand">
-        <span class="brand-mark">Q</span>
+        <span class="brand-mark"><img class="brand-logo" src="/logo-quinfo.jpeg" data-backend-src="/logo-quinfo.jpeg" alt="Quinfo"></span>
         <div>
-          <strong>Q-AI</strong>
-          <span>Oncology Research</span>
+          <strong>Quinfo Q-AI</strong>
+          <span>Drug Discovery OS</span>
         </div>
+      </div>
+      <div class="audience-stack" aria-label="Intended users">
+        <span>Research Students</span>
+        <span>Academic Labs</span>
+        <span>Industry Teams</span>
+        <span>Scientists</span>
       </div>
       <nav class="nav">
         <button class="nav-item active" data-view="overview">Overview</button>
@@ -47,9 +57,17 @@
           <h1>Quantum-AI Cancer Drug Discovery</h1>
         </div>
         <div class="top-actions">
-          <a class="action ghost" href="/artifacts/report.html" target="_blank" rel="noreferrer">Report</a>
-          <a class="action ghost" href="/investor" target="_blank" rel="noreferrer">Investor Site</a>
-          <a class="action ghost" href="/docs" target="_blank" rel="noreferrer">API Docs</a>
+          <a class="action ghost" href="/artifacts/report.html" data-backend-href="/artifacts/report.html" target="_blank" rel="noreferrer">Report</a>
+          <a class="action ghost" href="/investor" data-backend-href="/investor" target="_blank" rel="noreferrer">Investor Site</a>
+          <a class="action ghost" href="/docs" data-backend-href="/docs" target="_blank" rel="noreferrer">API Docs</a>
+          <select class="compact-select persona-select" id="persona-select" aria-label="Workspace persona">
+            <option value="student">Student</option>
+            <option value="academic">Academic lab</option>
+            <option value="industry">Industry</option>
+            <option value="scientist">Scientist</option>
+            <option value="professional">Professional</option>
+          </select>
+          <button class="action ghost" id="theme-toggle" type="button">Dark</button>
           <button class="action" id="refresh-btn">Refresh</button>
         </div>
       </header>
@@ -64,6 +82,7 @@
       </section>
 
       <section class="view active" id="view-overview">
+        <section class="platform-suite" id="discovery-suite" aria-label="AI drug discovery workflow"></section>
         <div class="stats-grid" id="stats-grid"></div>
         <div class="grid two">
           <article class="panel">
@@ -164,6 +183,7 @@
       </section>
 
       <section class="view" id="view-quantum">
+        <div class="quantum-hero" id="quantum-visual"></div>
         <div class="grid two">
           <article class="panel">
             <div class="panel-head">
@@ -549,6 +569,6 @@
     <div class="viewer-downloads" id="viewer-downloads"></div>
   </aside>
   <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
-  <script src="/static/app.js"></script>
+  <script src="app.js?v=20260615c"></script>
 </body>
 </html>

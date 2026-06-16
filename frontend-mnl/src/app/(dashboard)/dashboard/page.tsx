@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
+  ApiError,
   getDataset,
   getDatasets,
   getExperimentSummary,
@@ -146,11 +147,22 @@ export default function DashboardPage() {
     if (isDemoMode()) return;
 
     const fetchRealDashboardData = async () => {
-      try {
-        const wsId = localStorage.getItem("active_workspace_id");
-        if (wsId) {
+      const warnRecoverable = (context: string, err: unknown) => {
+        if (err instanceof ApiError && (err.status === 404 || err.status === 408)) {
+          console.warn(`Dashboard ${context} is unavailable:`, toFriendlyErrorMessage(err));
+          return true;
+        }
+        return false;
+      };
+
+      const wsId = localStorage.getItem("active_workspace_id");
+      let projectList: any[] = [];
+
+      if (wsId) {
+        try {
           const res = await apiClient.get<any>("/projects", { params: { workspace_id: wsId } });
           if (res.success && res.data && Array.isArray(res.data.items)) {
+            projectList = res.data.items;
             const mapped = res.data.items.map((proj: any) => ({
               id: proj.id,
               name: proj.name,
@@ -162,31 +174,74 @@ export default function DashboardPage() {
               candidates: { generated: 0, filtered: 0 },
               lastRun: "Just initialized",
               owner: "Current User",
-              tags: ["Active", "Target Discovery"]
+              tags: ["Active", "Target Discovery"],
             }));
             setRealProjects(mapped);
           }
-        }
-
-        const projectId = localStorage.getItem("active_project_id");
-        if (projectId) {
-          const molRes = await apiClient.get<any>(`/projects/${projectId}/molecules`);
-          if (molRes.success && molRes.data && Array.isArray(molRes.data.items)) {
-            setRealMolecules(molRes.data.items);
-          }
-
-          const repRes = await apiClient.get<any>(`/projects/${projectId}/reports`);
-          if (repRes.success && repRes.data && Array.isArray(repRes.data.items)) {
-            setRealReports(repRes.data.items);
-          }
-
-          const expRes = await apiClient.get<any>(`/projects/${projectId}/experiments`);
-          if (expRes.success && expRes.data && Array.isArray(expRes.data.items)) {
-            setRealExperiments(expRes.data.items);
+        } catch (err) {
+          if (!warnRecoverable("workspace project list", err)) {
+            console.warn("Failed to load real dashboard workspace data:", err);
           }
         }
-      } catch (err) {
-        console.error("Failed to load real dashboard data:", err);
+      }
+
+      const storedProjectId = localStorage.getItem("active_project_id");
+      const selectedProjectId =
+        storedProjectId && projectList.some((project: any) => project.id === storedProjectId)
+          ? storedProjectId
+          : projectList[0]?.id ?? storedProjectId;
+
+      if (selectedProjectId && selectedProjectId !== storedProjectId && projectList.length > 0) {
+        localStorage.setItem("active_project_id", selectedProjectId);
+        const selectedProject = projectList.find((project: any) => project.id === selectedProjectId);
+        if (selectedProject?.name) {
+          localStorage.setItem("active_project_name", selectedProject.name);
+        }
+      }
+
+      if (!selectedProjectId) {
+        return;
+      }
+
+      if (!projectList.length && storedProjectId) {
+        try {
+          await apiClient.get<any>(`/projects/${storedProjectId}`);
+        } catch (err) {
+          if (warnRecoverable("selected project", err)) {
+            localStorage.removeItem("active_project_id");
+            localStorage.removeItem("active_project_name");
+            return;
+          }
+          console.warn("Failed to validate the active project for the dashboard:", err);
+          return;
+        }
+      }
+
+      const [molRes, repRes, expRes] = await Promise.allSettled([
+        apiClient.get<any>(`/projects/${selectedProjectId}/molecules`),
+        apiClient.get<any>(`/projects/${selectedProjectId}/reports`),
+        apiClient.get<any>(`/projects/${selectedProjectId}/experiments`),
+      ]);
+
+      if (molRes.status === "fulfilled" && molRes.value.success && molRes.value.data && Array.isArray(molRes.value.data.items)) {
+        setRealMolecules(molRes.value.data.items);
+      } else if (molRes.status === "rejected" && warnRecoverable("project molecule list", molRes.reason)) {
+        localStorage.removeItem("active_project_id");
+        localStorage.removeItem("active_project_name");
+      } else if (molRes.status === "rejected") {
+        console.warn("Failed to load real dashboard molecule data:", molRes.reason);
+      }
+
+      if (repRes.status === "fulfilled" && repRes.value.success && repRes.value.data && Array.isArray(repRes.value.data.items)) {
+        setRealReports(repRes.value.data.items);
+      } else if (repRes.status === "rejected" && !warnRecoverable("project reports", repRes.reason)) {
+        console.warn("Failed to load real dashboard report data:", repRes.reason);
+      }
+
+      if (expRes.status === "fulfilled" && expRes.value.success && expRes.value.data && Array.isArray(expRes.value.data.items)) {
+        setRealExperiments(expRes.value.data.items);
+      } else if (expRes.status === "rejected" && !warnRecoverable("project experiments", expRes.reason)) {
+        console.warn("Failed to load real dashboard experiment data:", expRes.reason);
       }
     };
 

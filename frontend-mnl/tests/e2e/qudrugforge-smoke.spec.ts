@@ -104,14 +104,20 @@ test.describe('QuDrugForge E2E End-to-End Smoke Suite', () => {
     await expect(page.getByTestId('reports-page')).toBeVisible();
     
     if (E2E_MODE === 'real') {
-      await expect(page.getByText('Real backend reports', { exact: true })).toBeVisible();
+      await expect(page.getByText(/real backend reports/i).first()).toBeVisible();
     } else {
-      await expect(page.getByText('Mock Demo Reports', { exact: true })).toBeVisible();
+      await expect(page.getByText(/mock demo reports/i).first()).toBeVisible();
     }
 
     // 7. Create Project Summary Draft
     console.log('Creating project summary draft...');
-    await page.click('text="Create Project Summary Draft"');
+    const createDraftResponsePromise = page.waitForResponse((response) =>
+      response.url().includes('/reports') &&
+      response.request().method() === 'POST' &&
+      response.status() === 200
+    );
+    await page.getByRole('button', { name: 'Create Project Summary Draft' }).click();
+    await createDraftResponsePromise;
 
     // Wait for the report draft to be added/rendered
     await expect(page.getByTestId('reports-table')).toBeVisible();

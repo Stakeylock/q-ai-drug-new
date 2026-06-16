@@ -61,6 +61,33 @@ async def test_login_success_and_failures(async_client):
     assert res_bad_user.status_code == 401
 
 @pytest.mark.asyncio
+async def test_login_with_multiple_workspaces_in_database(async_client):
+    first_user = {
+        "email": "first.login@example.com",
+        "password": "Password123!",
+        "full_name": "First Login User",
+        "workspace_name": "First Login Lab"
+    }
+    second_user = {
+        "email": "second.login@example.com",
+        "password": "Password123!",
+        "full_name": "Second Login User",
+        "workspace_name": "Second Login Lab"
+    }
+    await async_client.post("/api/v1/auth/register", json=first_user)
+    await async_client.post("/api/v1/auth/register", json=second_user)
+
+    res_login = await async_client.post(
+        "/api/v1/auth/login",
+        json={"email": second_user["email"], "password": second_user["password"]},
+    )
+
+    assert res_login.status_code == 200, res_login.text
+    data_login = res_login.json()
+    assert data_login["success"] is True
+    assert data_login["data"]["workspace"]["name"] == second_user["workspace_name"]
+
+@pytest.mark.asyncio
 async def test_me_and_protected_access(async_client, auth_headers):
     # 1. /me with token
     res_me = await async_client.get("/api/v1/auth/me", headers=auth_headers)

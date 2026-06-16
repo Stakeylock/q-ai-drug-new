@@ -1,13 +1,9 @@
-"use client";
-
 import QMView from "@/components/views/QMView";
 
-interface PageProps {
-  params: {
-    projectId: string;
-  };
-}
+type PageParams = Promise<{ projectId: string }>;
 
-export default function QMPage({ params }: PageProps) {
-  return <QMView projectId={params.projectId} />;
+export default async function QMPage({ params }: { params: PageParams }) {
+  const { projectId } = await params;
+
+  return <QMView projectId={projectId} />;
 }

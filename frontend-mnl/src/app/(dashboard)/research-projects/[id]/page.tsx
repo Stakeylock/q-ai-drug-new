@@ -1,13 +1,9 @@
-"use client";
-
 import ProjectOverviewView from "@/components/views/ProjectOverviewView";
 
-interface ProjectDetailProps {
-  params: {
-    id: string;
-  };
-}
+type PageParams = Promise<{ id: string }>;
 
-export default function ProjectDetailPage({ params }: ProjectDetailProps) {
-  return <ProjectOverviewView projectId={params.id} />;
+export default async function ProjectDetailPage({ params }: { params: PageParams }) {
+  const { id } = await params;
+
+  return <ProjectOverviewView projectId={id} />;
 }

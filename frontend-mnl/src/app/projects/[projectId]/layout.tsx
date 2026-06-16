@@ -1,15 +1,19 @@
 import type { ReactNode } from "react";
 import { ProjectLayout } from "@/components/layout";
 
-export default function ProjectRouteLayout({
+type ProjectRouteParams = Promise<{ projectId: string }>;
+
+export default async function ProjectRouteLayout({
   children,
   params,
 }: {
   children: ReactNode;
-  params: { projectId: string };
+  params: ProjectRouteParams;
 }) {
+  const { projectId } = await params;
+
   return (
-    <ProjectLayout projectId={params.projectId}>
+    <ProjectLayout projectId={projectId}>
       {children}
     </ProjectLayout>
   );

@@ -1,0 +1,5 @@
+INFO:     127.0.0.1:14423 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:17384 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51803 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49331 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49340 - "GET /v1/assistant/status HTTP/1.1" 200 OK

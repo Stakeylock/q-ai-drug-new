@@ -64,6 +64,13 @@ a {
   font-size: 22px;
 }
 
+.brand-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
 nav,
 .head-actions,
 .cta-row,

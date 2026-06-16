@@ -1,4 +1,6 @@
 const state = {
+  theme: window.localStorage.getItem("qai_theme") || "light",
+  persona: window.localStorage.getItem("qai_persona") || "student",
   summary: null,
   candidates: [],
   models: [],
@@ -55,8 +57,87 @@ const viewerState = {
   spheres: false,
 };
 
+const API_ORIGIN = window.location.port === "3000" ? "http://127.0.0.1:8000" : window.location.origin;
+
+const API_BASES = {
+  research: API_ORIGIN,
+  backend: API_ORIGIN,
+};
+
+const PERSONAS = {
+  student: {
+    label: "Research student",
+    tier: "student_free",
+    note: "Guided workflows, dry runs, cached proof data, and transparent claim boundaries.",
+  },
+  academic: {
+    label: "Academic lab",
+    tier: "academic_researcher",
+    note: "Project workspaces, reproducible artifacts, target dossiers, and shared module runs.",
+  },
+  industry: {
+    label: "Industry team",
+    tier: "industry_biotech",
+    note: "Higher-depth screening, ADMET gates, evidence packs, and pipeline operations.",
+  },
+  scientist: {
+    label: "Scientist",
+    tier: "academic_researcher",
+    note: "Structure review, validation gates, assay triage, and quantum ablation evidence.",
+  },
+  professional: {
+    label: "Professional",
+    tier: "professional_individual",
+    note: "Governed access, portfolio review, exportable reports, and collaboration handoff.",
+  },
+};
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+function applyTheme(theme = state.theme) {
+  const nextTheme = theme === "dark" ? "dark" : "light";
+  state.theme = nextTheme;
+  document.documentElement.dataset.theme = nextTheme;
+  window.localStorage.setItem("qai_theme", nextTheme);
+  const toggle = $("#theme-toggle");
+  if (toggle) toggle.textContent = nextTheme === "dark" ? "Light" : "Dark";
+}
+
+function applyPersona(persona = state.persona) {
+  const nextPersona = PERSONAS[persona] ? persona : "student";
+  state.persona = nextPersona;
+  window.localStorage.setItem("qai_persona", nextPersona);
+  const select = $("#persona-select");
+  if (select) select.value = nextPersona;
+  const targetTier = PERSONAS[nextPersona].tier;
+  if (targetTier && tiers().some((tier) => tier.tier_id === targetTier)) {
+    state.moduleConsole.selectedTier = targetTier;
+    window.localStorage.setItem("qai_selected_tier", targetTier);
+  }
+}
+
+function resolveApiUrl(url) {
+  const value = String(url || "");
+  if (/^(https?:|blob:|data:)/i.test(value)) return value;
+  if (value.startsWith("/research/")) return `${API_BASES.research}${value}`;
+  if (value.startsWith("/")) return `${API_BASES.backend}${value}`;
+  return value;
+}
+
+function resolveResourceUrl(url) {
+  if (!url || url === "#") return url || "#";
+  return resolveApiUrl(url);
+}
+
+function hydrateBackendAssets() {
+  $$("[data-backend-src]").forEach((element) => {
+    element.src = resolveResourceUrl(element.dataset.backendSrc);
+  });
+  $$("[data-backend-href]").forEach((element) => {
+    element.href = resolveResourceUrl(element.dataset.backendHref);
+  });
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -68,12 +149,14 @@ function escapeHtml(value) {
 }
 
 function fmtNumber(value) {
+  if (value === null || value === undefined || value === "") return "NA";
   const number = Number(value);
   if (!Number.isFinite(number)) return "NA";
   return number.toLocaleString();
 }
 
 function fmtScore(value, digits = 3) {
+  if (value === null || value === undefined || value === "") return "NA";
   const number = Number(value);
   if (!Number.isFinite(number)) return "NA";
   return number.toFixed(digits);
@@ -99,7 +182,7 @@ function requestHeaders(extra = {}) {
 }
 
 async function getJson(url) {
-  const response = await fetch(url, { headers: requestHeaders() });
+  const response = await fetch(resolveApiUrl(url), { headers: requestHeaders() });
   if (!response.ok) {
     throw new Error(`${url} returned ${response.status}`);
   }
@@ -107,7 +190,7 @@ async function getJson(url) {
 }
 
 async function postJson(url, body) {
-  const response = await fetch(url, {
+  const response = await fetch(resolveApiUrl(url), {
     method: "POST",
     headers: requestHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(body),
@@ -120,7 +203,7 @@ async function postJson(url, body) {
 }
 
 async function deleteJson(url) {
-  const response = await fetch(url, { method: "DELETE", headers: requestHeaders() });
+  const response = await fetch(resolveApiUrl(url), { method: "DELETE", headers: requestHeaders() });
   if (!response.ok) {
     const text = await response.text();
     throw new Error(text || `${url} returned ${response.status}`);
@@ -272,6 +355,35 @@ function renderStats() {
     .join("");
 }
 
+function renderDiscoverySuite() {
+  const run = state.summary?.run || {};
+  const proof = state.summary?.validation || {};
+  const production = state.summary?.production_gate || {};
+  const stages = [
+    ["Targets", "Disease biology, public evidence, and structure context", run.benchmark_records, "T"],
+    ["Structures", "Protein workbench with receptor and pocket evidence", state.poseData?.legacy_structures?.length || 0, "P"],
+    ["Generate", "Candidate expansion and medicinal chemistry filtering", run.generated_candidates, "G"],
+    ["Screen", "Activity, docking, GNINA, and ADMET prioritization", run.docking_rows, "S"],
+    ["Quantum", "Qiskit prefilter, xTB descriptors, and kernel reranking", run.qml_rows, "Q"],
+    ["Validate", "Proof gates, redocking checks, and honest limitations", proof.status || "NA", "V"],
+    ["Translate", "Reports, dossiers, triage boards, and lab handoff", production.status || "NA", "R"],
+  ];
+  $("#discovery-suite").innerHTML = stages
+    .map(
+      ([title, text, value, icon]) => `
+        <article class="workflow-node">
+          <div class="workflow-icon">${escapeHtml(icon)}</div>
+          <div>
+            <strong>${escapeHtml(title)}</strong>
+            <span>${escapeHtml(text)}</span>
+          </div>
+          ${badge(String(value ?? "NA"))}
+        </article>
+      `,
+    )
+    .join("");
+}
+
 function renderPipeline() {
   const run = state.summary?.run || {};
   const rows = [
@@ -349,7 +461,7 @@ function renderTargetWorkspace() {
       const structures = (target.structures || [])
         .map(
           (item) => `
-            <a class="download" href="${escapeHtml(item.url || "#")}" target="_blank" rel="noreferrer">${escapeHtml(item.name)} (${escapeHtml(item.source)})</a>
+            <a class="download" href="${escapeHtml(resolveResourceUrl(item.url))}" target="_blank" rel="noreferrer">${escapeHtml(item.name)} (${escapeHtml(item.source)})</a>
           `,
         )
         .join("");
@@ -398,7 +510,7 @@ function renderCandidates() {
   $("#candidate-grid").innerHTML = rows
     .map((row) => {
       const img = row.png_url
-        ? `<img src="${escapeHtml(row.png_url)}" alt="${escapeHtml(row.candidate_id)} structure">`
+        ? `<img src="${escapeHtml(resolveResourceUrl(row.png_url))}" alt="${escapeHtml(row.candidate_id)} structure">`
         : `<div class="empty">No structure image</div>`;
       return `
         <article class="candidate-card">
@@ -550,7 +662,7 @@ function renderModels() {
             <span class="muted">${escapeHtml(model.scope)} - ${escapeHtml(model.kind)} - ${fmtBytes(model.size_bytes)}</span>
             <span class="muted">${escapeHtml(model.relative_path)}</span>
           </div>
-          <a class="download" href="${escapeHtml(model.download_url)}">Download</a>
+          <a class="download" href="${escapeHtml(resolveResourceUrl(model.download_url))}">Download</a>
         </div>
       `,
       )
@@ -595,6 +707,39 @@ function renderPrediction(row) {
 }
 
 function renderQuantum() {
+  const qmlScores = state.qml.map((row) => Number(row.qml_score)).filter(Number.isFinite);
+  const prefilterScores = state.qprefilter.map((row) => Number(row.quantum_prefilter_score)).filter(Number.isFinite);
+  const gaps = state.qm.map((row) => Number(row.homo_lumo_gap_ev)).filter(Number.isFinite);
+  const maxRows = Math.max(state.qprefilter.length, state.qm.length, state.qml.length, 1);
+  const avg = (values) => (values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null);
+  const bestQml = [...state.qml].sort((a, b) => Number(b.qml_score || 0) - Number(a.qml_score || 0)).slice(0, 4);
+  $("#quantum-visual").innerHTML = `
+    <article class="quantum-core">
+      <h2>Quantum Evidence Layer</h2>
+      <p>Qiskit kernels, xTB orbital descriptors, and ablation-aware reranking sit on top of classical screening so research teams can see what the quantum layer actually changed.</p>
+      <div class="quantum-orbit" aria-hidden="true">
+        <span class="quantum-node n1"></span>
+        <span class="quantum-node n2"></span>
+        <span class="quantum-node n3"></span>
+        <span class="quantum-node n4"></span>
+      </div>
+      <div class="quantum-meter-grid">
+        ${candidateMetric("Prefilter Rows", fmtNumber(state.qprefilter.length))}
+        ${candidateMetric("xTB Rows", fmtNumber(state.qm.length))}
+        ${candidateMetric("QML Rows", fmtNumber(state.qml.length))}
+        ${candidateMetric("Mean Gap eV", fmtScore(avg(gaps), 2))}
+      </div>
+    </article>
+    <article class="quantum-lanes">
+      ${quantumLane("Portfolio prefilter", state.qprefilter.length, maxRows, fmtScore(avg(prefilterScores)))}
+      ${quantumLane("Orbital descriptor depth", state.qm.length, maxRows, `${fmtScore(avg(gaps), 2)} eV`)}
+      ${quantumLane("Kernel reranking", state.qml.length, maxRows, fmtScore(avg(qmlScores)))}
+      <div class="signal">
+        <div><strong>Top quantum-promoted candidates</strong><span class="muted">${bestQml.map((row) => row.candidate_id).filter(Boolean).join(", ") || "No QML rows loaded"}</span></div>
+        ${badge("Ablation visible")}
+      </div>
+    </article>
+  `;
   renderTable("#quantum-prefilter-table", state.qprefilter, [
     { key: "target_id", label: "Target" },
     { key: "candidate_id", label: "Candidate" },
@@ -618,6 +763,19 @@ function renderQuantum() {
     { key: "qml_mode", label: "Mode" },
     { key: "qml_is_real", label: "Real" },
   ]);
+}
+
+function quantumLane(label, value, maxRows, meta) {
+  const width = Math.max(6, Math.min(100, (Number(value || 0) / maxRows) * 100));
+  return `
+    <div class="quantum-lane">
+      <div class="quantum-lane-head">
+        <div><strong>${escapeHtml(label)}</strong><span class="muted">${fmtNumber(value)} rows | ${escapeHtml(meta || "NA")}</span></div>
+        ${badge(`${Math.round(width)}%`)}
+      </div>
+      <div class="quantum-lane-track"><div class="quantum-lane-fill" style="--lane-width:${width}%"></div></div>
+    </div>
+  `;
 }
 
 function renderScientificEvidence() {
@@ -797,7 +955,7 @@ function renderLegacyStructures() {
                 <strong>${escapeHtml(item.name)}</strong>
                 <span class="muted">${escapeHtml(item.source)}</span>
               </div>
-              <a class="download" href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer">Open</a>
+              <a class="download" href="${escapeHtml(resolveResourceUrl(item.url))}" target="_blank" rel="noreferrer">Open</a>
             </div>
           `,
         )
@@ -886,7 +1044,7 @@ function renderViewerDownloads(candidate, source, structureUrl) {
     ["SMILES", candidate.smi_url],
   ].filter(([, url]) => url);
   $("#viewer-downloads").innerHTML = links
-    .map(([label, url]) => `<a class="download" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(label)}</a>`)
+    .map(([label, url]) => `<a class="download" href="${escapeHtml(resolveResourceUrl(url))}" target="_blank" rel="noreferrer">${escapeHtml(label)}</a>`)
     .join("");
 }
 
@@ -959,8 +1117,8 @@ async function loadPoseViewer() {
   $("#viewer-pose-source").value = source.id;
   warning.innerHTML = `${state.poseData.note || ""} Loaded: ${source.label}.`;
   const [pdbText, sdfText] = await Promise.all([
-    fetch(structureUrl).then((response) => response.text()),
-    fetch(source.url).then((response) => response.text()),
+    fetch(resolveResourceUrl(structureUrl)).then((response) => response.text()),
+    fetch(resolveResourceUrl(source.url)).then((response) => response.text()),
   ]);
   $("#viewer-candidate-search").blur();
   lastViewerPayload = { pdbText, sdfText };
@@ -1309,7 +1467,7 @@ async function downloadProjectFile(relPath) {
   const projectId = state.moduleConsole.activeProjectId;
   if (!projectId || !relPath) return;
   const url = `/projects/${projectId}/files/${relPath.split("/").map(encodeURIComponent).join("/")}`;
-  const response = await fetch(url, { headers: requestHeaders() });
+  const response = await fetch(resolveApiUrl(url), { headers: requestHeaders() });
   if (!response.ok) throw new Error(`Download failed with ${response.status}`);
   const blob = await response.blob();
   const link = document.createElement("a");
@@ -1325,12 +1483,13 @@ function renderModuleStatus() {
   const user = state.moduleConsole.user;
   const project = activeProject();
   const billing = state.moduleConsole.billing || {};
+  const persona = PERSONAS[state.persona] || PERSONAS.student;
   $("#module-status-strip").innerHTML = `
     ${candidateMetric("Account", user?.email || "Not signed in")}
     ${candidateMetric("Project", project ? project.name : "No project")}
     ${candidateMetric("Plan", billing.plan_tier || state.moduleConsole.selectedTier)}
     ${candidateMetric("Credits", fmtScore(billing.credit_balance, 1))}
-    ${candidateMetric("Queue Mode", state.moduleConsole.projectTools ? "Project scoped" : "Not connected")}
+    ${candidateMetric("Workspace", persona.label)}
   `;
   $("#module-message").textContent = state.moduleConsole.message || (user ? "Ready to run project-scoped modules." : "Sign in or start a local demo to run authenticated project modules.");
 }
@@ -1344,13 +1503,28 @@ function renderModuleAuthAndProject() {
 }
 
 function renderTierGrid() {
+  const persona = PERSONAS[state.persona] || PERSONAS.student;
+  if (tierIndex(state.moduleConsole.selectedTier) < 0 && tiers().some((tier) => tier.tier_id === persona.tier)) {
+    state.moduleConsole.selectedTier = persona.tier;
+    window.localStorage.setItem("qai_selected_tier", persona.tier);
+  }
   const current = state.moduleConsole.selectedTier;
-  $("#module-tier-grid").innerHTML = tiers()
+  const currentTierIndex = tierIndex(current);
+  $("#module-tier-grid").innerHTML = `
+    <div class="persona-banner">
+      <strong>${escapeHtml(persona.label)}</strong>
+      <span>${escapeHtml(persona.note)}</span>
+    </div>
+  ` + tiers()
     .map((tier) => {
       const quotas = tier.quotas || {};
+      const locked = tierIndex(tier.tier_id) > currentTierIndex;
       return `
-        <button class="tier-tile ${tier.tier_id === current ? "active" : ""}" data-tier="${escapeHtml(tier.tier_id)}" type="button">
-          <strong>${escapeHtml(tier.label)}</strong>
+        <button class="tier-tile ${tier.tier_id === current ? "active" : ""} ${locked ? "locked" : ""}" data-tier="${escapeHtml(tier.tier_id)}" type="button">
+          <span class="tier-meta">
+            <strong>${escapeHtml(tier.label)}</strong>
+            ${badge(locked ? "Locked" : tier.tier_id === current ? "Active" : "Available", locked ? "warn" : "")}
+          </span>
           <span>${escapeHtml(tier.tier_id)}</span>
           <small>${escapeHtml(String(quotas.molecules_per_run))} molecules/run</small>
         </button>
@@ -1400,7 +1574,7 @@ function renderModuleGrid() {
         .map((module) => {
           const allowed = moduleAllowedByTier(module, state.moduleConsole.selectedTier);
           return `
-            <button class="module-card ${module.module_id === selectedId ? "active" : ""}" data-module-id="${escapeHtml(module.module_id)}" type="button">
+            <button class="module-card ${module.module_id === selectedId ? "active" : ""} ${allowed ? "available" : "locked"}" data-module-id="${escapeHtml(module.module_id)}" type="button">
               <span class="module-card-head">
                 <strong>${escapeHtml(module.name)}</strong>
                 ${badge(allowed ? "Allowed" : module.tier_minimum_label || module.tier_minimum, allowed ? "" : "warn")}
@@ -1451,6 +1625,11 @@ function renderModuleDetail() {
   `;
   const payloadBox = $("#module-payload");
   if (payloadBox && document.activeElement !== payloadBox) payloadBox.value = state.moduleConsole.payloadText;
+  const runButton = $("#module-run");
+  if (runButton) {
+    runButton.disabled = !allowed;
+    runButton.textContent = allowed ? "Run Module" : "Upgrade Tier";
+  }
 }
 
 function renderModuleEstimateAndResult() {
@@ -1483,7 +1662,7 @@ function renderModuleEstimateAndResult() {
       const action = rel
         ? `<button class="download module-download" data-rel="${escapeHtml(rel)}" type="button">Download</button>`
         : staticUrl
-        ? `<a class="download" href="${escapeHtml(staticUrl)}" target="_blank" rel="noreferrer">Open</a>`
+        ? `<a class="download" href="${escapeHtml(resolveResourceUrl(staticUrl))}" target="_blank" rel="noreferrer">Open</a>`
         : "";
       return `
         <tr>
@@ -1673,8 +1852,12 @@ function renderInvestor() {
 }
 
 function render() {
+  applyTheme(state.theme);
+  const personaSelect = $("#persona-select");
+  if (personaSelect) personaSelect.value = state.persona;
   setStatusText();
   renderArtifactHealth();
+  renderDiscoverySuite();
   renderStats();
   renderPipeline();
   renderTopSignals();
@@ -1700,6 +1883,13 @@ function setView(view, updateHash = true) {
 }
 
 function bindEvents() {
+  $("#theme-toggle").addEventListener("click", () => {
+    applyTheme(state.theme === "dark" ? "light" : "dark");
+  });
+  $("#persona-select").addEventListener("change", (event) => {
+    applyPersona(event.target.value);
+    renderTools();
+  });
   $$(".nav-item").forEach((button) => {
     button.addEventListener("click", () => setView(button.dataset.view));
   });
@@ -1932,6 +2122,9 @@ function showError(error) {
   $("#status-strip").insertAdjacentHTML("afterend", `<div class="error">${escapeHtml(error.message)}</div>`);
 }
 
+applyTheme(state.theme);
+applyPersona(state.persona);
+hydrateBackendAssets();
 bindEvents();
 loadData()
   .then(() => loadModuleConsoleContext({ silent: true }))

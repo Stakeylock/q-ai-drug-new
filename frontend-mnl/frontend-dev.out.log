@@ -1,0 +1,32 @@
+
+> scientific-dashboard@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.6:3001
+- Environments: .env.local
+✓ Ready in 401ms
+
+ GET / 200 in 1984ms (next.js: 1804ms, application-code: 180ms)
+ GET /login 200 in 752ms (next.js: 733ms, application-code: 19ms)
+ GET /workspace-selector 200 in 260ms (next.js: 248ms, application-code: 12ms)
+ GET /dashboard 200 in 556ms (next.js: 531ms, application-code: 25ms)
+ GET /investor 200 in 229ms (next.js: 217ms, application-code: 12ms)
+ GET /research-projects 200 in 261ms (next.js: 243ms, application-code: 18ms)
+ GET /research-projects/6a2f4e3872601d4b6bcfbb8d 200 in 814ms (next.js: 799ms, application-code: 14ms)
+ GET /experiments?experiment_id=6a2f4e5172601d4b6bcfbb90 404 in 141ms (next.js: 129ms, application-code: 12ms)
+ GET /experiments?experiment_id=6a2f4e5172601d4b6bcfbb90 404 in 26ms (next.js: 5ms, application-code: 21ms)
+ GET /research-projects/6a2f4e3872601d4b6bcfbb8d 200 in 123ms (next.js: 6ms, application-code: 116ms)
+ GET /experiments?experiment_id=6a2f4e6072601d4b6bcfbc44 404 in 15ms (next.js: 4ms, application-code: 11ms)
+ GET /experiments?experiment_id=6a2f4e6072601d4b6bcfbc44 404 in 20ms (next.js: 3ms, application-code: 17ms)
+ GET /experiments?experiment_id=6a2f4e7572601d4b6bcfbcad 404 in 21ms (next.js: 5ms, application-code: 16ms)
+ GET /experiments?experiment_id=6a2f4e7572601d4b6bcfbcad 404 in 36ms (next.js: 5ms, application-code: 31ms)
+ GET /research-projects/6a2f4e3872601d4b6bcfbb8d 200 in 95ms (next.js: 49ms, application-code: 46ms)
+ GET /dashboard/history 200 in 354ms (next.js: 322ms, application-code: 32ms)
+ GET /molecules 200 in 339ms (next.js: 321ms, application-code: 18ms)
+ GET /docking 200 in 332ms (next.js: 316ms, application-code: 16ms)
+ GET /visualization 200 in 347ms (next.js: 327ms, application-code: 20ms)
+ GET /visualization 200 in 83ms (next.js: 45ms, application-code: 39ms)
+ GET /visualization 200 in 14ms (next.js: 1557µs, application-code: 12ms)
+ GET /chemical-space 200 in 2.8s (next.js: 2.8s, application-code: 22ms)

@@ -1,5 +1,9 @@
 import VisualizationView from "@/components/views/VisualizationView";
 
-export default function ProjectVisualizationPage({ params }: { params: { projectId: string } }) {
-  return <VisualizationView projectId={params.projectId} />;
+type PageParams = Promise<{ projectId: string }>;
+
+export default async function ProjectVisualizationPage({ params }: { params: PageParams }) {
+  const { projectId } = await params;
+
+  return <VisualizationView projectId={projectId} />;
 }

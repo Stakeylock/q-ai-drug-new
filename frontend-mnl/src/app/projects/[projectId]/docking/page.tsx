@@ -1,13 +1,9 @@
-"use client";
-
 import DockingView from "@/components/views/DockingView";
 
-interface PageProps {
-  params: {
-    projectId: string;
-  };
-}
+type PageParams = Promise<{ projectId: string }>;
 
-export default function DockingPage({ params }: PageProps) {
-  return <DockingView projectId={params.projectId} />;
+export default async function DockingPage({ params }: { params: PageParams }) {
+  const { projectId } = await params;
+
+  return <DockingView projectId={projectId} />;
 }

@@ -1,0 +1,132 @@
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Failed to load real dashboard data: ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async DashboardPage.useEffect.fetchRealDashboardData (src/app/(dashboard)/dashboard/page.tsx:152:23)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/app/(dashboard)
+[browser] Failed to load real dashboard data: ApiError: API error: 404 Not Found
+    at request (src/services/api.ts:325:11)
+    at async DashboardPage.useEffect.fetchRealDashboardData (src/app/(dashboard)/dashboard/page.tsx:173:26)
+  323 |
+  324 |   if (!response.ok) {
+> 325 |     throw new ApiError(
+      |           ^
+  326 |       `API error: ${response.status} ${response.statusText}`,
+  327 |       response.status,
+  328 |       parsedBody, (src/app/(dashboard)
+[browser] Failed to load investor metrics ApiError: API error: 404 Not Found
+    at request (src/services/api.ts:325:11)
+    at async fetchData (src/app/(dashboard)/investor/page.tsx:32:19)
+  323 |
+  324 |   if (!response.ok) {
+> 325 |     throw new ApiError(
+      |           ^
+  326 |       `API error: ${response.status} ${response.statusText}`,
+  327 |       response.status,
+  328 |       parsedBody, (src/app/(dashboard)
+[browser] Failed to load investor metrics ApiError: API error: 404 Not Found
+    at request (src/services/api.ts:325:11)
+    at async fetchData (src/app/(dashboard)/investor/page.tsx:32:19)
+  323 |
+  324 |   if (!response.ok) {
+> 325 |     throw new ApiError(
+      |           ^
+  326 |       `API error: ${response.status} ${response.statusText}`,
+  327 |       response.status,
+  328 |       parsedBody, (src/app/(dashboard)
+[browser] Failed to load investor metrics ApiError: API error: 404 Not Found
+    at request (src/services/api.ts:325:11)
+    at async fetchData (src/app/(dashboard)/investor/page.tsx:32:19)
+  323 |
+  324 |   if (!response.ok) {
+> 325 |     throw new ApiError(
+      |           ^
+  326 |       `API error: ${response.status} ${response.statusText}`,
+  327 |       response.status,
+  328 |       parsedBody, (src/app/(dashboard)
+[browser] Failed to load pipeline summary from backend ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async fetchSummaryData (src/components/views/ProjectOverviewView.tsx:291:19)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/ProjectOverviewView.tsx:307:15)
+[browser] Failed to load pipeline summary from backend ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async fetchSummaryData (src/components/views/ProjectOverviewView.tsx:291:19)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/ProjectOverviewView.tsx:307:15)
+[browser] Failed to load pipeline summary from backend ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async fetchSummaryData (src/components/views/ProjectOverviewView.tsx:291:19)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/ProjectOverviewView.tsx:307:15)
+[browser] Failed to load pipeline summary from backend ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async fetchSummaryData (src/components/views/ProjectOverviewView.tsx:291:19)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/ProjectOverviewView.tsx:307:15)
+[browser] Failed to load project details from backend, using fallback: ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async fetchProjectData (src/components/views/ProjectOverviewView.tsx:273:25)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/ProjectOverviewView.tsx:283:15)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Fetch failed ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async fetchData (src/components/views/DockingView.tsx:53:46)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/DockingView.tsx:79:15)
+[browser] Failed to retrieve viewer assets ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async VisualizationViewContent.useEffect.fetchAssets (src/components/views/VisualizationView.tsx:97:21)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/VisualizationView.tsx:146:17)
+[browser] Failed to retrieve viewer assets ApiError: Request timeout after 10000ms
+    at request (src/services/api.ts:307:13)
+    at async VisualizationViewContent.useEffect.fetchAssets (src/components/views/VisualizationView.tsx:97:21)
+  305 |     }
+  306 |     if (error instanceof DOMException && error.name === "AbortError") {
+> 307 |       throw new ApiError(`Request timeout after ${timeoutMs}ms`, 408, undefined, url);
+      |             ^
+  308 |     }
+  309 |     throw new ApiError("Network request failed", undefined, error, url);
+  310 |   } finally { (src/components/views/VisualizationView.tsx:146:17)

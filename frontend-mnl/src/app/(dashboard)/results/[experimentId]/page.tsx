@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import {
   getPipelineResult,
@@ -45,12 +45,6 @@ import {
 } from "@/services/pipelineDemo";
 
 type ResultPayload = Record<string, unknown>;
-
-interface ExperimentResultPageProps {
-  params: {
-    experimentId: string;
-  };
-}
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (value && typeof value === "object" && !Array.isArray(value)) {
@@ -340,7 +334,8 @@ function mapPipelineResponse(payload: ResultPayload | null): PipelineSections {
   };
 }
 
-export default function ExperimentResultPage({ params }: ExperimentResultPageProps) {
+export default function ExperimentResultPage() {
+  const params = useParams<{ experimentId: string }>();
   const router = useRouter();
   const lastExperimentId = useWorkspaceStore((s) => s.lastExperimentId);
   const [activeSection, setActiveSection] = useState<ResultSection>("generated");

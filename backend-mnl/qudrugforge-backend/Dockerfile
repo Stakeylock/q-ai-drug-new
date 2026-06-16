@@ -11,14 +11,22 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
-RUN python -m pip install --upgrade pip \
+RUN python -m pip install --upgrade "pip>=26.1.2" "setuptools>=78.1.1" "wheel>=0.46.2" \
     && python -m pip install -r requirements.txt \
     && python -m pip install email-validator
 
-COPY app ./app
-COPY storage ./storage
+RUN addgroup --system app && adduser --system --ingroup app app
+
+COPY --chown=app:app app ./app
+COPY --chown=app:app storage ./storage
+RUN mkdir -p storage/uploads storage/artifacts storage/reports storage/temp \
+    && chown -R app:app /app/storage
 
 EXPOSE 8001
+
+USER app
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=3)" || exit 1
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
 

@@ -1,5 +1,23 @@
 const $ = (selector) => document.querySelector(selector);
 
+const RESEARCH_API_BASE = window.location.port === "3000" ? "http://127.0.0.1:8000" : window.location.origin;
+
+function resolveBackendUrl(url) {
+  const value = String(url || "");
+  if (/^(https?:|blob:|data:|#)/i.test(value)) return value;
+  if (value.startsWith("/")) return `${RESEARCH_API_BASE}${value}`;
+  return value;
+}
+
+function hydrateBackendAssets() {
+  document.querySelectorAll("[data-backend-src]").forEach((element) => {
+    element.src = resolveBackendUrl(element.dataset.backendSrc);
+  });
+  document.querySelectorAll("[data-backend-href]").forEach((element) => {
+    element.href = resolveBackendUrl(element.dataset.backendHref);
+  });
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -31,7 +49,9 @@ function badge(text) {
 }
 
 async function getJson(url) {
-  const response = await fetch(url, { headers: { Accept: "application/json" } });
+  const response = await fetch(resolveBackendUrl(url), {
+    headers: { Accept: "application/json" },
+  });
   if (!response.ok) throw new Error(`${url} returned ${response.status}`);
   return response.json();
 }
@@ -186,4 +206,5 @@ async function boot() {
   renderReadiness(metrics);
 }
 
+hydrateBackendAssets();
 boot().catch(renderError);

@@ -1,0 +1,1750 @@
+::ffff:127.0.0.1 - - [15/Jun/2026 11:51:52] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:08] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:19] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:19] "GET /static/styles.css HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:19] "GET /static/app.js HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:21] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:21] "GET /favicon.ico HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:22] "GET /static/styles.css HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:22] "GET /static/app.js HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:26] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:26] "GET /static/styles.css HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:52:26] "GET /static/app.js HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:09] "GET /styles.css HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:10] "GET /app.js HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:10] "GET /investor.css HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /styles.css HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /app.js HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:19] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:22] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:23] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:53:39] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:10] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:47] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:48] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:49] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:50] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:51] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:54:52] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:00] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:01] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:02] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:03] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:04] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:55:05] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:26] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 11:59:27] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:05] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:06] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/summary HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/top-candidates?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/models HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/activity-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/admet-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/model-cards HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/validation HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/qm-descriptors?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/qml-scores?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/quantum-prefilter?limit=120 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/pose-viewer-data?limit=80 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/status HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/results?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/gnina/log?limit=100 HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/investor-metrics HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/experiments HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/artifact-health HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] code 404, message File not found
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /v1/tools HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/scientific-evidence HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:07] "GET /research/target-workspace HTTP/1.1" 404 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:38] "GET /app.js HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:00:38] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:01:24] "GET / HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:01:24] "GET /styles.css?v=20260615 HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:01:24] "GET /app.js?v=20260615 HTTP/1.1" 200 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:01:33] "GET / HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [15/Jun/2026 12:08:25] "GET /app.js HTTP/1.1" 200 -

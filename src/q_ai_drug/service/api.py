@@ -12,6 +12,7 @@ from urllib.parse import quote
 import pandas as pd
 import yaml
 from fastapi import Body, Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
@@ -29,7 +30,9 @@ from q_ai_drug.service.db import CandidateRecord, JobLogRecord, JobRecord, Proje
 from q_ai_drug.service.models import Job, JobCreate, ModelPredictRequest, Project, ProjectCreate
 from q_ai_drug.service.queue import enqueue_cancer_proof_run, queue_enabled, redis_connection
 from q_ai_drug.service.routes.artifacts import router as artifacts_router
+from q_ai_drug.service.routes.assistant import router as assistant_router
 from q_ai_drug.service.routes.auth import router as auth_router
+from q_ai_drug.service.routes.chemistry import router as chemistry_router
 from q_ai_drug.service.routes.tools import router as tools_router
 from q_ai_drug.service.routes.uploads import router as uploads_router
 from q_ai_drug.service.settings import get_settings
@@ -46,6 +49,23 @@ LEGACY_STRUCTURES_DIR = Path(os.getenv("QAI_LEGACY_STRUCTURES_DIR", "data/struct
 GNINA_THREAD: threading.Thread | None = None
 GNINA_LOCK = threading.Lock()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR), check_dir=False), name="static")
 app.mount("/artifacts", StaticFiles(directory=str(DEFAULT_OUTPUT_DIR), check_dir=False), name="artifacts")
 app.mount("/structures", StaticFiles(directory=str(ACTIVE_STRUCTURES_DIR), check_dir=False), name="structures")
@@ -54,6 +74,8 @@ app.include_router(auth_router)
 app.include_router(uploads_router)
 app.include_router(artifacts_router)
 app.include_router(tools_router)
+app.include_router(assistant_router)
+app.include_router(chemistry_router)
 
 
 def _project_from_record(record: ProjectRecord) -> Project:
@@ -170,7 +192,7 @@ def metrics() -> str:
 
 @app.get("/")
 def root() -> RedirectResponse:
-    return RedirectResponse(url="/app")
+    return RedirectResponse(url="/dashboard")
 
 
 @app.get("/dashboard")
@@ -188,6 +210,41 @@ def main_app() -> FileResponse:
     if not index_path.exists():
         raise HTTPException(status_code=404, detail="Application frontend has not been built.")
     return FileResponse(index_path)
+
+
+def _frontend_asset_response(filename: str) -> FileResponse:
+    path = FRONTEND_DIR / filename
+    if not path.exists():
+        raise HTTPException(status_code=404, detail=f"{filename} was not found in the frontend folder.")
+    return FileResponse(path)
+
+
+@app.get("/styles.css", include_in_schema=False)
+def dashboard_styles() -> FileResponse:
+    return _frontend_asset_response("styles.css")
+
+
+@app.get("/app.js", include_in_schema=False)
+def dashboard_script() -> FileResponse:
+    return _frontend_asset_response("app.js")
+
+
+@app.get("/investor.css", include_in_schema=False)
+def investor_styles() -> FileResponse:
+    return _frontend_asset_response("investor.css")
+
+
+@app.get("/investor.js", include_in_schema=False)
+def investor_script() -> FileResponse:
+    return _frontend_asset_response("investor.js")
+
+
+@app.get("/logo-quinfo.jpeg", include_in_schema=False)
+def quinfo_logo() -> FileResponse:
+    path = Path("logo-quinfo.jpeg")
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="Quinfo logo was not found.")
+    return FileResponse(path)
 
 
 @app.get("/investor")

@@ -22,9 +22,17 @@ COPY alembic.ini ./alembic.ini
 COPY data ./data
 COPY models ./models
 
-RUN python -m pip install --upgrade pip \
+RUN python -m pip install --upgrade "pip>=26.1.2" "setuptools>=78.1.1" "wheel>=0.46.2" \
     && python -m pip install -e ".[research]"
 
+RUN addgroup --system app && adduser --system --ingroup app app \
+    && mkdir -p /app/outputs /app/data /app/models \
+    && chown -R app:app /app/outputs
+
 EXPOSE 8000
+
+USER app
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)" || exit 1
 
 CMD ["python", "scripts/start_api.py"]

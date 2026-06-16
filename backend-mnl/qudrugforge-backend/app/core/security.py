@@ -5,7 +5,11 @@ from jose import jwt, JWTError
 from app.core.config import settings
 from app.core.exceptions import AppException
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    bcrypt__rounds=settings.PASSWORD_BCRYPT_ROUNDS,
+)
 
 def hash_password(password: str) -> str:
     if len(password.encode("utf-8")) > 72:

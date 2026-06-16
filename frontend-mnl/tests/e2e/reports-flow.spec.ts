@@ -108,7 +108,7 @@ test.describe('Reports flow', () => {
 
     await expect(page.getByTestId('reports-page')).toBeVisible();
     await expect(page.getByTestId('reports-summary')).toBeVisible();
-    await expect(page.getByText('Real backend reports')).toBeVisible();
+    await expect(page.getByText(/real backend reports/i).first()).toBeVisible();
     await expect(page.getByText('Imported q-ai-drug artifact')).toBeVisible();
     await expect(page.getByText('Imported q-ai-drug Report')).toBeVisible();
 

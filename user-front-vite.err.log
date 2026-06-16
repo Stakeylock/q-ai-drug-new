@@ -1,0 +1,20 @@
+[2m1:45:27 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mExpected corresponding JSX closing tag for 'strCopilot'.
+      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/App.jsx:1437:90 [38;5;246m][0m
+      [38;5;246m│[0m
+ [38;5;246m1437 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mN[0m[38;5;249mV[0m[38;5;249mI[0m[38;5;249mD[0m[38;5;249mI[0m[38;5;249mA[0m[38;5;249m [0m[38;5;249mw[0m[38;5;249mi[0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249m [0m[38;5;249m<[0mstrCopilot[38;5;249m [0m[38;5;249mc[0m[38;5;249mh[0m[38;5;249ma[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mu[0m[38;5;249ms[0m[38;5;249me[0m[38;5;249ms[0m[38;5;249m [0m[38;5;249mG[0m[38;5;249mo[0m[38;5;249mo[0m[38;5;249mg[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249m [0m[38;5;249mA[0m[38;5;249mI[0m[38;5;249m [0m[38;5;249mS[0m[38;5;249mt[0m[38;5;249mu[0m[38;5;249md[0m[38;5;249mi[0m[38;5;249mo[0m[38;5;249m [0m[38;5;249mw[0m[38;5;249mi[0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249mg[0m[38;5;249m>[0m[38;5;249mN[0m[38;5;249mV[0m[38;5;249mI[0m[38;5;249mD[0m[38;5;249mI[0m[38;5;249mA[0m[38;5;249m_[0m[38;5;249mA[0m[38;5;249mP[0m[38;5;249mI[0m[38;5;249m_[0m[38;5;249mK[0m[38;5;249mE[0m[38;5;249mY[0m[38;5;249m<[0m[38;5;249m/[0mstrong[38;5;249m>[0m[38;5;249m.[0m[38;5;249m [0m[38;5;249mB[0m[38;5;249mo[0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249m [0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249ma[0m[38;5;249my[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mk[0m[38;5;249me[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249m-[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ml[0m[38;5;249my[0m[38;5;249m [0m[38;5;249ma[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249m [0m[38;5;249mn[0m[38;5;249me[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249me[0m[38;5;249mn[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249me[0m[38;5;249m [0m[38;5;249mR[0m[38;5;249me[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249m.[0m
+ [38;5;240m     │[0m                            ─────┬────                                                    ───┬──  
+ [38;5;240m     │[0m                                 ╰──────────────────────────────────────────────────────────────── Opened here
+ [38;5;240m     │[0m                                                                                             │    
+ [38;5;240m     │[0m                                                                                             ╰──── Expected `</strCopilot>`
+[38;5;246m──────╯[0m
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mE:/QC-Intern/qc1/user-front/src/App.jsx[39m
+      at transformWithOxc (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:3344:19)
+      at TransformPluginContext.transform (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:3415:26)
+      at EnvironmentPluginContainer.transform (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:30387:51)
+      at async loadAndTransform (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:24646:26)
+      at async viteTransformMiddleware (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:24440:20)
+[2m1:45:27 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/App.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)

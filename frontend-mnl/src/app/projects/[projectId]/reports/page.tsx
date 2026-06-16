@@ -1,5 +1,9 @@
 import ReportsView from "@/components/views/ReportsView";
 
-export default function ProjectReportsPage({ params }: { params: { projectId: string } }) {
-  return <ReportsView projectId={params.projectId} />;
+type PageParams = Promise<{ projectId: string }>;
+
+export default async function ProjectReportsPage({ params }: { params: PageParams }) {
+  const { projectId } = await params;
+
+  return <ReportsView projectId={projectId} />;
 }
