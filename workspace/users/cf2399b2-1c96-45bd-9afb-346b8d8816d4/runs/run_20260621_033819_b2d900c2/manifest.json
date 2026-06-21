@@ -242,8 +242,35 @@
       "progress": 38,
       "artifacts": [],
       "data_checksum": "587c55c26b702b6b6afa81460de5a91a2addcfa99167ae85d6d8ce9e7cdb9941"
+    },
+    {
+      "module": "03_docking",
+      "event": "full_stack_docking_completed",
+      "status": "completed",
+      "timestamp": "2026-06-21T03:44:50.185127+00:00",
+      "progress": 38,
+      "artifacts": [],
+      "data_checksum": "0086373660aad623caa3c244cdab136ee910870effcdae2638bfcad355a003e7"
+    },
+    {
+      "module": "08_sar_decision",
+      "event": "rerank_completed",
+      "status": "completed",
+      "timestamp": "2026-06-21T03:44:50.445420+00:00",
+      "progress": 91,
+      "artifacts": [],
+      "data_checksum": "9bcccc0c6ae3c2d4dfdfbe8562ca0c06d1ce5c71b9d6457f4b85f4a3f227990f"
+    },
+    {
+      "module": "09_assay_handoff",
+      "event": "handoff_ready",
+      "status": "completed",
+      "timestamp": "2026-06-21T03:44:50.508132+00:00",
+      "progress": 100,
+      "artifacts": [],
+      "data_checksum": "ac469d29f2b60cded5e44a1d76405e6efd1b6effb056f2ca1da87306bd3ebea4"
     }
   ],
   "claim_boundary": "In-silico research run. No clinical, regulatory, safety, or efficacy claims.",
-  "updated_at": "2026-06-21T03:38:28.808858+00:00"
+  "updated_at": "2026-06-21T03:44:50.508132+00:00"
 }
