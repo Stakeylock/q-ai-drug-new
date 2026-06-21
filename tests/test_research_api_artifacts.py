@@ -6,6 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from q_ai_drug.service import api
+from q_ai_drug.service.routes import chemistry as chemistry_routes
 
 
 def _write_text(path: Path, text: str = "x") -> None:
@@ -52,6 +53,37 @@ def test_top_candidates_fill_assets_and_pose_sources(tmp_path, monkeypatch):
     assert health["top_candidate_count"] == 1
     assert health["missing_image_count"] == 0
     assert health["missing_docked_pose_count"] == 0
+
+
+def test_realtime_dock_parses_public_sdf_metadata(tmp_path, monkeypatch):
+    public_dir = tmp_path / "public"
+    output_dir = tmp_path / "outputs"
+    sdf = public_dir / "pharma-library" / "ligands" / "chembl" / "sdf" / "CHEMBLTEST.sdf"
+    _write_text(
+        sdf,
+        """
+  Mrv
+
+  3  2  0  0  0  0            999 V2000
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2094    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.4189    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0
+  2  3  1  0
+M  END
+$$$$
+""",
+    )
+    monkeypatch.setattr(chemistry_routes, "FRONTEND_PUBLIC_DIR", public_dir)
+    monkeypatch.setattr(chemistry_routes, "OUTPUT_DIR", output_dir)
+
+    path = chemistry_routes._path_from_url_or_path("/pharma-library/ligands/chembl/sdf/CHEMBLTEST.sdf")
+    metadata = chemistry_routes._ligand_metadata_from_sdf(path)
+
+    assert metadata["ligand_metadata_status"] == "parsed_from_sdf"
+    assert metadata["canonical_smiles"] == "CCO"
+    assert metadata["MW"] > 40
+    assert metadata["QED"] > 0
 
 
 def test_dashboard_smoke_current_artifacts():

@@ -2503,7 +2503,7 @@ function CandidateDetail({ candidate, tab, setTab, onUpdateCandidate }) {
         <div>
           <p className="eyebrow">{candidate.target} molecule evidence</p>
           <h3>{candidate.id}</h3>
-          <small>{candidate.smiles || "No SMILES string available"}</small>
+          <small>{displayCandidateSmiles(candidate)}</small>
         </div>
         <span className="evidence-pill">
           {candidate.raw?.evidence_kind === "reference_ligand"
@@ -2659,7 +2659,7 @@ function StructureTab({ candidate, onUpdateCandidate = () => {} }) {
       </div>
       <div className="smiles-box">
         <strong>SMILES</strong>
-        <code>{candidate.smiles || "Not available"}</code>
+        <code>{displayCandidateSmiles(candidate)}</code>
       </div>
     </div>
   );
@@ -3516,6 +3516,15 @@ function candidateCanRunDocking(candidate) {
   return Boolean(candidateSeedSmiles(candidate) || raw.sdf_url || raw.ligand_sdf_url || raw.docked_sdf_url || raw.gnina_pose_sdf_url);
 }
 
+function displayCandidateSmiles(candidate) {
+  const raw = candidate?.raw || {};
+  if (isUsableSmiles(raw.canonical_smiles)) return raw.canonical_smiles;
+  if (isUsableSmiles(raw.smiles)) return raw.smiles;
+  if (isUsableSmiles(candidate?.smiles)) return candidate.smiles;
+  if (raw.evidence_kind === "reference_ligand") return "SDF asset; canonical SMILES is parsed after docking/prep.";
+  return "Not available";
+}
+
 function normalizeBackendCandidate(candidate, proteinEvidence = null, dataFabric = null) {
   const affinity = numeric(candidate.affinity_kcal_mol ?? candidate.vina_affinity_kcal_mol, null);
   const quantumDelta = numeric(candidate.quantum_ablation_delta ?? candidate.quantum_delta, null);
@@ -3651,7 +3660,7 @@ function referenceLigandCandidate(ligand, protein, patient, proteinIndex, index,
     affinityValue: null,
     quantumDelta: "reference",
     quantumDeltaValue: 0,
-    smiles: "Reference ligand asset - open SDF artifact for structure details",
+    smiles: "",
     structureImage: ligand.image,
     realEvidence: false,
     rationale: `${ligand.name} is a curated ChEMBL reference ligand for ${ligand.target}. It is shown to keep ${protein.gene} represented while backend docking/QM evidence is generated.`,
@@ -3664,6 +3673,7 @@ function referenceLigandCandidate(ligand, protein, patient, proteinIndex, index,
       pocket_pdb_id: protein.alphafoldId,
       reference_ligand: ligand.name,
       chembl_id: ligand.chemblId,
+      ligand_name: ligand.name,
       sdf_url: ligand.sdf,
       png_url: ligand.image,
       source_json_url: ligand.search,
@@ -3888,7 +3898,7 @@ function mergeRealtimeDocking(candidate, dockingPayload) {
   const updated = {
     ...candidate,
     target: dockingPayload?.target || candidate.target,
-    smiles: raw.canonical_smiles || raw.smiles || candidate.smiles,
+    smiles: displayCandidateSmiles({ ...candidate, raw }),
     structureImage: raw.png_url || candidate.structureImage,
     docking,
     affinityValue,

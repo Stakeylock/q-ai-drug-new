@@ -409,6 +409,55 @@ def _descriptor_payload(mol: Any) -> dict[str, Any]:
     }
 
 
+def _first_mol_from_sdf(path: Path) -> Any | None:
+    if Chem is None or not path.exists():
+        return None
+    for sanitize in (True, False):
+        try:
+            supplier = Chem.SDMolSupplier(str(path), removeHs=False, sanitize=sanitize)
+            mol = next((item for item in supplier if item is not None), None)
+            if mol is None:
+                continue
+            if not sanitize:
+                try:
+                    Chem.SanitizeMol(mol)
+                except Exception:
+                    pass
+            return mol
+        except Exception:
+            continue
+    return None
+
+
+def _ligand_metadata_from_sdf(path: Path) -> dict[str, Any]:
+    mol = _first_mol_from_sdf(path)
+    if mol is None:
+        return {"ligand_metadata_status": "unavailable"}
+    try:
+        descriptor_mol = Chem.RemoveHs(mol)
+    except Exception:
+        descriptor_mol = mol
+    try:
+        Chem.SanitizeMol(descriptor_mol)
+    except Exception:
+        pass
+    try:
+        smiles = Chem.MolToSmiles(descriptor_mol, canonical=True)
+    except Exception:
+        smiles = ""
+    payload = {
+        "ligand_metadata_status": "parsed_from_sdf",
+        "ligand_atom_count": int(mol.GetNumAtoms()),
+        "canonical_smiles": smiles,
+        "smiles": smiles,
+    }
+    try:
+        payload.update(_descriptor_payload(descriptor_mol))
+    except Exception as exc:
+        payload["descriptor_error"] = str(exc)[:300]
+    return payload
+
+
 def _jitter(*parts: str) -> float:
     raw = hashlib.sha1("|".join(parts).encode("utf-8")).hexdigest()[:8]
     return (int(raw, 16) % 1000) / 1000.0 - 0.5
@@ -501,6 +550,9 @@ def realtime_dock(payload: RealtimeDockRequest) -> dict[str, Any]:
     elif Chem is not None and ligand.suffix.lower() == ".sdf":
         centered = out_dir / f"{candidate_id}_centered_input.sdf"
         ligand = _center_ligand_sdf(ligand, centered, center)
+    ligand_metadata = _ligand_metadata_from_sdf(ligand) if ligand and ligand.exists() else {}
+    if not canonical_smiles and ligand_metadata.get("canonical_smiles"):
+        canonical_smiles = str(ligand_metadata["canonical_smiles"])
 
     log_path = out_dir / f"{candidate_id}_{engine}.log"
     started = time.time()
@@ -524,6 +576,7 @@ def realtime_dock(payload: RealtimeDockRequest) -> dict[str, Any]:
         "box_size": {"x": size_tuple[0], "y": size_tuple[1], "z": size_tuple[2]},
         "docking_runtime_s": None,
         "claim_boundary": "Real docking engine output is computational evidence only; not measured binding, efficacy, safety, or clinical evidence.",
+        **ligand_metadata,
     }
 
     if engine == "gnina":
