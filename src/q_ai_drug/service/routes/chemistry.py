@@ -6,6 +6,8 @@ import os
 import re
 import shlex
 import time
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import quote, unquote
@@ -90,6 +92,19 @@ class RealtimeDockRequest(BaseModel):
     cpu: int = Field(default=4, ge=1, le=16)
 
 
+class ChemicalDbRegisterRequest(BaseModel):
+    candidate_id: str = Field(..., min_length=1, max_length=160)
+    target: str = Field(default="CUSTOM", min_length=1, max_length=80)
+    smiles: str | None = Field(default=None, max_length=4096)
+    objective: str | None = Field(default=None, max_length=1200)
+    synthesis_status: Literal["designed", "ordered", "synthesized", "analytical_passed"] = "designed"
+    analytical_status: Literal["not_started", "pending", "passed", "failed"] = "not_started"
+    docking_status: str | None = Field(default=None, max_length=80)
+    evidence: dict[str, Any] = Field(default_factory=dict)
+    wet_lab_assays: list[str] = Field(default_factory=list, max_length=40)
+    notes: str | None = Field(default=None, max_length=4000)
+
+
 def _safe_slug(value: str, fallback: str) -> str:
     text = re.sub(r"[^A-Za-z0-9_.-]+", "_", value.strip())[:80].strip("_")
     return text or fallback
@@ -98,6 +113,30 @@ def _safe_slug(value: str, fallback: str) -> str:
 def _artifact_url(path: Path) -> str:
     rel = path.resolve().relative_to(OUTPUT_DIR.resolve()).as_posix()
     return "/artifacts/" + "/".join(quote(part) for part in rel.split("/"))
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _read_json(path: Path, fallback: Any) -> Any:
+    if not path.exists():
+        return fallback
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return fallback
+
+
+def _write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+
+
+def _chemical_db_root() -> Path:
+    root = OUTPUT_DIR / "chemical_db"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
 
 
 def _is_relative_to(path: Path, root: Path) -> bool:
@@ -434,6 +473,189 @@ def _descriptor_payload(mol: Any) -> dict[str, Any]:
     }
 
 
+def _safe_descriptor_payload_from_smiles(smiles: str | None) -> dict[str, Any]:
+    if not smiles or Chem is None:
+        return {}
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        return {}
+    try:
+        return _descriptor_payload(mol)
+    except Exception:
+        return {}
+
+
+def _chemical_identity(candidate_id: str, target: str, smiles: str | None) -> str:
+    digest = hashlib.sha1(f"{target}|{candidate_id}|{smiles or ''}".encode("utf-8")).hexdigest()[:12]
+    return _safe_slug(f"QDF-{target.upper()}-{digest}", f"QDF-{digest}")
+
+
+def _docking_gate(evidence: dict[str, Any]) -> dict[str, Any]:
+    engines = {
+        "gnina": evidence.get("gnina_status"),
+        "vina": evidence.get("vina_status"),
+        "smina": evidence.get("smina_status"),
+        "generic": evidence.get("docking_status"),
+    }
+    completed = [engine for engine, status in engines.items() if str(status or "").lower() == "completed"]
+    real_pose = bool(
+        evidence.get("gnina_pose_sdf_url")
+        or evidence.get("vina_docked_sdf_url")
+        or evidence.get("smina_docked_sdf_url")
+        or evidence.get("docked_sdf_url")
+    )
+    if "gnina" in completed and real_pose:
+        gate = "passed_primary_docking"
+    elif completed and real_pose:
+        gate = "passed_docking_review"
+    elif evidence.get("sdf_url"):
+        gate = "preview_only"
+    else:
+        gate = "needs_docking"
+    return {
+        "gate": gate,
+        "completed_engines": completed,
+        "real_pose_available": real_pose,
+        "default_pose_source": evidence.get("default_pose_source") or ("gnina" if "gnina" in completed else completed[0] if completed else "none"),
+    }
+
+
+def _synthesis_route_card(record: dict[str, Any]) -> dict[str, Any]:
+    smiles = str(record.get("smiles") or "")
+    descriptors = record.get("descriptors") or {}
+    route_flags: list[str] = []
+    if "C(=O)N" in smiles or "NC(=O)" in smiles:
+        route_flags.append("amide-coupling disconnection candidate")
+    if "n" in smiles.lower() or "N" in smiles:
+        route_flags.append("heteroaryl/amine salt-form and basicity review")
+    if any(token in smiles for token in ["Cl", "Br", "I", "F"]):
+        route_flags.append("halogenated aryl building-block or cross-coupling review")
+    if "B" in smiles:
+        route_flags.append("boron-containing motif requires reactivity and stability review")
+    if not route_flags:
+        route_flags.append("medicinal chemist retrosynthesis review required")
+    release_specs = [
+        "identity confirmed by LC-MS and 1H NMR",
+        "purity target >= 95% by HPLC/UPLC unless program SOP defines otherwise",
+        "salt, solvate, stereochemistry, and counterion state recorded",
+        "residual solvent and inorganic impurity review before cellular assays",
+        "stock solution concentration, DMSO percentage, storage condition, and freeze-thaw count recorded",
+    ]
+    if float(descriptors.get("MW") or 0) > 500:
+        release_specs.append("high molecular weight: confirm solubility and permeability before expensive assays")
+    if float(descriptors.get("LogP") or 0) > 4:
+        release_specs.append("high lipophilicity: add kinetic solubility and nonspecific-binding checks")
+    route_steps = [
+        {
+            "stage": "route scouting",
+            "purpose": "Select purchasable building blocks or vendor route; document IP/procurement risk.",
+            "output": "approved route proposal with hazards, protecting groups, and expected intermediates",
+        },
+        {
+            "stage": "small-scale synthesis or procurement",
+            "purpose": "Create or acquire a research sample under approved lab SOPs and chemist supervision.",
+            "output": "batch ID, mass, lot/source, route summary, and deviations",
+        },
+        {
+            "stage": "purification and analytical release",
+            "purpose": "Purify and verify identity/purity before biological interpretation.",
+            "output": "LC-MS, NMR, purity chromatogram, and release decision",
+        },
+        {
+            "stage": "assay-ready formulation",
+            "purpose": "Prepare stock, solubility check, plate map, and stability notes for wet-lab handoff.",
+            "output": "assay-ready vial/plate record with concentration and storage metadata",
+        },
+    ]
+    return {
+        "route_strategy": route_flags,
+        "route_steps": route_steps,
+        "analytical_release_specs": release_specs,
+        "safety_review": [
+            "Review SDS for all reagents, intermediates, solvents, and final material before handling.",
+            "Route card is planning guidance only; exact conditions must come from approved ELN/SOP or expert chemist design.",
+            "Covalent, reactive, metal-containing, or highly lipophilic designs require additional hazard review.",
+        ],
+        "claim_boundary": "Synthesis route card is non-executable planning support. It does not provide validated lab instructions or replace a qualified chemist.",
+    }
+
+
+def _wet_lab_handoff(record: dict[str, Any]) -> dict[str, Any]:
+    assays = record.get("wet_lab_assays") or [
+        "biochemical IC50/Ki",
+        "orthogonal Kd target engagement",
+        "cell viability dose response",
+        "selectivity/off-target panel",
+        "kinetic solubility",
+        "Caco-2/MDCK permeability",
+        "microsomal stability",
+        "CYP inhibition",
+        "hERG risk screen",
+        "early tox panel",
+    ]
+    return {
+        "handoff_id": f"handoff_{record['chemical_id']}",
+        "target": record.get("target") or "CUSTOM",
+        "candidate_id": record.get("candidate_id"),
+        "chemical_id": record.get("chemical_id"),
+        "required_package": [
+            "SMILES/InChIKey or structural identifier",
+            "SDF/PDBQT/docked pose artifacts where available",
+            "route card and batch/lot record",
+            "analytical release certificate",
+            "assay plate map and concentration range",
+            "safety and handling notes",
+        ],
+        "recommended_assays": assays,
+        "first_pass_acceptance": [
+            "identity/purity release passed",
+            "primary biochemical and orthogonal engagement assays are reproducible",
+            "solubility supports tested concentration range",
+            "no severe early hERG/CYP/tox red flag without mitigation",
+        ],
+        "claim_boundary": "Wet-lab handoff supports research testing only and does not imply activity, safety, or clinical utility.",
+    }
+
+
+def _record_markdown(record: dict[str, Any]) -> str:
+    route = record["synthesis_route_card"]
+    handoff = record["wet_lab_handoff"]
+    lines = [
+        f"# Chemical DB Record: {record['chemical_id']}",
+        "",
+        f"- Candidate: {record['candidate_id']}",
+        f"- Target: {record['target']}",
+        f"- Synthesis status: {record['synthesis_status']}",
+        f"- Analytical status: {record['analytical_status']}",
+        f"- Docking gate: {record['docking_gate']['gate']}",
+        "",
+        "## Route Strategy",
+        *[f"- {item}" for item in route["route_strategy"]],
+        "",
+        "## Planning Stages",
+        *[f"- {step['stage']}: {step['purpose']} Output: {step['output']}" for step in route["route_steps"]],
+        "",
+        "## Analytical Release",
+        *[f"- {item}" for item in route["analytical_release_specs"]],
+        "",
+        "## Wet-Lab Handoff",
+        *[f"- {item}" for item in handoff["recommended_assays"]],
+        "",
+        route["claim_boundary"],
+    ]
+    return "\n".join(lines)
+
+
+def _load_chemical_records(limit: int = 100) -> list[dict[str, Any]]:
+    records_dir = _chemical_db_root() / "records"
+    if not records_dir.exists():
+        return []
+    rows = []
+    for path in sorted(records_dir.glob("*.json"), key=lambda item: item.stat().st_mtime, reverse=True)[:limit]:
+        rows.append(_read_json(path, {}))
+    return [row for row in rows if row]
+
+
 def _first_mol_from_sdf(path: Path) -> Any | None:
     if Chem is None or not path.exists():
         return None
@@ -513,6 +735,107 @@ def _binding_class(affinity: float) -> str:
     if affinity <= -7:
         return "moderate preview"
     return "weak preview"
+
+
+@router.post("/chemical-db/register")
+def register_chemical(payload: ChemicalDbRegisterRequest) -> dict[str, Any]:
+    target = _safe_slug(payload.target.upper(), "CUSTOM")
+    smiles = payload.smiles or payload.evidence.get("canonical_smiles") or payload.evidence.get("smiles")
+    descriptors = _safe_descriptor_payload_from_smiles(smiles)
+    chemical_id = _chemical_identity(payload.candidate_id, target, smiles)
+    root = _chemical_db_root()
+    existing_path = root / "records" / f"{chemical_id}.json"
+    existing = _read_json(existing_path, {})
+    docking_gate = _docking_gate(payload.evidence)
+    wet_lab_ready = (
+        payload.synthesis_status in {"synthesized", "analytical_passed"}
+        and payload.analytical_status == "passed"
+        and docking_gate["gate"] in {"passed_primary_docking", "passed_docking_review"}
+    )
+    record = {
+        **existing,
+        "chemical_id": chemical_id,
+        "candidate_id": payload.candidate_id,
+        "target": target,
+        "smiles": smiles,
+        "objective": payload.objective,
+        "synthesis_status": payload.synthesis_status,
+        "analytical_status": payload.analytical_status,
+        "docking_status": payload.docking_status or payload.evidence.get("docking_status") or payload.evidence.get("gnina_status"),
+        "docking_gate": docking_gate,
+        "wet_lab_ready": wet_lab_ready,
+        "wet_lab_assays": payload.wet_lab_assays,
+        "descriptors": descriptors,
+        "evidence": payload.evidence,
+        "notes": payload.notes,
+        "created_at": existing.get("created_at") or _now_iso(),
+        "updated_at": _now_iso(),
+        "claim_boundary": "Chemical DB records are research inventory and handoff planning artifacts, not validated manufacturing or clinical records.",
+    }
+    record["synthesis_route_card"] = _synthesis_route_card(record)
+    record["wet_lab_handoff"] = _wet_lab_handoff(record)
+
+    markdown_path = root / "route_cards" / f"{chemical_id}.md"
+    handoff_path = root / "handoffs" / f"{chemical_id}_wet_lab_handoff.json"
+    _write_json(existing_path, record)
+    markdown_path.parent.mkdir(parents=True, exist_ok=True)
+    markdown_path.write_text(_record_markdown(record), encoding="utf-8")
+    _write_json(handoff_path, record["wet_lab_handoff"])
+    _upsert_csv_row(
+        root / "chemical_db_index.csv",
+        {
+            "chemical_id": chemical_id,
+            "candidate_id": record.get("candidate_id"),
+            "target": record.get("target"),
+            "synthesis_status": record.get("synthesis_status"),
+            "analytical_status": record.get("analytical_status"),
+            "docking_gate": docking_gate["gate"],
+            "wet_lab_ready": wet_lab_ready,
+            "updated_at": record["updated_at"],
+        },
+        key="chemical_id",
+    )
+    record["route_card_url"] = _artifact_url(markdown_path)
+    record["handoff_url"] = _artifact_url(handoff_path)
+    return record
+
+
+@router.get("/chemical-db")
+def list_chemical_db(limit: int = 100) -> dict[str, Any]:
+    rows = _load_chemical_records(limit=max(1, min(limit, 500)))
+    return {
+        "count": len(rows),
+        "records": rows,
+        "ready_for_wet_lab": sum(1 for row in rows if row.get("wet_lab_ready")),
+        "claim_boundary": "Chemical DB is a research-use design, synthesis-planning, and wet-lab handoff registry.",
+    }
+
+
+@router.get("/chemical-db/{chemical_id}")
+def get_chemical_record(chemical_id: str) -> dict[str, Any]:
+    safe_id = _safe_slug(chemical_id, "chemical")
+    path = _chemical_db_root() / "records" / f"{safe_id}.json"
+    record = _read_json(path, {})
+    if not record:
+        raise HTTPException(status_code=404, detail="Chemical record not found.")
+    markdown_path = _chemical_db_root() / "route_cards" / f"{safe_id}.md"
+    handoff_path = _chemical_db_root() / "handoffs" / f"{safe_id}_wet_lab_handoff.json"
+    record["route_card_url"] = _artifact_url(markdown_path) if markdown_path.exists() else None
+    record["handoff_url"] = _artifact_url(handoff_path) if handoff_path.exists() else None
+    return record
+
+
+@router.post("/chemical-db/{chemical_id}/handoff")
+def create_chemical_handoff(chemical_id: str) -> dict[str, Any]:
+    record = get_chemical_record(chemical_id)
+    handoff = _wet_lab_handoff(record)
+    path = _chemical_db_root() / "handoffs" / f"{record['chemical_id']}_wet_lab_handoff.json"
+    _write_json(path, handoff)
+    return {
+        **handoff,
+        "handoff_url": _artifact_url(path),
+        "wet_lab_ready": record.get("wet_lab_ready"),
+    }
 
 
 @router.get("/docking-tools")

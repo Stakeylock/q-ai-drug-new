@@ -2186,6 +2186,194 @@ label {
   gap: 10px;
 }
 
+.chemical-db-panel,
+.chemical-handoff-panel {
+  min-width: 0;
+}
+
+.chemical-record-grid,
+.handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.chemical-record-card {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.055);
+  padding: 12px;
+}
+
+.chemical-record-card.ready {
+  border-color: color-mix(in srgb, var(--accent-2) 52%, var(--line));
+  background: color-mix(in srgb, var(--accent-2) 12%, rgba(255, 255, 255, 0.055));
+}
+
+.chemical-record-card span,
+.chemical-record-card small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.chemical-record-card strong {
+  overflow-wrap: anywhere;
+}
+
+.sandbox-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.72);
+  padding: 12px;
+  backdrop-filter: blur(16px);
+}
+
+.sandbox-modal {
+  width: min(1320px, calc(100vw - 24px));
+  height: min(760px, calc(100dvh - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 13%, transparent), transparent 38%),
+    color-mix(in srgb, var(--panel) 96%, #000 4%);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.54);
+  padding: 16px;
+}
+
+.sandbox-modal > .panel-head {
+  flex: 0 0 auto;
+  margin: 0;
+  gap: 12px;
+  align-items: start;
+}
+
+.sandbox-modal h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 40px);
+  line-height: 1.02;
+}
+
+.sandbox-modal-grid {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.42fr) minmax(460px, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sandbox-modal-controls {
+  display: grid;
+  gap: 13px;
+  align-content: start;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.sandbox-modal-controls textarea {
+  min-height: 96px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.sandbox-control-row,
+.sandbox-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.sandbox-control-row .inline-select {
+  flex: 1 1 180px;
+}
+
+.sandbox-modal-viewer {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+.sandbox-modal-viewer .viewer3d-shell {
+  height: 100%;
+  min-height: 0;
+}
+
+.sandbox-empty-viewer {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    var(--bg);
+  background-size: 28px 28px;
+  color: var(--muted);
+  padding: 24px;
+  text-align: center;
+}
+
+.sandbox-empty-viewer span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-weight: 900;
+  padding: 8px 14px;
+}
+
+.sandbox-empty-viewer strong {
+  max-width: 520px;
+  color: var(--ink);
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.08;
+}
+
+.sandbox-empty-viewer p {
+  max-width: 520px;
+  margin: 0;
+}
+
+.pose-source-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pose-source-strip span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 7px 10px;
+}
+
+.sandbox-modal .analysis-grid.compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .element-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
@@ -3129,6 +3317,7 @@ h3 {
 .process-list,
 .limitation-card,
 .bench-card,
+.chemical-record-card,
 .tool-detail,
 .tool-payload div,
 .procedure-card,
@@ -3586,6 +3775,39 @@ h3 {
 
   .research-tools .tool-menu {
     max-height: none;
+  }
+
+  .chemical-record-grid,
+  .handoff-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sandbox-modal-backdrop {
+    align-items: stretch;
+    padding: 8px;
+  }
+
+  .sandbox-modal {
+    width: calc(100vw - 16px);
+    height: calc(100dvh - 16px);
+    padding: 12px;
+  }
+
+  .sandbox-modal-grid {
+    grid-template-columns: 1fr;
+    overflow: auto;
+    align-content: start;
+  }
+
+  .sandbox-modal-controls {
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .sandbox-modal-viewer .viewer3d-shell,
+  .sandbox-empty-viewer {
+    height: auto;
+    min-height: 420px;
   }
 
   .asset-links {

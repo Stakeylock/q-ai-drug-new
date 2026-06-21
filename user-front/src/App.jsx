@@ -8,12 +8,14 @@ import {
   assistantStatus,
   billingSummary,
   createProject,
+  createChemicalHandoff,
   createDecisionGate,
   createIsolatedRun,
   dockPreviewMolecule,
   enrichDataFabric,
   exportWetLabAssayPacket,
   fetchBenchmarkValidationPlan,
+  fetchChemicalDb,
   fetchCheminformaticsFeatureMatrix,
   fetchIndustrialAudit,
   fetchIndustrialReadiness,
@@ -32,6 +34,7 @@ import {
   signup,
   reviewDockingVision,
   runRealtimeDocking,
+  registerChemicalRecord,
 } from "./api.js";
 import {
   ALPHAFOLD_REPOSITORY,
@@ -1175,9 +1178,34 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
   const [dockStatus, setDockStatus] = useState("");
   const [dockEngine, setDockEngine] = useState("gnina");
   const [toolStatus, setToolStatus] = useState(null);
+  const [chemicalDb, setChemicalDb] = useState(null);
+  const [chemicalRecord, setChemicalRecord] = useState(null);
+  const [chemicalBusy, setChemicalBusy] = useState(false);
+  const [chemicalError, setChemicalError] = useState("");
+  const [synthesisStatus, setSynthesisStatus] = useState("designed");
+  const [analyticalStatus, setAnalyticalStatus] = useState("not_started");
+  const [sandboxOpen, setSandboxOpen] = useState(false);
+  const [sandboxSmiles, setSandboxSmiles] = useState(customSmiles);
+  const [sandboxTarget, setSandboxTarget] = useState(selectedProteins[0]?.gene || PHARMA_ASSET_LIBRARY.receptors[0]?.gene || "EGFR");
+  const [sandboxEngine, setSandboxEngine] = useState("gnina");
+  const [sandboxCandidate, setSandboxCandidate] = useState(null);
+  const [sandboxStatus, setSandboxStatus] = useState("");
+  const [sandboxError, setSandboxError] = useState("");
+  const [sandboxBusy, setSandboxBusy] = useState(false);
   const starters = [...ORGANIC_STARTERS, ...INORGANIC_STARTERS];
   const filteredElements = ELEMENTS.filter((symbol) => symbol.toLowerCase().includes(elementQuery.toLowerCase()));
   const selectedStarterObjects = starters.filter((starter) => selectedStarters.includes(starter.name));
+  const receptorOptions = unique([
+    ...selectedProteins.map((protein) => protein.gene),
+    ...PHARMA_ASSET_LIBRARY.receptors.map((asset) => asset.gene),
+  ]).map((gene) => {
+    const selected = selectedProteins.find((protein) => protein.gene === gene);
+    const asset = PHARMA_ASSET_LIBRARY.receptors.find((item) => item.gene === gene);
+    return {
+      gene,
+      label: `${gene}${selected ? " - selected" : ""}${asset ? ` (${asset.alphafoldId})` : ""}`,
+    };
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -1194,6 +1222,24 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    refreshChemicalDb();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedProteins.some((protein) => protein.gene === sandboxTarget) && selectedProteins[0]?.gene) {
+      setSandboxTarget(selectedProteins[0].gene);
+    }
+  }, [selectedProteins, sandboxTarget]);
+
+  async function refreshChemicalDb() {
+    try {
+      setChemicalDb(await fetchChemicalDb(100));
+    } catch (error) {
+      setChemicalError(error.message);
+    }
+  }
 
   function toggleElement(symbol) {
     setSelectedElements((current) => (current.includes(symbol) ? current.filter((item) => item !== symbol) : [...current, symbol]));
@@ -1361,6 +1407,185 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
     }
   }
 
+  function currentBenchResult() {
+    return benchResult || testDesignedMolecule({
+      smiles: customSmiles,
+      selectedElements,
+      starters: selectedStarterObjects,
+      selectedProteins,
+      patient,
+      tier,
+      objective,
+    });
+  }
+
+  async function registerCurrentChemical(overrides = {}) {
+    const result = currentBenchResult();
+    const candidate = result.candidate;
+    const raw = candidate.raw || {};
+    setChemicalBusy(true);
+    setChemicalError("");
+    try {
+      const record = await registerChemicalRecord({
+        candidate_id: candidate.id,
+        target: selectedProteins[0]?.gene || candidate.target || "CUSTOM",
+        smiles: displayCandidateSmiles(candidate) || customSmiles,
+        objective,
+        synthesis_status: overrides.synthesis_status || synthesisStatus,
+        analytical_status: overrides.analytical_status || analyticalStatus,
+        docking_status: raw.gnina_status || raw.docking_status || "preview",
+        evidence: raw,
+        notes: `Elements: ${selectedElements.join(", ")}. Starters: ${selectedStarters.join(", ")}.`,
+        wet_lab_assays: [
+          "biochemical IC50/Ki",
+          "orthogonal Kd target engagement",
+          "cell viability dose response",
+          "selectivity/off-target panel",
+          "kinetic solubility",
+          "Caco-2/MDCK permeability",
+          "microsomal stability",
+          "CYP inhibition",
+          "hERG risk screen",
+          "early tox panel",
+        ],
+      });
+      setChemicalRecord(record);
+      setBenchResult({ ...result, candidate });
+      await refreshChemicalDb();
+      return record;
+    } catch (error) {
+      setChemicalError(error.message);
+      return null;
+    } finally {
+      setChemicalBusy(false);
+    }
+  }
+
+  async function markSynthesizedAndHandoff() {
+    const record = await registerCurrentChemical({ synthesis_status: "analytical_passed", analytical_status: "passed" });
+    if (!record) return;
+    setChemicalBusy(true);
+    setChemicalError("");
+    try {
+      const handoff = await createChemicalHandoff(record.chemical_id);
+      setChemicalRecord({ ...record, latest_handoff: handoff });
+      await refreshChemicalDb();
+    } catch (error) {
+      setChemicalError(error.message);
+    } finally {
+      setChemicalBusy(false);
+    }
+  }
+
+  function sandboxProtein() {
+    const selected = selectedProteins.find((protein) => protein.gene === sandboxTarget);
+    if (selected) return selected;
+    const repo = ALPHAFOLD_REPOSITORY.find((protein) => protein.gene === sandboxTarget);
+    if (repo) return repo;
+    const asset = PHARMA_ASSET_LIBRARY.receptors.find((item) => item.gene === sandboxTarget);
+    return {
+      gene: sandboxTarget,
+      alphafoldId: asset?.alphafoldId || "custom-receptor",
+      role: asset?.role || "selected receptor",
+      family: asset?.role || "receptor",
+      confidence: 70,
+      variants: [],
+    };
+  }
+
+  function openSandbox() {
+    setSandboxSmiles(customSmiles);
+    setSandboxTarget(selectedProteins[0]?.gene || sandboxTarget);
+    setSandboxEngine(dockEngine);
+    setSandboxOpen(true);
+  }
+
+  async function runSandboxDocking(mode = "real") {
+    const targetProtein = sandboxProtein();
+    const result = testDesignedMolecule({
+      smiles: sandboxSmiles,
+      selectedElements,
+      starters: selectedStarterObjects,
+      selectedProteins: [targetProtein],
+      patient,
+      tier,
+      objective: `${objective}. Sandbox docking against ${targetProtein.gene}; do not alter main pipeline until promoted.`,
+    });
+    const sandboxId = `SANDBOX_${targetProtein.gene}_${Date.now().toString().slice(-6)}`;
+    const baseCandidate = {
+      ...result.candidate,
+      id: sandboxId,
+      target: targetProtein.gene,
+      smiles: sandboxSmiles,
+      tags: unique([...(result.candidate.tags || []), "sandbox", "not in pipeline"]),
+      raw: {
+        ...(result.candidate.raw || {}),
+        sandbox: true,
+        sandbox_status: "isolated",
+        selected_receptor_gene: targetProtein.gene,
+        selected_receptor_alphafold_id: targetProtein.alphafoldId,
+      },
+    };
+    setSandboxBusy(true);
+    setSandboxError("");
+    setSandboxStatus(mode === "preview" ? "Generating isolated RDKit pocket preview..." : `Running isolated ${sandboxEngine.toUpperCase()} docking...`);
+    try {
+      const preview = await dockPreviewMolecule({
+        smiles: sandboxSmiles,
+        target: targetProtein.gene,
+        candidate_id: sandboxId,
+        objective: `Sandbox receptor test for ${targetProtein.gene}.`,
+        selected_elements: selectedElements,
+        starters: selectedStarterObjects.map((starter) => starter.name),
+        tier,
+        patient_context: {
+          case_id: patient.caseId,
+          diagnosis: patient.diagnosis,
+          sandbox: true,
+          receptor_choice: targetProtein.gene,
+        },
+      });
+      let current = mergeDockingPreview(baseCandidate, preview);
+      if (mode !== "preview") {
+        const docking = await runRealtimeDocking(buildRealtimeDockingPayload(current, sandboxEngine));
+        current = mergeRealtimeDocking(current, docking);
+      }
+      current = {
+        ...current,
+        tags: unique([...(current.tags || []), "sandbox result", mode === "preview" ? "preview only" : `${sandboxEngine.toUpperCase()} isolated dock`]),
+        raw: {
+          ...(current.raw || {}),
+          sandbox: true,
+          sandbox_status: "completed_not_promoted",
+          selected_receptor_gene: targetProtein.gene,
+          selected_receptor_alphafold_id: targetProtein.alphafoldId,
+        },
+      };
+      setSandboxCandidate(current);
+      setSandboxStatus(`${mode === "preview" ? "Preview" : sandboxEngine.toUpperCase()} sandbox run complete. It has not changed the main pipeline.`);
+    } catch (error) {
+      setSandboxError(error.message);
+      setSandboxStatus("Sandbox docking failed. Try another receptor, engine, or simpler SMILES.");
+    } finally {
+      setSandboxBusy(false);
+    }
+  }
+
+  function promoteSandboxCandidate() {
+    if (!sandboxCandidate) return;
+    const promoted = {
+      ...sandboxCandidate,
+      tags: unique([...(sandboxCandidate.tags || []).filter((tag) => tag !== "not in pipeline"), "promoted from sandbox"]),
+      raw: {
+        ...(sandboxCandidate.raw || {}),
+        sandbox_status: "promoted_to_pipeline",
+      },
+    };
+    onAddMolecule(promoted);
+    setSandboxCandidate(promoted);
+    setSandboxStatus("Sandbox result promoted to the main Molecule Workbench and next pipeline input set.");
+  }
+
   return (
     <SpotlightCard className="panel chemistry-bench" as="section">
       <div className="panel-head">
@@ -1371,7 +1596,7 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
         <ShinyText>{TIERS[tier].label}</ShinyText>
       </div>
       <div className="bench-tabs">
-        {["builder", "starters", "rules", "test", "notebook"].map((tab) => (
+        {["builder", "starters", "rules", "test", "library", "handoff", "notebook"].map((tab) => (
           <button className={benchTab === tab ? "active" : ""} type="button" key={tab} onClick={() => setBenchTab(tab)}>
             {tab}
           </button>
@@ -1391,6 +1616,9 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
             <div className="bench-actions">
               <button className="secondary-action" type="button" onClick={assembleFromStarters}>Assemble starters</button>
               <button className="secondary-action" type="button" onClick={testMolecule}>Run in-silico test</button>
+              <button className="secondary-action" type="button" onClick={openSandbox}>
+                Sandbox dock popup
+              </button>
               <label className="inline-select">
                 Engine
                 <select value={dockEngine} onChange={(event) => setDockEngine(event.target.value)}>
@@ -1458,7 +1686,45 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
         </div>
       )}
       {benchTab === "rules" && <ChemistryRules selectedElements={selectedElements} starters={selectedStarterObjects} />}
-      {benchTab === "test" && <ChemistryTestResult result={benchResult} testMolecule={testMolecule} addToWorkbench={addToWorkbench} runRealDockingAndSend={runRealDockingAndSend} dockBusy={dockBusy} dockStatus={dockStatus} dockError={dockError} dockEngine={dockEngine} setDockEngine={setDockEngine} />}
+      {benchTab === "test" && (
+        <ChemistryTestResult
+          result={benchResult}
+          testMolecule={testMolecule}
+          addToWorkbench={addToWorkbench}
+          runRealDockingAndSend={runRealDockingAndSend}
+          registerCurrentChemical={registerCurrentChemical}
+          dockBusy={dockBusy}
+          chemicalBusy={chemicalBusy}
+          dockStatus={dockStatus}
+          dockError={dockError}
+          chemicalError={chemicalError}
+          dockEngine={dockEngine}
+          setDockEngine={setDockEngine}
+        />
+      )}
+      {benchTab === "library" && (
+        <ChemicalDbPanel
+          chemicalDb={chemicalDb}
+          chemicalRecord={chemicalRecord}
+          refreshChemicalDb={refreshChemicalDb}
+          registerCurrentChemical={registerCurrentChemical}
+          chemicalBusy={chemicalBusy}
+          chemicalError={chemicalError}
+        />
+      )}
+      {benchTab === "handoff" && (
+        <ChemicalHandoffPanel
+          chemicalRecord={chemicalRecord}
+          chemicalBusy={chemicalBusy}
+          chemicalError={chemicalError}
+          synthesisStatus={synthesisStatus}
+          setSynthesisStatus={setSynthesisStatus}
+          analyticalStatus={analyticalStatus}
+          setAnalyticalStatus={setAnalyticalStatus}
+          registerCurrentChemical={registerCurrentChemical}
+          markSynthesizedAndHandoff={markSynthesizedAndHandoff}
+        />
+      )}
       {benchTab === "notebook" && (
         <section className="bench-card">
           <h3>Research notebook</h3>
@@ -1467,7 +1733,140 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
           <p>Current molecule: {customSmiles}</p>
         </section>
       )}
+      {sandboxOpen && (
+        <SandboxDockingModal
+          smiles={sandboxSmiles}
+          setSmiles={setSandboxSmiles}
+          target={sandboxTarget}
+          setTarget={setSandboxTarget}
+          receptorOptions={receptorOptions}
+          engine={sandboxEngine}
+          setEngine={setSandboxEngine}
+          candidate={sandboxCandidate}
+          status={sandboxStatus}
+          error={sandboxError}
+          busy={sandboxBusy}
+          runPreview={() => runSandboxDocking("preview")}
+          runDocking={() => runSandboxDocking("real")}
+          promote={promoteSandboxCandidate}
+          close={() => setSandboxOpen(false)}
+        />
+      )}
     </SpotlightCard>
+  );
+}
+
+function SandboxDockingModal({
+  smiles,
+  setSmiles,
+  target,
+  setTarget,
+  receptorOptions,
+  engine,
+  setEngine,
+  candidate,
+  status,
+  error,
+  busy,
+  runPreview,
+  runDocking,
+  promote,
+  close,
+}) {
+  const raw = candidate?.raw || {};
+  const poseSourceId = raw.default_pose_source || (engine === "auto" ? "gnina" : engine) || "gnina";
+  const hasCandidate = Boolean(candidate);
+  const canPromote = hasCandidate && !busy && raw.sandbox_status !== "promoted_to_pipeline";
+  const poseSources = visiblePoseSources(raw.pose_sources || []);
+  return (
+    <div className="sandbox-modal-backdrop" role="dialog" aria-modal="true" aria-label="Sandbox receptor docking">
+      <section className="sandbox-modal">
+        <div className="panel-head">
+          <div>
+            <p className="eyebrow">Isolated receptor test</p>
+            <h3>Sandbox receptor docking</h3>
+          </div>
+          <button className="secondary-action" type="button" onClick={close}>Close</button>
+        </div>
+        <div className="sandbox-modal-grid">
+          <div className="sandbox-modal-controls">
+            <label>
+              SMILES input
+              <textarea
+                value={smiles}
+                onChange={(event) => setSmiles(event.target.value)}
+                placeholder="CCO"
+              />
+            </label>
+            <div className="sandbox-control-row">
+              <label className="inline-select">
+                Receptor
+                <select value={target} onChange={(event) => setTarget(event.target.value)}>
+                  {receptorOptions.map((option) => (
+                    <option value={option.gene} key={option.gene}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="inline-select">
+                Docking engine
+                <select value={engine} onChange={(event) => setEngine(event.target.value)}>
+                  <option value="gnina">GNINA CNN</option>
+                  <option value="smina">Smina</option>
+                  <option value="vina">AutoDock Vina</option>
+                  <option value="auto">Auto</option>
+                </select>
+              </label>
+            </div>
+            <div className="sandbox-modal-actions">
+              <button className="secondary-action" type="button" onClick={runPreview} disabled={busy || !smiles.trim()}>
+                {busy ? "Running..." : "Preview only"}
+              </button>
+              <MagnetButton className="primary" type="button" onClick={runDocking} disabled={busy || !smiles.trim()}>
+                {busy ? "Docking..." : "Run isolated docking"}
+              </MagnetButton>
+              <button className="secondary-action" type="button" onClick={promote} disabled={!canPromote}>
+                Use in main pipeline
+              </button>
+            </div>
+            {status && <div className="privacy-card">{status}</div>}
+            {error && <div className="warning-box">{error}</div>}
+            <div className="research-only wide-note">
+              Sandbox runs are temporary receptor tests. They do not touch the ranked pipeline, molecule list, or chemical DB unless promoted.
+            </div>
+            <div className="analysis-grid compact">
+              <Metric label="Candidate" value={candidate?.id || "not run"} />
+              <Metric label="Target" value={target} />
+              <Metric label="Pose source" value={raw.default_pose_source || "pending"} />
+              <Metric label="Affinity" value={candidate?.affinity || fmtMaybe(raw.affinity_kcal_mol, 2)} />
+              <Metric label="Docking" value={fmtMaybe(candidate?.docking, 3)} />
+              <Metric label="Evidence state" value={raw.sandbox_status?.replaceAll("_", " ") || "isolated"} />
+            </div>
+            {poseSources.length > 0 && (
+              <div className="pose-source-strip">
+                {poseSources.map((source) => (
+                  <span key={source.id}>{source.label || source.id}</span>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="sandbox-modal-viewer">
+            {candidate ? (
+              <Molecule3DViewer
+                candidate={candidate}
+                poseSourceId={poseSourceId}
+                options={{ receptor: true, surface: true, cartoon: true, spheres: false }}
+              />
+            ) : (
+              <div className="sandbox-empty-viewer">
+                <span>{target}</span>
+                <strong>Enter a SMILES such as CCO, choose a receptor, then run an isolated docking test.</strong>
+                <p>The first run prepares a ligand pose; backend docking then overlays the selected receptor when tool evidence exists.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -1495,7 +1894,20 @@ function ChemistryRules({ selectedElements, starters }) {
   );
 }
 
-function ChemistryTestResult({ result, testMolecule, addToWorkbench, runRealDockingAndSend, dockBusy, dockStatus, dockError, dockEngine, setDockEngine }) {
+function ChemistryTestResult({
+  result,
+  testMolecule,
+  addToWorkbench,
+  runRealDockingAndSend,
+  registerCurrentChemical,
+  dockBusy,
+  chemicalBusy,
+  dockStatus,
+  dockError,
+  chemicalError,
+  dockEngine,
+  setDockEngine,
+}) {
   if (!result) {
     return (
       <section className="bench-card">
@@ -1535,6 +1947,9 @@ function ChemistryTestResult({ result, testMolecule, addToWorkbench, runRealDock
         <button className="secondary-action" type="button" onClick={runRealDockingAndSend} disabled={dockBusy}>
           {dockBusy ? "Docking..." : "Run real docking"}
         </button>
+        <button className="secondary-action" type="button" onClick={() => registerCurrentChemical()} disabled={chemicalBusy}>
+          {chemicalBusy ? "Registering..." : "Register chemical DB"}
+        </button>
       </div>
       <div className="warning-list">
         {result.notes.map((note) => (
@@ -1543,6 +1958,140 @@ function ChemistryTestResult({ result, testMolecule, addToWorkbench, runRealDock
       </div>
       {dockStatus && <div className="privacy-card">{dockStatus}</div>}
       {dockError && <div className="warning-box">{dockError}</div>}
+      {chemicalError && <div className="warning-box">{chemicalError}</div>}
+    </section>
+  );
+}
+
+function ChemicalDbPanel({ chemicalDb, chemicalRecord, refreshChemicalDb, registerCurrentChemical, chemicalBusy, chemicalError }) {
+  const records = chemicalDb?.records || [];
+  return (
+    <section className="bench-card large chemical-db-panel">
+      <div className="panel-head">
+        <div>
+          <p className="eyebrow">Chemical DB</p>
+          <h3>Synthesis and testing library</h3>
+        </div>
+        <div className="bench-actions">
+          <button className="secondary-action" type="button" onClick={() => registerCurrentChemical()} disabled={chemicalBusy}>
+            {chemicalBusy ? "Registering..." : "Register current design"}
+          </button>
+          <button className="secondary-action" type="button" onClick={refreshChemicalDb}>Refresh DB</button>
+        </div>
+      </div>
+      <div className="analysis-grid">
+        <Metric label="Registered molecules" value={chemicalDb?.count || 0} />
+        <Metric label="Wet-lab ready" value={chemicalDb?.ready_for_wet_lab || 0} />
+        <Metric label="Latest chemical" value={chemicalRecord?.chemical_id || "none"} />
+        <Metric label="Evidence mode" value="research inventory" />
+      </div>
+      {chemicalError && <div className="warning-box">{chemicalError}</div>}
+      <div className="chemical-record-grid">
+        {records.map((record) => (
+          <article className={`chemical-record-card ${record.wet_lab_ready ? "ready" : ""}`} key={record.chemical_id}>
+            <span>{record.docking_gate?.gate?.replaceAll("_", " ") || "needs review"}</span>
+            <strong>{record.chemical_id}</strong>
+            <p>{record.candidate_id} | {record.target}</p>
+            <small>{record.synthesis_status} / {record.analytical_status}</small>
+            <div className="asset-links">
+              {record.route_card_url && <a href={apiUrl(record.route_card_url)} target="_blank" rel="noreferrer">Route card</a>}
+              {record.handoff_url && <a href={apiUrl(record.handoff_url)} target="_blank" rel="noreferrer">Handoff</a>}
+            </div>
+          </article>
+        ))}
+        {!records.length && <div className="empty-filter">No registered chemistry yet. Run a test, docking, then register the current design.</div>}
+      </div>
+      <div className="research-only wide-note">
+        The chemical DB stores research inventory, route planning, analytical release checks, docking evidence, and wet-lab handoff state. It is not a GMP batch record.
+      </div>
+    </section>
+  );
+}
+
+function ChemicalHandoffPanel({
+  chemicalRecord,
+  chemicalBusy,
+  chemicalError,
+  synthesisStatus,
+  setSynthesisStatus,
+  analyticalStatus,
+  setAnalyticalStatus,
+  registerCurrentChemical,
+  markSynthesizedAndHandoff,
+}) {
+  const route = chemicalRecord?.synthesis_route_card;
+  const handoff = chemicalRecord?.latest_handoff || chemicalRecord?.wet_lab_handoff;
+  return (
+    <section className="bench-card large chemical-handoff-panel">
+      <div className="panel-head">
+        <div>
+          <p className="eyebrow">Synthesis to wet-lab handoff</p>
+          <h3>Route card and assay package</h3>
+        </div>
+        <ShinyText>{chemicalRecord?.wet_lab_ready ? "wet-lab ready" : "planning"}</ShinyText>
+      </div>
+      <div className="bench-actions">
+        <label className="inline-select">
+          Synthesis
+          <select value={synthesisStatus} onChange={(event) => setSynthesisStatus(event.target.value)}>
+            <option value="designed">Designed</option>
+            <option value="ordered">Ordered</option>
+            <option value="synthesized">Synthesized</option>
+            <option value="analytical_passed">Analytical passed</option>
+          </select>
+        </label>
+        <label className="inline-select">
+          Analytics
+          <select value={analyticalStatus} onChange={(event) => setAnalyticalStatus(event.target.value)}>
+            <option value="not_started">Not started</option>
+            <option value="pending">Pending</option>
+            <option value="passed">Passed</option>
+            <option value="failed">Failed</option>
+          </select>
+        </label>
+        <button className="secondary-action" type="button" onClick={() => registerCurrentChemical()} disabled={chemicalBusy}>
+          Save route card
+        </button>
+        <button className="secondary-action" type="button" onClick={markSynthesizedAndHandoff} disabled={chemicalBusy}>
+          {chemicalBusy ? "Creating..." : "Mark passed and handoff"}
+        </button>
+      </div>
+      {chemicalError && <div className="warning-box">{chemicalError}</div>}
+      <div className="handoff-grid">
+        <article className="procedure-card">
+          <h4>Route strategy</h4>
+          {(route?.route_strategy || ["Register a molecule to generate a route card."]).map((item) => (
+            <p key={item}>{item}</p>
+          ))}
+        </article>
+        <article className="procedure-card">
+          <h4>Analytical release</h4>
+          {(route?.analytical_release_specs || ["LC-MS, NMR, purity, salt form, stock concentration, and storage checks will appear here."]).map((item) => (
+            <p key={item}>{item}</p>
+          ))}
+        </article>
+        <article className="procedure-card">
+          <h4>Wet-lab package</h4>
+          {(handoff?.required_package || ["SMILES/SDF, route card, release certificate, docking evidence, and assay plate map are required."]).map((item) => (
+            <p key={item}>{item}</p>
+          ))}
+        </article>
+        <article className="procedure-card">
+          <h4>Recommended tests</h4>
+          {(handoff?.recommended_assays || ["biochemical IC50/Ki", "Kd engagement", "cell viability", "selectivity", "ADME/Tox"]).map((item) => (
+            <p key={item}>{item}</p>
+          ))}
+        </article>
+      </div>
+      {chemicalRecord?.route_card_url && (
+        <div className="asset-links">
+          <a href={apiUrl(chemicalRecord.route_card_url)} target="_blank" rel="noreferrer">Open route card</a>
+          {chemicalRecord.handoff_url && <a href={apiUrl(chemicalRecord.handoff_url)} target="_blank" rel="noreferrer">Open handoff JSON</a>}
+        </div>
+      )}
+      <div className="research-only wide-note">
+        Route cards are non-executable planning support. Exact synthesis conditions must be authored and approved by qualified chemists under lab SOPs.
+      </div>
     </section>
   );
 }

@@ -211,6 +211,23 @@ export function runRealtimeDocking(payload) {
   });
 }
 
+export function registerChemicalRecord(payload) {
+  return apiFetch("/v1/chemistry/chemical-db/register", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchChemicalDb(limit = 100) {
+  return apiFetch(`/v1/chemistry/chemical-db?limit=${limit}`);
+}
+
+export function createChemicalHandoff(chemicalId) {
+  return apiFetch(`/v1/chemistry/chemical-db/${encodeURIComponent(chemicalId)}/handoff`, {
+    method: "POST",
+  });
+}
+
 export function createProject(token, { name, configPath = "configs/cancer_targets.yaml" }) {
   return apiFetch(
     "/projects",
