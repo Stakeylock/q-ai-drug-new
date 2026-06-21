@@ -2,6 +2,7 @@ const API_BASE = import.meta.env.VITE_QAI_API_BASE || "";
 
 export function apiUrl(path) {
   if (/^https?:\/\//i.test(path)) return path;
+  if (String(path || "").startsWith("/pharma-library/")) return path;
   return `${API_BASE}${path}`;
 }
 
@@ -68,6 +69,57 @@ export function fetchTopCandidates(limit = 120) {
   return apiFetch(`/research/top-candidates?limit=${limit}`);
 }
 
+export function fetchResourceRegistry() {
+  return apiFetch("/research/resource-registry");
+}
+
+export function fetchDataFabricStatus() {
+  return apiFetch("/v1/research/data-fabric/status");
+}
+
+export function enrichDataFabric(payload) {
+  return apiFetch("/v1/research/data-fabric/enrich", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function aiModelStatus() {
+  return apiFetch("/v1/ai/model-status");
+}
+
+export function fetchProteinEvidence(payload) {
+  return apiFetch("/v1/research/protein-evidence", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function reviewDockingVision(payload) {
+  return apiFetch("/v1/vision/docking-review", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function createIsolatedRun(payload) {
+  return apiFetch("/v1/runs", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function appendRunEvent(runId, userId, payload) {
+  return apiFetch(`/v1/runs/${encodeURIComponent(runId)}/events?user_id=${encodeURIComponent(userId || "demo-user")}`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchRunEvents(runId, userId, limit = 300) {
+  return apiFetch(`/v1/runs/${encodeURIComponent(runId)}/events?user_id=${encodeURIComponent(userId || "demo-user")}&limit=${limit}`);
+}
+
 export function assistantStatus() {
   return apiFetch("/v1/assistant/status");
 }
@@ -88,6 +140,17 @@ export function analyzeProteinWithEsm2(payload) {
 
 export function dockPreviewMolecule(payload) {
   return apiFetch("/v1/chemistry/dock-preview", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchDockingTools() {
+  return apiFetch("/v1/chemistry/docking-tools");
+}
+
+export function runRealtimeDocking(payload) {
+  return apiFetch("/v1/chemistry/realtime-dock", {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -120,24 +183,6 @@ export function addProjectTarget(token, projectId, protein, patient) {
         uniprot: protein.uniprot,
         role: protein.role,
         variants: protein.variants,
-      }),
-    },
-    token,
-  );
-}
-
-export function startDryRun(token, projectId, tier) {
-  const scale = tier === "student_free" ? 100 : tier === "student_pro" ? 250 : 500;
-  return apiFetch(
-    `/projects/${projectId}/runs`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        project_id: projectId,
-        max_records_per_target: scale,
-        n_generate: scale,
-        skip_download: true,
-        dry_run: true,
       }),
     },
     token,

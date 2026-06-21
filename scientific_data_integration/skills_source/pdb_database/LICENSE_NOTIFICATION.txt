@@ -1,0 +1,1 @@
+2026-06-21: User was notified to review RCSB PDB usage policy at https://www.rcsb.org/pages/usage-policy before using downloaded structure assets in production, client deliverables, or redistributed packages.

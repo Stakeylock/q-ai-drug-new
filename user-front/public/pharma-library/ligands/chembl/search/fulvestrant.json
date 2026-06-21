@@ -1,0 +1,74 @@
+{
+  "molecules": [
+    {
+      "atc_classifications": [],
+      "availability_type": -1,
+      "biotherapeutic": null,
+      "black_box_warning": 0,
+      "chemical_probe": 0,
+      "chirality": -1,
+      "cross_references": [],
+      "dosed_ingredient": false,
+      "first_approval": null,
+      "first_in_class": -1,
+      "helm_notation": null,
+      "inorganic_flag": -1,
+      "max_phase": null,
+      "molecule_chembl_id": "CHEMBL4760678",
+      "molecule_hierarchy": {
+        "active_chembl_id": "CHEMBL4760678",
+        "molecule_chembl_id": "CHEMBL4760678",
+        "parent_chembl_id": "CHEMBL4760678"
+      },
+      "molecule_properties": {
+        "alogp": "8.68",
+        "aromatic_rings": 1,
+        "full_molformula": "C32H47F5O3S",
+        "full_mwt": "606.78",
+        "hba": 3,
+        "hbd": 2,
+        "heavy_atoms": 41,
+        "mw_freebase": "606.78",
+        "np_likeness_score": "1.48",
+        "num_ro5_violations": 2,
+        "psa": "63.52",
+        "qed_weighted": "0.13",
+        "ro3_pass": "N",
+        "rtb": 14
+      },
+      "molecule_structures": {
+        "canonical_smiles": "C[C@]12CC[C@@H]3c4ccc(O)cc4C[C@@H](CCCCCCCCC[S@+]([O-])CCCC(F)(F)C(F)(F)F)[C@H]3[C@@H]1CC[C@@H]2O",
+        "molfile": " \n     RDKit          2D\n\n 44 47  0  0  0  0  0  0  0  0999 V2000\n   19.4706   -9.7665    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n   19.8873  -10.4832    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   20.2996   -9.7640    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n    7.0276   -9.6541    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.0265  -10.4814    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.7413  -10.8943    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.7395   -9.2413    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.4548   -9.6504    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.4537  -10.4789    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.1667  -10.8918    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8854  -10.4809    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.1690   -9.2349    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8823   -9.6541    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8934   -8.0023    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.1714   -8.4098    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.6068   -8.4215    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.6007   -9.2456    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.3827   -9.5061    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.8721   -8.8428    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.3924   -8.1726    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5999   -7.5957    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.6530   -7.3898    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8749   -8.8291    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n    9.1624  -10.0582    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5957  -10.0666    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5997  -10.8936    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.3117  -10.8933    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   11.3143  -10.4813    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.0286  -10.8939    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.7432  -10.4816    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   13.4575  -10.8943    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   14.1721  -10.4820    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   14.8865  -10.8947    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   15.6010  -10.4824    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   16.3154  -10.8950    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   17.0299  -10.4827    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n   17.7444  -10.8954    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   17.0302   -9.6577    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   18.4589  -10.4831    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   19.1733  -10.8958    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   20.6022  -10.8961    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   21.3168  -10.4838    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n   20.6020  -11.7211    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n   21.3123  -11.3082    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n  2  1  1  0\n  3  2  1  0\n  4  5  2  0\n  5  6  1  0\n  6  9  2  0\n  8  7  2  0\n  7  4  1  0\n  8  9  1  0\n  8 12  1  0\n  9 10  1  0\n 10 11  1  0\n 11 13  1  0\n 12 13  1  0\n 12 15  1  0\n 13 17  1  0\n 16 14  1  0\n 14 15  1  0\n 16 17  1  0\n 17 18  1  0\n 18 19  1  0\n 19 20  1  0\n 20 16  1  0\n 16 21  1  1\n 20 22  1  1\n 13 23  1  1\n 12 24  1  6\n 17 25  1  6\n 11 26  1  6\n  5 27  1  0\n 26 28  1  0\n 28 29  1  0\n 29 30  1  0\n 30 31  1  0\n 31 32  1  0\n 32 33  1  0\n 33 34  1  0\n 34 35  1  0\n 35 36  1  0\n 36 37  1  0\n 36 38  1  6\n 37 39  1  0\n 39 40  1  0\n 40  2  1  0\n  2 41  1  0\n 41 42  1  0\n 41 43  1  0\n 41 44  1  0\nM  CHG  2  36   1  38  -1\nM  END\n> <chembl_id>\nCHEMBL4760678\n\n> <chembl_pref_name>\nNone",
+        "standard_inchi": "InChI=1S/C32H47F5O3S/c1-30-17-15-26-25-12-11-24(38)21-23(25)20-22(29(26)27(30)13-14-28(30)39)10-7-5-3-2-4-6-8-18-41(40)19-9-16-31(33,34)32(35,36)37/h11-12,21-22,26-29,38-39H,2-10,13-20H2,1H3/t22-,26-,27+,28+,29-,30+,41+/m1/s1",
+        "standard_inchi_key": "VWUXBMIQPBEWFH-GXZKXCMSSA-N"
+      },
+      "molecule_synonyms": [],
+      "molecule_type": "Unknown",
+      "natural_product": 0,
+      "oral": false,
+      "orphan": -1,
+      "parenteral": false,
+      "polymer_flag": 0,
+      "pref_name": null,
+      "prodrug": -1,
+      "score": 32.0,
+      "structure_type": "MOL",
+      "therapeutic_flag": false,
+      "topical": false,
+      "usan_stem": null,
+      "usan_stem_definition": null,
+      "usan_substem": null,
+      "usan_year": null,
+      "veterinary": -1,
+      "withdrawn_flag": false
+    }
+  ],
+  "page_meta": {
+    "limit": 1,
+    "next": "/chembl/api/data/molecule/search.json?limit=1&offset=1&q=fulvestrant",
+    "offset": 0,
+    "previous": null,
+    "total_count": 5
+  },
+  "_license_notice": "Data from the ChEMBL Database. Please review the licensing terms at https://www.ebi.ac.uk/chembl/"
+}

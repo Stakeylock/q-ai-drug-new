@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 export function AuroraBackground() {
   return (
@@ -170,10 +170,4 @@ export function OrbitalTargetMap({ proteins }) {
       ))}
     </div>
   );
-}
-
-export function useDocumentTier(tier) {
-  useEffect(() => {
-    document.documentElement.dataset.tier = tier || "student_free";
-  }, [tier]);
 }

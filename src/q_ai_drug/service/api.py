@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import mimetypes
 import os
 import threading
 import uuid
@@ -24,15 +25,19 @@ from q_ai_drug.models.admet import score_admet_candidates
 from q_ai_drug.models.baseline_activity import score_candidates
 from q_ai_drug.reporting.product_metrics import build_investor_metrics
 from q_ai_drug.reporting.scientific_evidence import build_scientific_evidence
+from q_ai_drug.resources.registry import research_resource_registry
 from q_ai_drug.service.access import choose_organization, get_project_for_principal
 from q_ai_drug.service.auth import CurrentPrincipal, get_current_principal
 from q_ai_drug.service.db import CandidateRecord, JobLogRecord, JobRecord, ProjectRecord, RunRecord, TargetRecord, init_database, session_scope
 from q_ai_drug.service.models import Job, JobCreate, ModelPredictRequest, Project, ProjectCreate
 from q_ai_drug.service.queue import enqueue_cancer_proof_run, queue_enabled, redis_connection
 from q_ai_drug.service.routes.artifacts import router as artifacts_router
+from q_ai_drug.service.routes.ai_models import router as ai_models_router
 from q_ai_drug.service.routes.assistant import router as assistant_router
 from q_ai_drug.service.routes.auth import router as auth_router
 from q_ai_drug.service.routes.chemistry import router as chemistry_router
+from q_ai_drug.service.routes.data_fabric import router as data_fabric_router
+from q_ai_drug.service.routes.runs import router as runs_router
 from q_ai_drug.service.routes.tools import router as tools_router
 from q_ai_drug.service.routes.uploads import router as uploads_router
 from q_ai_drug.service.settings import get_settings
@@ -40,6 +45,10 @@ from q_ai_drug.service.usage import record_usage
 from q_ai_drug.service.workers import run_cancer_proof_job
 
 app = FastAPI(title="Q-AI Drug Discovery Platform", version="0.1.0")
+mimetypes.add_type("application/octet-stream", ".npz")
+mimetypes.add_type("application/x-hdf5", ".h5")
+mimetypes.add_type("chemical/x-mdl-sdfile", ".sdf")
+mimetypes.add_type("chemical/x-pdbqt", ".pdbqt")
 DEFAULT_OUTPUT_DIR = Path(os.getenv("QAI_OUTPUT_DIR", "outputs/cancer_proof_v1"))
 ROOT_MODELS_DIR = Path(os.getenv("QAI_MODELS_DIR", "models"))
 FRONTEND_DIR = Path(os.getenv("QAI_FRONTEND_DIR", "frontend"))
@@ -75,7 +84,10 @@ app.include_router(uploads_router)
 app.include_router(artifacts_router)
 app.include_router(tools_router)
 app.include_router(assistant_router)
+app.include_router(ai_models_router)
 app.include_router(chemistry_router)
+app.include_router(data_fabric_router)
+app.include_router(runs_router)
 
 
 def _project_from_record(record: ProjectRecord) -> Project:
@@ -322,6 +334,19 @@ def _artifact_url(raw_path: object) -> str | None:
     return "/artifacts/" + "/".join(quote(part) for part in rel.split("/"))
 
 
+def _artifact_or_structure_url(raw_path: object) -> str | None:
+    if raw_path is None or pd.isna(raw_path):
+        return None
+    text = str(raw_path).replace("\\", "/")
+    if "outputs/cancer_proof_v1/" in text:
+        return _artifact_url(raw_path)
+    try:
+        Path(str(raw_path)).resolve().relative_to(DEFAULT_OUTPUT_DIR.resolve())
+        return _artifact_url(raw_path)
+    except Exception:
+        return _structure_url(raw_path)
+
+
 def _local_artifact_exists(raw_path: object) -> bool:
     if raw_path is None or pd.isna(raw_path):
         return False
@@ -411,18 +436,6 @@ def _candidate_warnings(row: pd.Series | dict) -> list[str]:
 
 def _build_pose_sources(row: pd.Series | dict) -> list[dict[str, Any]]:
     sources = []
-    if _has_value(row.get("docked_sdf_url")):
-        sources.append(
-            {
-                "id": "docked",
-                "label": "Vina/Smina docked pose",
-                "url": row.get("docked_sdf_url"),
-                "receptor_url": row.get("receptor_url"),
-                "format": "sdf",
-                "method_tier": _method_tier(row, "docking_mode", "docking_status"),
-                "download_url": row.get("docked_sdf_url"),
-            }
-        )
     if _has_value(row.get("gnina_pose_sdf_url")):
         sources.append(
             {
@@ -435,6 +448,20 @@ def _build_pose_sources(row: pd.Series | dict) -> list[dict[str, Any]]:
                 "download_url": row.get("gnina_pose_sdf_url"),
             }
         )
+    if _has_value(row.get("docked_sdf_url")):
+        sources.append(
+            {
+                "id": "docked",
+                "label": "Vina/Smina docked pose",
+                "url": row.get("docked_sdf_url"),
+                "receptor_url": row.get("receptor_url"),
+                "format": "sdf",
+                "method_tier": _method_tier(row, "docking_mode", "docking_status"),
+                "download_url": row.get("docked_sdf_url"),
+            }
+        )
+    if sources:
+        return sources
     if _has_value(row.get("sdf_url")):
         sources.append(
             {
@@ -964,9 +991,9 @@ def research_top_candidates(limit: int = 100) -> list[dict]:
         if column in candidates.columns:
             candidates[column.replace("_path", "_url")] = candidates[column].map(_artifact_url)
     if "receptor_path" in candidates.columns:
-        candidates["receptor_url"] = candidates["receptor_path"].map(_structure_url)
+        candidates["receptor_url"] = candidates["receptor_path"].map(_artifact_or_structure_url)
     if "receptor_path_gnina" in candidates.columns:
-        candidates["gnina_receptor_url"] = candidates["receptor_path_gnina"].map(lambda value: _artifact_url(value) or _structure_url(value))
+        candidates["gnina_receptor_url"] = candidates["receptor_path_gnina"].map(_artifact_or_structure_url)
     for column in ("gnina_pose_sdf_path", "gnina_log_path"):
         if column in candidates.columns:
             candidates[column.replace("_path", "_url")] = candidates[column].map(_artifact_url)
@@ -974,10 +1001,10 @@ def research_top_candidates(limit: int = 100) -> list[dict]:
         candidates["pose_method_tier"] = candidates.apply(lambda row: _method_tier(row, "docking_mode", "docking_status"), axis=1)
     candidates["pose_sources"] = candidates.apply(_build_pose_sources, axis=1)
     candidates["default_pose_source"] = candidates["pose_sources"].map(
-        lambda sources: "docked"
-        if any(source.get("id") == "docked" for source in sources)
-        else "gnina"
+        lambda sources: "gnina"
         if any(source.get("id") == "gnina" for source in sources)
+        else "docked"
+        if any(source.get("id") == "docked" for source in sources)
         else "conformer"
         if any(source.get("id") == "conformer" for source in sources)
         else None
@@ -1001,6 +1028,11 @@ def research_top_candidates(limit: int = 100) -> list[dict]:
     )
     candidates = candidates.astype(object)
     return [_json_clean(row) for row in candidates.to_dict("records")]
+
+
+@app.get("/research/resource-registry")
+def resource_registry() -> dict[str, Any]:
+    return research_resource_registry()
 
 
 @app.post("/v1/projects", response_model=Project)

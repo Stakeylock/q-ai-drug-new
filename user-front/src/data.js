@@ -404,6 +404,9 @@ export const INORGANIC_STARTERS = [
 
 export const RESEARCH_TOOLKIT = [
   tool("target-dossier", "Target Dossier Builder", "Summarize biology, AlphaFold structure, variants, pathway role, and assay ideas."),
+  tool("asset-library", "Pharma Asset Library", "Browse downloaded AlphaFold receptors, PAE metadata, ChEMBL ligands, SDF files, and structure images."),
+  tool("resource-registry", "Research Source Registry", "Track core databases, ML/QM models, local availability, licenses, and pharma-readiness gaps."),
+  tool("data-fabric", "Realtime Data Fabric", "Pull ChEMBL, PubChem, UniProt, Open Targets, RDKit, and model-hook evidence for current proteins and ligands."),
   tool("literature", "Literature Query Planner", "Prepare PubMed/ChEMBL/PubChem/AlphaFold lookups with reproducible search strings."),
   tool("sar", "SAR Matrix", "Compare ranked molecules by substituent, score deltas, ADMET, and quantum contribution."),
   tool("counter-screen", "Counter-Screen Planner", "Suggest off-target panels and safety assays from the simulation bench."),
@@ -426,18 +429,57 @@ export const INSILICO_MODULES = [
   workflowModule("assay-handoff", "Assay handoff", "Biochemical, cellular, selectivity, ADME, tox counter-screens, controls, acceptance criteria, exportable dossiers.", "Research Tools exports"),
 ];
 
-export const REACTBITS_EFFECTS = [
-  "Aurora background",
-  "Particle field",
-  "Split animated text",
-  "Magnetic buttons",
-  "Spotlight cards",
-  "Tilt protein cards",
-  "Flowing pipeline trails",
-  "Orbital target map",
-  "Shiny badges",
-  "Staggered reveal",
-];
+export const PHARMA_ASSET_LIBRARY = {
+  generatedAt: "2026-06-21",
+  sources: [
+    "AlphaFold Database receptor mmCIF, metadata, and PAE JSON",
+    "ChEMBL molecule SDF and SVG structure assets",
+    "Local QuDrugForge oncology benchmark, ADMET, docking, QM, and safety modules",
+  ],
+  sourceNotices: [
+    "Review AlphaFold Database terms before production or client redistribution.",
+    "Review ChEMBL licensing terms before production or client redistribution.",
+    "Computational assets are research planning inputs, not clinical evidence.",
+  ],
+  receptors: [
+    receptorAsset("EGFR", "P00533", "AF-P00533-F1", "NSCLC, CRC, GBM", "Kinase receptor"),
+    receptorAsset("KRAS", "P01116", "AF-P01116-F1", "NSCLC, CRC, PDAC", "RAS GTPase"),
+    receptorAsset("BRAF", "P15056", "AF-P15056-F1", "Melanoma, CRC, NSCLC", "MAPK kinase pathway"),
+    receptorAsset("MET", "P08581", "AF-P08581-F1", "NSCLC", "RTK bypass resistance"),
+    receptorAsset("ERBB2", "P04626", "AF-P04626-F1", "Breast, PDAC", "HER2 receptor"),
+    receptorAsset("PIK3CA", "P42336", "AF-P42336-F1", "Breast, prostate", "PI3K catalytic subunit"),
+    receptorAsset("PARP1", "P09874", "AF-P09874-F1", "Ovarian, prostate", "DNA repair enzyme"),
+    receptorAsset("FLT3", "P36888", "AF-P36888-F1", "AML", "Kinase receptor"),
+    receptorAsset("IDH1", "O75874", "AF-O75874-F1", "AML, GBM", "Metabolic enzyme"),
+    receptorAsset("AR", "P10275", "AF-P10275-F1", "Prostate", "Nuclear hormone receptor"),
+    receptorAsset("BCL2", "P10415", "AF-P10415-F1", "AML", "Apoptosis dependency"),
+    receptorAsset("ALK", "Q9UM73", "AF-Q9UM73-F1", "NSCLC", "Kinase fusion"),
+    receptorAsset("TP53", "P04637", "AF-P04637-F1", "Pan-cancer", "Genome integrity marker"),
+  ],
+  ligands: [
+    ligandAsset("Osimertinib", "CHEMBL3545063", "EGFR", "NSCLC mutant EGFR reference"),
+    ligandAsset("Erlotinib", "CHEMBL1079742", "EGFR", "EGFR kinase inhibitor comparator"),
+    ligandAsset("Gefitinib", "CHEMBL939", "EGFR", "EGFR kinase inhibitor comparator"),
+    ligandAsset("Crizotinib", "CHEMBL601719", "ALK/MET/ROS1", "Kinase fusion reference ligand"),
+    ligandAsset("Alectinib", "CHEMBL1738797", "ALK", "ALK inhibitor reference ligand"),
+    ligandAsset("Lapatinib", "CHEMBL554", "ERBB2/EGFR", "HER2/EGFR kinase comparator for breast programs"),
+    ligandAsset("Neratinib", "CHEMBL3989921", "ERBB2", "HER2 covalent inhibitor reference ligand"),
+    ligandAsset("Tucatinib", "CHEMBL3989868", "ERBB2", "HER2-selective inhibitor reference ligand"),
+    ligandAsset("Olaparib", "CHEMBL521686", "PARP1", "PARP inhibitor reference ligand"),
+    ligandAsset("Rucaparib", "CHEMBL1173055", "PARP1", "PARP inhibitor comparator"),
+    ligandAsset("Niraparib", "CHEMBL1094636", "PARP1", "PARP inhibitor comparator"),
+    ligandAsset("Trametinib", "CHEMBL2103875", "MEK/MAPK", "MAPK pathway comparator"),
+    ligandAsset("Vemurafenib", "CHEMBL1229517", "BRAF", "BRAF V600E reference ligand"),
+    ligandAsset("Imatinib", "CHEMBL941", "ABL/KIT/PDGFRA", "Kinase inhibitor benchmark"),
+    ligandAsset("Venetoclax", "CHEMBL3137309", "BCL2", "BCL2 inhibitor reference ligand"),
+    ligandAsset("Palbociclib", "CHEMBL2364621", "CDK4/6", "Cell-cycle inhibitor comparator"),
+    ligandAsset("Alpelisib", "CHEMBL2396661", "PIK3CA", "PI3K alpha inhibitor reference"),
+    ligandAsset("Tamoxifen", "CHEMBL83", "ESR1", "Estrogen receptor modulator comparator"),
+    ligandAsset("Fulvestrant", "CHEMBL4760678", "ESR1", "Estrogen receptor degrader comparator"),
+    ligandAsset("Elacestrant", "CHEMBL4594273", "ESR1", "Oral SERD comparator for ESR1 programs"),
+    ligandAsset("Enzalutamide", "CHEMBL1082407", "AR", "Androgen receptor antagonist comparator"),
+  ],
+};
 
 function protein(diagnosisId, gene, uniprot, alphafoldId, confidence, role, family, variants) {
   return {
@@ -472,4 +514,31 @@ function tool(id, name, purpose) {
 
 function workflowModule(id, name, purpose, evidence) {
   return { id, name, purpose, evidence };
+}
+
+function receptorAsset(gene, uniprot, alphafoldId, program, role) {
+  const base = `/pharma-library/receptors/alphafold/${alphafoldId}`;
+  return {
+    gene,
+    uniprot,
+    alphafoldId,
+    program,
+    role,
+    cif: `${base}-model_v6.cif`,
+    pae: `${base}-predicted_aligned_error_v6.json`,
+    metadata: `${base}-metadata.json`,
+  };
+}
+
+function ligandAsset(name, chemblId, target, purpose) {
+  const slug = name.toLowerCase().replaceAll(" ", "-");
+  return {
+    name,
+    chemblId,
+    target,
+    purpose,
+    sdf: `/pharma-library/ligands/chembl/sdf/${chemblId}-${slug}.sdf`,
+    image: `/pharma-library/ligands/chembl/svg/${chemblId}-${slug}.svg`,
+    search: `/pharma-library/ligands/chembl/search/${slug}.json`,
+  };
 }

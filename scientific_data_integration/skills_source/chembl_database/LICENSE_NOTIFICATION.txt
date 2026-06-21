@@ -1,0 +1,1 @@
+2026-06-21: User was notified to review ChEMBL data and licensing terms at https://www.ebi.ac.uk/chembl/ before using downloaded molecule assets in production, client deliverables, or redistributed packages.

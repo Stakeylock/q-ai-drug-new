@@ -1,0 +1,240 @@
+{
+  "run_id": "run_20260621_010417_9b6c67ad",
+  "user_id": "cf2399b2-1c96-45bd-9afb-346b8d8816d4",
+  "created_at": "2026-06-21T01:04:17.014685+00:00",
+  "workspace_root": "E:/QC-Intern/qc1/workspace/users/cf2399b2-1c96-45bd-9afb-346b8d8816d4/runs/run_20260621_010417_9b6c67ad",
+  "module_dirs": [
+    "00_inputs",
+    "01_target_prep",
+    "02_ligand_library",
+    "03_docking",
+    "04_interaction_fingerprints",
+    "05_physics_refinement",
+    "06_admet_tox",
+    "07_quantum_qm",
+    "08_sar_decision",
+    "09_assay_handoff",
+    "logs"
+  ],
+  "inputs": {
+    "patient": {
+      "caseId": "DEID-CASE-001",
+      "diagnosis": "non_small_cell_lung_cancer",
+      "stage": "Stage IV research context",
+      "specimen": "Tumor biopsy, de-identified",
+      "variants": "EGFR L858R, TP53 R273H",
+      "expression": "EGFR high, ERBB3 moderate, MET low",
+      "proteomics": "EGFR phospho-signal elevated; MAPK pathway active",
+      "priorTherapies": "No identifiable treatment history stored in this demo",
+      "constraints": "Avoid strong CYP3A4 liabilities; prioritize brain-penetrance review",
+      "notes": "Research-only computational hypothesis generation. No therapeutic claim."
+    },
+    "selected_proteins": [
+      {
+        "gene": "EGFR",
+        "uniprot": "P00533",
+        "alphafold_id": "AF-P00533-F1",
+        "variants": [
+          "L858R",
+          "exon 19 del",
+          "T790M"
+        ]
+      },
+      {
+        "gene": "MET",
+        "uniprot": "P08581",
+        "alphafold_id": "AF-P08581-F1",
+        "variants": [
+          "MET exon 14"
+        ]
+      },
+      {
+        "gene": "KRAS",
+        "uniprot": "P01116",
+        "alphafold_id": "AF-P01116-F1",
+        "variants": [
+          "G12C",
+          "G12D"
+        ]
+      }
+    ],
+    "user_ligand_count": 0
+  },
+  "input_checksum": "383be51acd077f846d1c97cee6f8360b46b888f8aaa85b26946a8c6f9e7c5c4e",
+  "reference_mode": "benchmark_comparator_only",
+  "source_reads": [
+    {
+      "timestamp": "2026-06-21T01:04:34.242525+00:00",
+      "sources": [
+        "ChEMBL",
+        "PubChem",
+        "UniProt",
+        "Open Targets"
+      ],
+      "ligand_count": 10
+    },
+    {
+      "timestamp": "2026-06-21T01:05:08.965968+00:00",
+      "target_count": 3,
+      "ligand_count": 10,
+      "chembl_activity_datapoints": 120,
+      "chembl_unique_molecules": 67,
+      "pubchem_property_hits": 10,
+      "rdkit_descriptor_hits": 10,
+      "cache_dir": "data/research_resources/realtime_cache"
+    }
+  ],
+  "jobs": [
+    {
+      "module": "orchestration",
+      "event": "run_created",
+      "status": "started",
+      "timestamp": "2026-06-21T01:04:17.337758+00:00",
+      "progress": 2,
+      "artifacts": [
+        {
+          "label": "manifest",
+          "path": "E:/QC-Intern/qc1/workspace/users/cf2399b2-1c96-45bd-9afb-346b8d8816d4/runs/run_20260621_010417_9b6c67ad/manifest.json"
+        }
+      ],
+      "data_checksum": "ece62e5edb3674455de9d22611777d55dd86bdebb8a0f8ad6f211d5d98ed77c1"
+    },
+    {
+      "module": "orchestration",
+      "event": "project_bridge_started",
+      "status": "started",
+      "timestamp": "2026-06-21T01:04:17.650422+00:00",
+      "progress": 2,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "orchestration",
+      "event": "project_bridge_completed",
+      "status": "completed",
+      "timestamp": "2026-06-21T01:04:18.547086+00:00",
+      "progress": 2,
+      "artifacts": [],
+      "data_checksum": "1349c980c059f8e51dafd4139bcb595b155ebd748702a54bc812f62ce969b584"
+    },
+    {
+      "module": "01_target_prep",
+      "event": "target_prep_started",
+      "status": "started",
+      "timestamp": "2026-06-21T01:04:18.601304+00:00",
+      "progress": 14,
+      "artifacts": [],
+      "data_checksum": "0cd0f33b9a2fbc887c9feebc537fad369f597db51c45e81b530705b7c2528a71"
+    },
+    {
+      "module": "01_target_prep",
+      "event": "target_prep_completed",
+      "status": "completed",
+      "timestamp": "2026-06-21T01:04:33.279253+00:00",
+      "progress": 14,
+      "artifacts": [],
+      "data_checksum": "f5a0180febe5a96f0a2bfca4084c1c7845f1a8b24ac94bdc3565694fa0c4e34d"
+    },
+    {
+      "module": "02_ligand_library",
+      "event": "ligand_library_started",
+      "status": "started",
+      "timestamp": "2026-06-21T01:04:33.588956+00:00",
+      "progress": 26,
+      "artifacts": [],
+      "data_checksum": "ba818bb208eacba38d14c1d9fae6906429b155abfad1996643700a363ea34ada"
+    },
+    {
+      "module": "02_ligand_library",
+      "event": "benchmark_comparator_read",
+      "status": "warning",
+      "timestamp": "2026-06-21T01:04:33.919489+00:00",
+      "progress": 26,
+      "artifacts": [],
+      "data_checksum": "c68dc8a21362322102f9a0b77553de426a562480c613ca6bf69d0815f505d478"
+    },
+    {
+      "module": "02_ligand_library",
+      "event": "source_read",
+      "status": "started",
+      "timestamp": "2026-06-21T01:04:34.242525+00:00",
+      "progress": 26,
+      "artifacts": [],
+      "data_checksum": "84596ba5ecbb1eb715b16c75ce6f1dd981cb383b8b1b32a1fd406c9ce0d3e646"
+    },
+    {
+      "module": "02_ligand_library",
+      "event": "source_read",
+      "status": "completed",
+      "timestamp": "2026-06-21T01:05:08.965968+00:00",
+      "progress": 26,
+      "artifacts": [],
+      "data_checksum": "50531cf2ce6fc736d6f222fd6149fb2bbfd325cf32efbcb779563fa2cbfe3250"
+    },
+    {
+      "module": "03_docking",
+      "event": "docking_artifact_review",
+      "status": "completed",
+      "timestamp": "2026-06-21T01:05:09.278261+00:00",
+      "progress": 38,
+      "artifacts": [],
+      "data_checksum": "df946d675933b381a370eeafe5945f2851966585c8acf6cd17008ad588abb334"
+    },
+    {
+      "module": "04_interaction_fingerprints",
+      "event": "module_gap",
+      "status": "warning",
+      "timestamp": "2026-06-21T01:05:09.538146+00:00",
+      "progress": 49,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "05_physics_refinement",
+      "event": "module_gap",
+      "status": "warning",
+      "timestamp": "2026-06-21T01:05:09.594396+00:00",
+      "progress": 60,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "06_admet_tox",
+      "event": "admet_review",
+      "status": "completed",
+      "timestamp": "2026-06-21T01:05:09.858055+00:00",
+      "progress": 70,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "07_quantum_qm",
+      "event": "qm_review",
+      "status": "warning",
+      "timestamp": "2026-06-21T01:05:09.911709+00:00",
+      "progress": 80,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "08_sar_decision",
+      "event": "rerank_completed",
+      "status": "completed",
+      "timestamp": "2026-06-21T01:05:10.177557+00:00",
+      "progress": 91,
+      "artifacts": [],
+      "data_checksum": "9bcccc0c6ae3c2d4dfdfbe8562ca0c06d1ce5c71b9d6457f4b85f4a3f227990f"
+    },
+    {
+      "module": "09_assay_handoff",
+      "event": "handoff_ready",
+      "status": "completed",
+      "timestamp": "2026-06-21T01:05:10.227615+00:00",
+      "progress": 100,
+      "artifacts": [],
+      "data_checksum": "ac469d29f2b60cded5e44a1d76405e6efd1b6effb056f2ca1da87306bd3ebea4"
+    }
+  ],
+  "claim_boundary": "In-silico research run. No clinical, regulatory, safety, or efficacy claims.",
+  "updated_at": "2026-06-21T01:05:10.227615+00:00"
+}

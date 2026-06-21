@@ -1,20 +1,129 @@
-[2m1:45:27 PM[22m [31m[1m[vite][22m[39m [31mInternal server error: Transform failed with 1 error:
+[2m2:12:09 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: LivePipelineConsole is not defined
+[39m > App src/App.jsx:635:9
+    633 |            setActiveTab={setWorkspaceTab}
+    634 |          />
+    635 |          <LivePipelineConsole
+        |           ^
+    636 |            run={run}
+    637 |            minimized={consoleMinimized}
+ > renderWithHooks node_modules/react-dom/cjs/react-dom.development.js:15486:17
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom.development.js:19617:19
+ > beginWork node_modules/react-dom/cjs/react-dom.development.js:21640:15
+ > HTMLUnknownElement.callCallback node_modules/react-dom/cjs/react-dom.development.js:4164:13
+ > Object.invokeGuardedCallbackDev node_modules/react-dom/cjs/react-dom.development.js:4213:15
+ > invokeGuardedCallback node_modules/react-dom/cjs/react-dom.development.js:4277:30
+ > beginWork$1 node_modules/react-dom/cjs/react-dom.development.js:27490:6
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom.development.js:26596:11
+ > workLoopSync node_modules/react-dom/cjs/react-dom.development.js:26505:4
 
-[31m[PARSE_ERROR] [0mExpected corresponding JSX closing tag for 'strCopilot'.
-      [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/App.jsx:1437:90 [38;5;246m][0m
-      [38;5;246m│[0m
- [38;5;246m1437 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mN[0m[38;5;249mV[0m[38;5;249mI[0m[38;5;249mD[0m[38;5;249mI[0m[38;5;249mA[0m[38;5;249m [0m[38;5;249mw[0m[38;5;249mi[0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249m [0m[38;5;249m<[0mstrCopilot[38;5;249m [0m[38;5;249mc[0m[38;5;249mh[0m[38;5;249ma[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mu[0m[38;5;249ms[0m[38;5;249me[0m[38;5;249ms[0m[38;5;249m [0m[38;5;249mG[0m[38;5;249mo[0m[38;5;249mo[0m[38;5;249mg[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249m [0m[38;5;249mA[0m[38;5;249mI[0m[38;5;249m [0m[38;5;249mS[0m[38;5;249mt[0m[38;5;249mu[0m[38;5;249md[0m[38;5;249mi[0m[38;5;249mo[0m[38;5;249m [0m[38;5;249mw[0m[38;5;249mi[0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249mg[0m[38;5;249m>[0m[38;5;249mN[0m[38;5;249mV[0m[38;5;249mI[0m[38;5;249mD[0m[38;5;249mI[0m[38;5;249mA[0m[38;5;249m_[0m[38;5;249mA[0m[38;5;249mP[0m[38;5;249mI[0m[38;5;249m_[0m[38;5;249mK[0m[38;5;249mE[0m[38;5;249mY[0m[38;5;249m<[0m[38;5;249m/[0mstrong[38;5;249m>[0m[38;5;249m.[0m[38;5;249m [0m[38;5;249mB[0m[38;5;249mo[0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249m [0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249ma[0m[38;5;249my[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mk[0m[38;5;249me[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249m-[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ml[0m[38;5;249my[0m[38;5;249m [0m[38;5;249ma[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249m [0m[38;5;249mn[0m[38;5;249me[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249me[0m[38;5;249mn[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249me[0m[38;5;249m [0m[38;5;249mR[0m[38;5;249me[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249mb[0m[38;5;249mu[0m[38;5;249mn[0m[38;5;249md[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249m.[0m
- [38;5;240m     │[0m                            ─────┬────                                                    ───┬──  
- [38;5;240m     │[0m                                 ╰──────────────────────────────────────────────────────────────── Opened here
- [38;5;240m     │[0m                                                                                             │    
- [38;5;240m     │[0m                                                                                             ╰──── Expected `</strCopilot>`
-[38;5;246m──────╯[0m
-[39m
-  Plugin: [35mvite:oxc[39m
-  File: [36mE:/QC-Intern/qc1/user-front/src/App.jsx[39m
-      at transformWithOxc (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:3344:19)
-      at TransformPluginContext.transform (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:3415:26)
-      at EnvironmentPluginContainer.transform (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:30387:51)
-      at async loadAndTransform (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:24646:26)
-      at async viteTransformMiddleware (file:///E:/QC-Intern/qc1/user-front/node_modules/vite/dist/node/chunks/node.js:24440:20)
-[2m1:45:27 PM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[vite] Failed to reload /src/App.jsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+[2m2:12:09 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: LivePipelineConsole is not defined
+[39m > App src/App.jsx:635:9
+    633 |            setActiveTab={setWorkspaceTab}
+    634 |          />
+    635 |          <LivePipelineConsole
+        |           ^
+    636 |            run={run}
+    637 |            minimized={consoleMinimized}
+ > renderWithHooks node_modules/react-dom/cjs/react-dom.development.js:15486:17
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom.development.js:19617:19
+ > beginWork node_modules/react-dom/cjs/react-dom.development.js:21640:15
+ > HTMLUnknownElement.callCallback node_modules/react-dom/cjs/react-dom.development.js:4164:13
+ > Object.invokeGuardedCallbackDev node_modules/react-dom/cjs/react-dom.development.js:4213:15
+ > invokeGuardedCallback node_modules/react-dom/cjs/react-dom.development.js:4277:30
+ > beginWork$1 node_modules/react-dom/cjs/react-dom.development.js:27490:6
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom.development.js:26596:11
+ > workLoopSync node_modules/react-dom/cjs/react-dom.development.js:26505:4
+
+[2m2:12:09 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mThe above error occurred in the <App> component:
+
+    at App (http://localhost:5174/src/App.jsx?t=1781988128147:38:32)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+[2m2:12:09 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled rejection] [1mReferenceError[22m: LivePipelineConsole is not defined
+[39m > App src/App.jsx:635:9
+    633 |            setActiveTab={setWorkspaceTab}
+    634 |          />
+    635 |          <LivePipelineConsole
+        |           ^
+    636 |            run={run}
+    637 |            minimized={consoleMinimized}
+ > renderWithHooks node_modules/react-dom/cjs/react-dom.development.js:15486:17
+ > updateFunctionComponent node_modules/react-dom/cjs/react-dom.development.js:19617:19
+ > beginWork node_modules/react-dom/cjs/react-dom.development.js:21640:15
+ > beginWork$1 node_modules/react-dom/cjs/react-dom.development.js:27465:13
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom.development.js:26596:11
+ > workLoopSync node_modules/react-dom/cjs/react-dom.development.js:26505:4
+ > renderRootSync node_modules/react-dom/cjs/react-dom.development.js:26473:6
+ > recoverFromConcurrentError node_modules/react-dom/cjs/react-dom.development.js:25889:19
+ > performSyncWorkOnRoot node_modules/react-dom/cjs/react-dom.development.js:26135:19
+
+[2m7:06:38 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: candidateNeedsStructurePreview is not defined
+[39m > StructureTab src/App.jsx:2484:6
+    2482 |    return (
+    2483 |      <div className="detail-body">
+    2484 |        <div className="viewer-toolbar">
+         |        ^
+    2485 |          <div className="segmented-control">
+    2486 |            <button className={viewMode === "3d" ? "active" : ""} type="button" onClick={() => setViewMode("3d")}>
+ > renderWithHooks node_modules/react-dom/cjs/react-dom.development.js:15486:17
+ > mountIndeterminateComponent node_modules/react-dom/cjs/react-dom.development.js:20103:12
+ > beginWork node_modules/react-dom/cjs/react-dom.development.js:21626:15
+ > HTMLUnknownElement.callCallback node_modules/react-dom/cjs/react-dom.development.js:4164:13
+ > Object.invokeGuardedCallbackDev node_modules/react-dom/cjs/react-dom.development.js:4213:15
+ > invokeGuardedCallback node_modules/react-dom/cjs/react-dom.development.js:4277:30
+ > beginWork$1 node_modules/react-dom/cjs/react-dom.development.js:27490:6
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom.development.js:26596:11
+ > workLoopSync node_modules/react-dom/cjs/react-dom.development.js:26505:4
+
+[2m7:06:38 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled error] [1mReferenceError[22m: candidateNeedsStructurePreview is not defined
+[39m > StructureTab src/App.jsx:2484:6
+    2482 |    return (
+    2483 |      <div className="detail-body">
+    2484 |        <div className="viewer-toolbar">
+         |        ^
+    2485 |          <div className="segmented-control">
+    2486 |            <button className={viewMode === "3d" ? "active" : ""} type="button" onClick={() => setViewMode("3d")}>
+ > renderWithHooks node_modules/react-dom/cjs/react-dom.development.js:15486:17
+ > mountIndeterminateComponent node_modules/react-dom/cjs/react-dom.development.js:20103:12
+ > beginWork node_modules/react-dom/cjs/react-dom.development.js:21626:15
+ > HTMLUnknownElement.callCallback node_modules/react-dom/cjs/react-dom.development.js:4164:13
+ > Object.invokeGuardedCallbackDev node_modules/react-dom/cjs/react-dom.development.js:4213:15
+ > invokeGuardedCallback node_modules/react-dom/cjs/react-dom.development.js:4277:30
+ > beginWork$1 node_modules/react-dom/cjs/react-dom.development.js:27490:6
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom.development.js:26596:11
+ > workLoopSync node_modules/react-dom/cjs/react-dom.development.js:26505:4
+
+[2m7:06:38 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mThe above error occurred in the <StructureTab> component:
+
+    at StructureTab (http://localhost:5174/src/App.jsx?t=1782005798063:5593:25)
+    at article
+    at CandidateDetail (http://localhost:5174/src/App.jsx?t=1782005798063:5456:28)
+    at div
+    at section
+    at SpotlightCard (http://localhost:5174/src/effects.jsx:133:33)
+    at CandidateResults (http://localhost:5174/src/App.jsx?t=1782005798063:3248:29)
+    at main
+    at div
+    at App (http://localhost:5174/src/App.jsx?t=1782005798063:38:32)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+[2m7:06:38 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [31m[Unhandled rejection] [1mReferenceError[22m: candidateNeedsStructurePreview is not defined
+[39m > StructureTab src/App.jsx:2484:6
+    2482 |    return (
+    2483 |      <div className="detail-body">
+    2484 |        <div className="viewer-toolbar">
+         |        ^
+    2485 |          <div className="segmented-control">
+    2486 |            <button className={viewMode === "3d" ? "active" : ""} type="button" onClick={() => setViewMode("3d")}>
+ > renderWithHooks node_modules/react-dom/cjs/react-dom.development.js:15486:17
+ > mountIndeterminateComponent node_modules/react-dom/cjs/react-dom.development.js:20103:12
+ > beginWork node_modules/react-dom/cjs/react-dom.development.js:21626:15
+ > beginWork$1 node_modules/react-dom/cjs/react-dom.development.js:27465:13
+ > performUnitOfWork node_modules/react-dom/cjs/react-dom.development.js:26596:11
+ > workLoopSync node_modules/react-dom/cjs/react-dom.development.js:26505:4
+ > renderRootSync node_modules/react-dom/cjs/react-dom.development.js:26473:6
+ > recoverFromConcurrentError node_modules/react-dom/cjs/react-dom.development.js:25889:19
+ > performSyncWorkOnRoot node_modules/react-dom/cjs/react-dom.development.js:26135:19
+

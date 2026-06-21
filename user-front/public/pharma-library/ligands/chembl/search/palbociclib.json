@@ -1,0 +1,115 @@
+{
+  "molecules": [
+    {
+      "atc_classifications": [],
+      "availability_type": null,
+      "biotherapeutic": null,
+      "black_box_warning": 0,
+      "chemical_probe": 0,
+      "chirality": 2,
+      "cross_references": [],
+      "dosed_ingredient": false,
+      "first_approval": null,
+      "first_in_class": 0,
+      "helm_notation": null,
+      "inorganic_flag": 0,
+      "max_phase": "2.0",
+      "molecule_chembl_id": "CHEMBL2364621",
+      "molecule_hierarchy": {
+        "active_chembl_id": "CHEMBL189963",
+        "molecule_chembl_id": "CHEMBL2364621",
+        "parent_chembl_id": "CHEMBL189963"
+      },
+      "molecule_properties": {
+        "alogp": "2.97",
+        "aromatic_rings": 3,
+        "full_molformula": "C26H35N7O6S",
+        "full_mwt": "573.68",
+        "hba": 9,
+        "hbd": 2,
+        "heavy_atoms": 33,
+        "mw_freebase": "447.54",
+        "np_likeness_score": "-1.06",
+        "num_ro5_violations": 0,
+        "psa": "105.04",
+        "qed_weighted": "0.58",
+        "ro3_pass": "N",
+        "rtb": 5
+      },
+      "molecule_structures": {
+        "canonical_smiles": "CC(=O)c1c(C)c2cnc(Nc3ccc(N4CCNCC4)cn3)nc2n(C2CCCC2)c1=O.O=S(=O)(O)CCO",
+        "molfile": "\n     RDKit          2D\n\n 40 43  0  0  0  0  0  0  0  0999 V2000\n    7.3272   -1.5911    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    7.3272   -0.7661    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.0417   -0.3536    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.0417    0.4714    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n    8.0417    1.2964    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    8.8667    0.4714    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    7.2167    0.4714    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.6443    2.8757    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.3894    2.0911    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0568    1.6062    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0568    0.7812    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.7242    2.0911    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.4693    2.8757    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.7713    0.3687    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.7713   -0.4563    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0568   -0.8688    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.3423   -0.4563    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.3423    0.3687    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.6279    0.7812    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0866   -0.4563    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.6279   -0.8688    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0568   -1.6938    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.4858   -0.8688    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.4858   -1.6938    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.2002   -0.4563    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.4858    0.7812    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    3.6590   -0.8688    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    4.3734   -0.4563    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.0879   -0.8688    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.0879   -1.6938    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    4.3734   -2.1063    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.6590   -1.6938    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.9445   -0.4563    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.9445    0.3687    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2300    0.7812    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.5155    0.3687    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8011    0.7812    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.5155   -0.4563    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2300   -0.8688    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0866    0.3687    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  2  0\n  4  6  1  0\n  4  7  2  0\n  8  9  1  0\n  9 10  1  0\n 10 11  1  0\n 10 12  1  0\n 11 14  1  0\n 11 18  1  0\n 12 13  1  0\n 13  8  1  0\n 14 26  2  0\n 15 14  1  0\n 15 23  1  0\n 16 15  2  0\n 17 16  1  0\n 18 19  1  0\n 18 17  2  0\n 19 40  2  0\n 20 21  2  0\n 21 17  1  0\n 22 16  1  0\n 23 25  2  0\n 24 23  1  0\n 27 28  1  0\n 28 29  1  0\n 29 30  1  0\n 30 31  1  0\n 31 32  1  0\n 32 27  1  0\n 33 27  1  0\n 33 39  1  0\n 34 33  2  0\n 34 35  1  0\n 35 36  2  0\n 36 37  1  0\n 38 36  1  0\n 39 38  2  0\n 40 37  1  0\n 40 20  1  0\nM  END\n> <chembl_id>\nCHEMBL2364621\n\n> <chembl_pref_name>\nPALBOCICLIB ISETHIONATE",
+        "standard_inchi": "InChI=1S/C24H29N7O2.C2H6O4S/c1-15-19-14-27-24(28-20-8-7-18(13-26-20)30-11-9-25-10-12-30)29-22(19)31(17-5-3-4-6-17)23(33)21(15)16(2)32;3-1-2-7(4,5)6/h7-8,13-14,17,25H,3-6,9-12H2,1-2H3,(H,26,27,28,29);3H,1-2H2,(H,4,5,6)",
+        "standard_inchi_key": "LYYVFHRFIJKPOV-UHFFFAOYSA-N"
+      },
+      "molecule_synonyms": [
+        {
+          "molecule_synonym": "Palbociclib isethiolate",
+          "syn_type": "MERCK_INDEX",
+          "synonyms": "PALBOCICLIB ISETHIOLATE"
+        },
+        {
+          "molecule_synonym": "Palbociclib isethionate",
+          "syn_type": "OTHER",
+          "synonyms": "PALBOCICLIB ISETHIONATE"
+        },
+        {
+          "molecule_synonym": "Palbociclib isethionate",
+          "syn_type": "USAN",
+          "synonyms": "PALBOCICLIB ISETHIONATE"
+        },
+        {
+          "molecule_synonym": "PD 0332991-0054",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "PD 0332991-0054"
+        },
+        {
+          "molecule_synonym": "PD-0332991-0054",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "PD-0332991-0054"
+        },
+        {
+          "molecule_synonym": "PD-03329910054",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "PD-03329910054"
+        },
+        {
+          "molecule_synonym": "PF-00080665-73",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "PF-00080665-73"
+        },
+        {
+          "molecule_synonym": "PF-0008066573",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "PF-0008066573"
+        }
+      ],
+      "molecule_type": "Small molecule",
+      "natural_product": 0,
+      "oral": false,
+      "orphan": 0,
+      "parenteral": false,
+      "polymer_flag": 0,
+      "pref_name": "PALBOCICLIB ISETHIONATE",
+      "prodrug": 0,
+      "score": 34.0,
+      "structure_type": "MOL",
+      "therapeutic_flag": false,
+      "topical": false,
+      "usan_stem": "-ciclib",
+      "usan_stem_definition": "cyclin dependent kinase inhibitors",
+      "usan_substem": "-ciclib",
+      "usan_year": 2012,
+      "veterinary": 0,
+      "withdrawn_flag": false
+    }
+  ],
+  "page_meta": {
+    "limit": 1,
+    "next": "/chembl/api/data/molecule/search.json?limit=1&offset=1&q=palbociclib",
+    "offset": 0,
+    "previous": null,
+    "total_count": 4
+  },
+  "_license_notice": "Data from the ChEMBL Database. Please review the licensing terms at https://www.ebi.ac.uk/chembl/"
+}

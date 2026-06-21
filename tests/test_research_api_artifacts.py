@@ -45,7 +45,8 @@ def test_top_candidates_fill_assets_and_pose_sources(tmp_path, monkeypatch):
     assert row["sdf_url"].endswith("/assets/ligands_sdf/C1.sdf")
     assert row["docked_sdf_url"].endswith("/docking/poses/EGFR/C1/C1_docked.sdf")
     assert row["default_pose_source"] == "docked"
-    assert [source["id"] for source in row["pose_sources"]] == ["docked", "conformer"]
+    assert [source["id"] for source in row["pose_sources"]] == ["docked"]
+    assert all(source["method_tier"] != "PROXY" for source in row["pose_sources"])
 
     health = api.research_artifact_health()
     assert health["top_candidate_count"] == 1

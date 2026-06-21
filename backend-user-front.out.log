@@ -1,31 +1,16 @@
-INFO:     127.0.0.1:14423 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:17384 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51803 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49331 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49340 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:2395 - "GET /v1/tools HTTP/1.1" 200 OK
-INFO:     127.0.0.1:2394 - "GET /v1/billing/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:2396 - "GET /v1/tools HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54195 - "GET /v1/billing/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:9740 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:33156 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:13815 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:13460 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:46506 - "POST /projects HTTP/1.1" 200 OK
-INFO:     127.0.0.1:18569 - "POST /v1/projects/afe30670-90bc-4128-ba40-173e067a696b/targets HTTP/1.1" 200 OK
-INFO:     127.0.0.1:36272 - "POST /v1/projects/afe30670-90bc-4128-ba40-173e067a696b/targets HTTP/1.1" 200 OK
-INFO:     127.0.0.1:31786 - "POST /v1/projects/afe30670-90bc-4128-ba40-173e067a696b/targets HTTP/1.1" 200 OK
-INFO:     127.0.0.1:31513 - "POST /projects/afe30670-90bc-4128-ba40-173e067a696b/runs HTTP/1.1" 200 OK
-INFO:     127.0.0.1:14302 - "GET /research/top-candidates?limit=120 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43756 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00088/EGFR_CAND_00088_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37729 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00041/EGFR_CAND_00041_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60152 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00027/EGFR_CAND_00027_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35262 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00039/EGFR_CAND_00039_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53094 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00061/EGFR_CAND_00061_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:5906 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00057/EGFR_CAND_00057_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:41670 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00019/EGFR_CAND_00019_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54176 - "GET /artifacts/docking/poses/EGFR/EGFR_CAND_00028/EGFR_CAND_00028_docked.sdf HTTP/1.1" 200 OK
-INFO:     127.0.0.1:41040 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39155 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38817 - "GET /v1/assistant/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:34536 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+2026-06-21 01:01:10,483 - qudrugforge-logging - INFO - Logging setup complete. Active level: DEBUG
+2026-06-21 01:01:10,483 - qudrugforge-main - INFO - CORS origins configured: ['http://localhost:3001', 'http://127.0.0.1:3001', 'http://localhost:3000', 'http://127.0.0.1:3000']
+2026-06-21 01:01:10,535 - qudrugforge-main - INFO - Initializing QuDrugForge platform backend...
+2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\uploads
+2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\artifacts
+2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\reports
+2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\temp
+2026-06-21 01:01:10,535 - qudrugforge-database - INFO - Attempting connection to MongoDB database: qudrugforge_dev...
+2026-06-21 01:01:13,676 - qudrugforge-database - ERROR - MongoDB connection handshake failed: 127.0.0.1:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 3.0s, Topology Description: <TopologyDescription id: 6a36ea7eca76aca472b5c12c, topology_type: Unknown, servers: [<ServerDescription ('127.0.0.1', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+2026-06-21 01:01:13,678 - qudrugforge-database - WARNING - Platform starting without active MongoDB connection (Development grace mode).
+INFO:     127.0.0.1:43629 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43729 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43732 - "GET /v1/tools HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43731 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43734 - "GET /api/v1/tools HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43735 - "GET /research/top-candidates?limit=1 HTTP/1.1" 404 Not Found

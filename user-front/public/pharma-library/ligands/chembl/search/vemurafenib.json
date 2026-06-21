@@ -1,0 +1,168 @@
+{
+  "molecules": [
+    {
+      "atc_classifications": [
+        "L01EC01"
+      ],
+      "availability_type": 1,
+      "biotherapeutic": null,
+      "black_box_warning": 0,
+      "chemical_probe": 0,
+      "chirality": 2,
+      "cross_references": [
+        {
+          "xref_id": "human/EPAR/zelboraf",
+          "xref_name": "zelboraf",
+          "xref_src": "EMA"
+        },
+        {
+          "xref_id": "vemurafenib",
+          "xref_name": "vemurafenib",
+          "xref_src": "DailyMed"
+        }
+      ],
+      "dosed_ingredient": true,
+      "first_approval": 2011,
+      "first_in_class": 1,
+      "helm_notation": null,
+      "inorganic_flag": 0,
+      "max_phase": "4.0",
+      "molecule_chembl_id": "CHEMBL1229517",
+      "molecule_hierarchy": {
+        "active_chembl_id": "CHEMBL1229517",
+        "molecule_chembl_id": "CHEMBL1229517",
+        "parent_chembl_id": "CHEMBL1229517"
+      },
+      "molecule_properties": {
+        "alogp": "5.54",
+        "aromatic_rings": 4,
+        "full_molformula": "C23H18ClF2N3O3S",
+        "full_mwt": "489.93",
+        "hba": 4,
+        "hbd": 2,
+        "heavy_atoms": 33,
+        "mw_freebase": "489.93",
+        "np_likeness_score": "-1.38",
+        "num_ro5_violations": 1,
+        "psa": "91.92",
+        "qed_weighted": "0.33",
+        "ro3_pass": "N",
+        "rtb": 7
+      },
+      "molecule_structures": {
+        "canonical_smiles": "CCCS(=O)(=O)Nc1ccc(F)c(C(=O)c2c[nH]c3ncc(-c4ccc(Cl)cc4)cc23)c1F",
+        "molfile": "\n     RDKit          2D\n\n 33 36  0  0  0  0  0  0  0  0999 V2000\n    2.8820    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.0449    6.6574    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4813    4.3490    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    0.4005    2.4755    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2346    9.7786    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n    3.2429    5.0347    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n   13.1469    6.6618    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0\n   10.7221    6.6618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.9344    8.7618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.4326    8.1560    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.5096    7.3618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.7221    9.4618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    6.8245    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.2972   10.8618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.7179   10.1618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.0847    8.7618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.9451    1.0404    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.3778    2.3719    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.0847   11.5618    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    0.5042    4.4527    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    4.5409   11.2945    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    4.1082    7.6978    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.9344    7.3618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.8020    8.4470    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.5096    8.7618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.2972    9.4618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.3062    6.0752    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.9367    5.7841    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.5409    9.0292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.7387    7.4068    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.8724    9.4618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.8724   10.8618    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.4409    3.4123    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n  1 17  1  0\n  2 22  2  0\n  3 33  2  0\n  4 33  2  0\n  5 24  1  0\n  6 27  1  0\n  7 23  1  0\n  8 11  1  0\n  8 23  2  0\n  9 12  2  0\n  9 23  1  0\n 10 13  2  0\n 10 24  1  0\n 11 25  2  0\n 12 25  1  0\n 13 28  1  0\n 14 19  2  0\n 14 26  1  0\n 15 21  1  0\n 15 29  2  0\n 16 26  2  0\n 16 31  1  0\n 17 18  1  0\n 18 33  1  0\n 19 32  1  0\n 20 28  1  0\n 20 33  1  0\n 21 32  1  0\n 22 29  1  0\n 22 30  1  0\n 24 30  2  0\n 25 26  1  0\n 27 28  2  0\n 27 30  1  0\n 29 31  1  0\n 31 32  2  0\nM  END\n> <chembl_id>\nCHEMBL1229517\n\n> <chembl_pref_name>\nVEMURAFENIB",
+        "standard_inchi": "InChI=1S/C23H18ClF2N3O3S/c1-2-9-33(31,32)29-19-8-7-18(25)20(21(19)26)22(30)17-12-28-23-16(17)10-14(11-27-23)13-3-5-15(24)6-4-13/h3-8,10-12,29H,2,9H2,1H3,(H,27,28)",
+        "standard_inchi_key": "GPXBXXGIAQBQNI-UHFFFAOYSA-N"
+      },
+      "molecule_synonyms": [
+        {
+          "molecule_synonym": "PLX-4032",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "PLX-4032"
+        },
+        {
+          "molecule_synonym": "PLX4032",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "PLX4032"
+        },
+        {
+          "molecule_synonym": "RG 7204",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "RG 7204"
+        },
+        {
+          "molecule_synonym": "RG-7204",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "RG-7204"
+        },
+        {
+          "molecule_synonym": "RO 5185426",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "RO 5185426"
+        },
+        {
+          "molecule_synonym": "RO-51-85426",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "RO-51-85426"
+        },
+        {
+          "molecule_synonym": "RO-5185426",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "RO-5185426"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "ATC",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "BNF",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "EMA",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "FDA",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "INN",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "MERCK_INDEX",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "OTHER",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Vemurafenib",
+          "syn_type": "USAN",
+          "synonyms": "VEMURAFENIB"
+        },
+        {
+          "molecule_synonym": "Zelboraf",
+          "syn_type": "TRADE_NAME",
+          "synonyms": "ZELBORAF"
+        }
+      ],
+      "molecule_type": "Small molecule",
+      "natural_product": 0,
+      "oral": true,
+      "orphan": 0,
+      "parenteral": false,
+      "polymer_flag": 0,
+      "pref_name": "VEMURAFENIB",
+      "prodrug": 0,
+      "score": 36.0,
+      "structure_type": "MOL",
+      "therapeutic_flag": true,
+      "topical": false,
+      "usan_stem": "-rafenib",
+      "usan_stem_definition": "rapidly accelerated fibrosarcoma (RAF) kinase inhibitors",
+      "usan_substem": "-rafenib",
+      "usan_year": 2010,
+      "veterinary": 0,
+      "withdrawn_flag": false
+    }
+  ],
+  "page_meta": {
+    "limit": 1,
+    "next": "/chembl/api/data/molecule/search.json?limit=1&offset=1&q=vemurafenib",
+    "offset": 0,
+    "previous": null,
+    "total_count": 4
+  },
+  "_license_notice": "Data from the ChEMBL Database. Please review the licensing terms at https://www.ebi.ac.uk/chembl/"
+}

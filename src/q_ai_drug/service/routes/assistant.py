@@ -11,6 +11,8 @@ import requests
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
+from q_ai_drug.service.routes.ai_models import ai_model_status_payload
+
 
 router = APIRouter(prefix="/v1", tags=["assistant"])
 
@@ -39,7 +41,8 @@ Operating rules:
 - When discussing patient context, keep it de-identified and research-focused.
 - When discussing drug candidates, distinguish real backend evidence from simulated or local preview data.
 - Explain why a step is needed, what evidence supports it, what can go wrong, and what validation should follow.
-- If asked for protein-sequence reasoning, recommend the ESM2 protein analysis route for embeddings and sequence-level context.
+- If asked for protein-sequence reasoning, use ESM2/ESM pipeline evidence for embeddings and sequence-level target context.
+- If asked about docking visuals, direct the user to the Molecules 3D pose visual QA; it reviews provenance and visible placement problems only.
 """.strip()
 
 
@@ -139,6 +142,7 @@ def _status_payload() -> dict[str, Any]:
     chat_configured = bool(_google_api_key())
     esm2_configured = bool(_nvidia_api_key())
     return {
+        **ai_model_status_payload(),
         "configured": chat_configured,
         "chat_configured": chat_configured,
         "esm2_configured": esm2_configured,
@@ -164,6 +168,8 @@ def _safe_app_state(state: dict[str, Any]) -> dict[str, Any]:
         "runStatus",
         "candidateCount",
         "selectedCandidate",
+        "proteinEvidenceSummary",
+        "realtimeDataFabricSummary",
         "chemistryObjective",
     }
     safe: dict[str, Any] = {}

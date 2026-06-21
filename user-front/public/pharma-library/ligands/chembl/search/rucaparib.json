@@ -1,0 +1,107 @@
+{
+  "molecules": [
+    {
+      "atc_classifications": [
+        "L01XK03"
+      ],
+      "availability_type": 1,
+      "biotherapeutic": null,
+      "black_box_warning": 0,
+      "chemical_probe": 0,
+      "chirality": 2,
+      "cross_references": [],
+      "dosed_ingredient": false,
+      "first_approval": 2016,
+      "first_in_class": 0,
+      "helm_notation": null,
+      "inorganic_flag": 0,
+      "max_phase": "4.0",
+      "molecule_chembl_id": "CHEMBL1173055",
+      "molecule_hierarchy": {
+        "active_chembl_id": "CHEMBL1173055",
+        "molecule_chembl_id": "CHEMBL1173055",
+        "parent_chembl_id": "CHEMBL1173055"
+      },
+      "molecule_properties": {
+        "alogp": "2.98",
+        "aromatic_rings": 3,
+        "full_molformula": "C19H18FN3O",
+        "full_mwt": "323.37",
+        "hba": 2,
+        "hbd": 3,
+        "heavy_atoms": 24,
+        "mw_freebase": "323.37",
+        "np_likeness_score": "0.04",
+        "num_ro5_violations": 0,
+        "psa": "56.92",
+        "qed_weighted": "0.69",
+        "ro3_pass": "N",
+        "rtb": 3
+      },
+      "molecule_structures": {
+        "canonical_smiles": "CNCc1ccc(-c2[nH]c3cc(F)cc4c3c2CCNC4=O)cc1",
+        "molfile": "\n     RDKit          2D\n\n 24 27  0  0  0  0  0  0  0  0999 V2000\n   -0.7100    2.2090    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.0512    2.7056    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.7325    1.3843    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4331    0.9487    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.1607    1.3377    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.1875    2.1623    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.4869    2.5979    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7478    2.5002    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.0854    1.7474    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7073    1.0142    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2354    0.1478    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.1017    0.8526    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.4125    0.0883    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.9151    2.5513    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2128    3.5146    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0230   -0.6123    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.3659   -1.3398    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8476   -0.5854    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2832   -1.2861    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8942   -2.0136    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0696   -2.0405    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.3297   -2.7142    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.9408   -3.4418    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.3763   -4.1424    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\n  1  3  1  0\n  1  7  2  0\n  4  5  1  0\n  5  6  2  0\n  6  7  1  0\n  2  8  1  0\n 12 10  1  0\n 10  9  1  0\n 11 13  1  0\n 12 13  2  0\n  3 12  1  0\n  6 14  1  0\n  3  4  2  0\n 11  4  1  0\n  9  8  1  0\n  2 15  2  0\n 13 16  1  0\n 17 16  2  0\n 16 18  1  0\n 17 21  1  0\n 18 19  2  0\n 19 20  1  0\n 20 21  2  0\n 20 22  1  0\n 22 23  1  0\n 23 24  1  0\nM  END\n> <chembl_id>\nCHEMBL1173055\n\n> <chembl_pref_name>\nRUCAPARIB",
+        "standard_inchi": "InChI=1S/C19H18FN3O/c1-21-10-11-2-4-12(5-3-11)18-14-6-7-22-19(24)15-8-13(20)9-16(23-18)17(14)15/h2-5,8-9,21,23H,6-7,10H2,1H3,(H,22,24)",
+        "standard_inchi_key": "HMABYWSNWIZPAG-UHFFFAOYSA-N"
+      },
+      "molecule_synonyms": [
+        {
+          "molecule_synonym": "AG-14447",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "AG-14447"
+        },
+        {
+          "molecule_synonym": "Rucaparib",
+          "syn_type": "ATC",
+          "synonyms": "RUCAPARIB"
+        },
+        {
+          "molecule_synonym": "Rucaparib",
+          "syn_type": "INN",
+          "synonyms": "RUCAPARIB"
+        },
+        {
+          "molecule_synonym": "Rucaparib",
+          "syn_type": "MERCK_INDEX",
+          "synonyms": "RUCAPARIB"
+        },
+        {
+          "molecule_synonym": "Rucaparib",
+          "syn_type": "OTHER",
+          "synonyms": "RUCAPARIB"
+        },
+        {
+          "molecule_synonym": "Rucaparib",
+          "syn_type": "USAN",
+          "synonyms": "RUCAPARIB"
+        }
+      ],
+      "molecule_type": "Small molecule",
+      "natural_product": 0,
+      "oral": true,
+      "orphan": 0,
+      "parenteral": false,
+      "polymer_flag": 0,
+      "pref_name": "RUCAPARIB",
+      "prodrug": 0,
+      "score": 39.0,
+      "structure_type": "MOL",
+      "therapeutic_flag": true,
+      "topical": false,
+      "usan_stem": "-parib",
+      "usan_stem_definition": "poly-ADP-ribose polymerase inhibitors",
+      "usan_substem": "-parib",
+      "usan_year": 2010,
+      "veterinary": 0,
+      "withdrawn_flag": false
+    }
+  ],
+  "page_meta": {
+    "limit": 1,
+    "next": "/chembl/api/data/molecule/search.json?limit=1&offset=1&q=rucaparib",
+    "offset": 0,
+    "previous": null,
+    "total_count": 3
+  },
+  "_license_notice": "Data from the ChEMBL Database. Please review the licensing terms at https://www.ebi.ac.uk/chembl/"
+}

@@ -4,15 +4,19 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import time
 from pathlib import Path
-from typing import Any
-from urllib.parse import quote
+from typing import Any, Literal
+from urllib.parse import quote, unquote
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from q_ai_drug.docking.pockets import registered_receptor_path, resolve_pocket
+from q_ai_drug.docking.gnina_runner import _center_ligand_sdf, _parse_gnina_output, _parse_gnina_warnings
+from q_ai_drug.docking.pockets import clean_receptor_pdb, effective_cubic_box_size, registered_receptor_path, resolve_pocket
+from q_ai_drug.docking.vina_runner import _run_obabel, parse_affinity_text
+from q_ai_drug.tools.external import resolve_tool, run_external, windows_to_wsl_path
 
 try:
     from rdkit import Chem
@@ -32,7 +36,24 @@ router = APIRouter(prefix="/v1/chemistry", tags=["chemistry"])
 
 OUTPUT_DIR = Path(os.getenv("QAI_OUTPUT_DIR", "outputs/cancer_proof_v1"))
 STRUCTURES_DIR = Path(os.getenv("QAI_STRUCTURES_DIR", "data/structures"))
+FRONTEND_PUBLIC_DIR = Path(os.getenv("QAI_FRONTEND_PUBLIC_DIR", "user-front/public"))
 POCKETS_CONFIG = Path(os.getenv("QAI_POCKETS_CONFIG", "configs/oncology_pockets.yaml"))
+TARGET_ALPHAFOLD_IDS = {
+    "EGFR": "AF-P00533-F1",
+    "KRAS": "AF-P01116-F1",
+    "BRAF": "AF-P15056-F1",
+    "MET": "AF-P08581-F1",
+    "ERBB2": "AF-P04626-F1",
+    "PIK3CA": "AF-P42336-F1",
+    "PARP1": "AF-P09874-F1",
+    "FLT3": "AF-P36888-F1",
+    "IDH1": "AF-O75874-F1",
+    "AR": "AF-P10275-F1",
+    "BCL2": "AF-P10415-F1",
+    "ALK": "AF-Q9UM73-F1",
+    "TP53": "AF-P04637-F1",
+    "ESR1": "AF-P03372-F1",
+}
 
 
 class DockPreviewRequest(BaseModel):
@@ -46,6 +67,28 @@ class DockPreviewRequest(BaseModel):
     patient_context: dict[str, Any] = Field(default_factory=dict)
 
 
+class DockingBox(BaseModel):
+    x: float
+    y: float
+    z: float
+
+
+class RealtimeDockRequest(BaseModel):
+    smiles: str | None = None
+    target: str = Field(default="CUSTOM", min_length=1)
+    candidate_id: str | None = None
+    engine: Literal["auto", "gnina", "vina", "smina"] = "gnina"
+    ligand_sdf_path: str | None = None
+    ligand_sdf_url: str | None = None
+    receptor_path: str | None = None
+    receptor_url: str | None = None
+    box_center: DockingBox | None = None
+    box_size: DockingBox | None = None
+    exhaustiveness: int = Field(default=4, ge=1, le=32)
+    num_modes: int = Field(default=5, ge=1, le=20)
+    cpu: int = Field(default=4, ge=1, le=16)
+
+
 def _safe_slug(value: str, fallback: str) -> str:
     text = re.sub(r"[^A-Za-z0-9_.-]+", "_", value.strip())[:80].strip("_")
     return text or fallback
@@ -56,6 +99,36 @@ def _artifact_url(path: Path) -> str:
     return "/artifacts/" + "/".join(quote(part) for part in rel.split("/"))
 
 
+def _path_from_url_or_path(raw: str | None) -> Path | None:
+    if not raw:
+        return None
+    text = unquote(str(raw)).strip()
+    if not text:
+        return None
+    if text.startswith("/artifacts/"):
+        path = (OUTPUT_DIR / text.removeprefix("/artifacts/")).resolve()
+        try:
+            path.relative_to(OUTPUT_DIR.resolve())
+        except ValueError:
+            raise HTTPException(status_code=403, detail="Artifact path escapes output directory.") from None
+        return path
+    if text.startswith("/structures/"):
+        return (STRUCTURES_DIR / Path(text.removeprefix("/structures/")).name).resolve()
+    if text.startswith("/structures-havetosee/"):
+        legacy_dir = Path(os.getenv("QAI_LEGACY_STRUCTURES_DIR", "data/structures_havetosee"))
+        return (legacy_dir / Path(text.removeprefix("/structures-havetosee/")).name).resolve()
+    if text.startswith("/pharma-library/"):
+        path = (FRONTEND_PUBLIC_DIR / text.removeprefix("/")).resolve()
+        try:
+            path.relative_to(FRONTEND_PUBLIC_DIR.resolve())
+        except ValueError:
+            raise HTTPException(status_code=403, detail="Pharma library path escapes public asset directory.") from None
+        return path
+    if text.startswith("http://") or text.startswith("https://"):
+        return None
+    return Path(text).resolve()
+
+
 def _structure_url(path: Path | None) -> str | None:
     if not path or not path.exists():
         return None
@@ -64,6 +137,102 @@ def _structure_url(path: Path | None) -> str | None:
     except ValueError:
         return None
     return "/structures/" + "/".join(quote(part) for part in rel.split("/"))
+
+
+def _receptor_url(path: Path | None) -> str | None:
+    structure = _structure_url(path)
+    if structure:
+        return structure
+    if path and path.exists():
+        try:
+            path.resolve().relative_to(OUTPUT_DIR.resolve())
+            return _artifact_url(path)
+        except ValueError:
+            return None
+    return None
+
+
+def _public_alphafold_cif(target: str) -> Path | None:
+    alphafold_id = TARGET_ALPHAFOLD_IDS.get(target.upper())
+    if not alphafold_id:
+        return None
+    path = FRONTEND_PUBLIC_DIR / "pharma-library" / "receptors" / "alphafold" / f"{alphafold_id}-model_v6.cif"
+    return path if path.exists() else None
+
+
+def _format_pdb_atom_name(name: str, element: str) -> str:
+    atom = (name or element or "X")[:4]
+    if len(atom) < 4 and len((element or "").strip()) == 1:
+        return f" {atom:<3}"
+    return f"{atom:<4}"
+
+
+def _convert_alphafold_cif_to_pdb(cif_path: Path, pdb_path: Path) -> Path:
+    pdb_path.parent.mkdir(parents=True, exist_ok=True)
+    lines = []
+    in_atom_loop = False
+    headers: list[str] = []
+    for raw_line in cif_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if line == "loop_":
+            in_atom_loop = False
+            headers = []
+            continue
+        if line.startswith("_atom_site."):
+            in_atom_loop = True
+            headers.append(line)
+            continue
+        if in_atom_loop and line.startswith("#"):
+            break
+        if not in_atom_loop or not headers or not line.startswith(("ATOM", "HETATM")):
+            continue
+        parts = shlex.split(line)
+        if len(parts) < len(headers):
+            continue
+        row = {headers[index].removeprefix("_atom_site."): parts[index] for index in range(len(headers))}
+        try:
+            record = row.get("group_PDB", "ATOM")[:6]
+            serial = int(float(row.get("id", len(lines) + 1)))
+            element = (row.get("type_symbol") or "").strip()
+            atom_name = row.get("auth_atom_id") or row.get("label_atom_id") or element or "X"
+            alt_id = row.get("label_alt_id") if row.get("label_alt_id") not in {".", "?"} else ""
+            res_name = (row.get("auth_comp_id") or row.get("label_comp_id") or "UNK")[:3]
+            chain = (row.get("auth_asym_id") or row.get("label_asym_id") or "A")[:1]
+            resseq = int(float(row.get("auth_seq_id") or row.get("label_seq_id") or 1))
+            icode = row.get("pdbx_PDB_ins_code") if row.get("pdbx_PDB_ins_code") not in {".", "?"} else ""
+            x = float(row["Cartn_x"])
+            y = float(row["Cartn_y"])
+            z = float(row["Cartn_z"])
+            occupancy = float(row.get("occupancy") or 1.0)
+            b_factor = float(row.get("B_iso_or_equiv") or 0.0)
+        except (KeyError, ValueError):
+            continue
+        lines.append(
+            f"{record:<6}{serial:5d} {_format_pdb_atom_name(atom_name, element)}{alt_id[:1]:1}"
+            f"{res_name:>3} {chain:1}{resseq:4d}{icode[:1]:1}   "
+            f"{x:8.3f}{y:8.3f}{z:8.3f}{occupancy:6.2f}{b_factor:6.2f}          {element[:2]:>2}"
+        )
+    if not lines:
+        raise HTTPException(status_code=422, detail=f"Could not convert AlphaFold mmCIF to PDB: {cif_path}")
+    pdb_path.write_text("\n".join(lines) + "\nEND\n", encoding="utf-8")
+    return pdb_path
+
+
+def _resolve_receptor_for_target(target: str, out_dir: Path, requested: Path | None = None) -> Path | None:
+    if requested and requested.exists():
+        return requested
+    registered = registered_receptor_path(target, STRUCTURES_DIR, registry_path=POCKETS_CONFIG)
+    if registered.exists():
+        return registered
+    cif_path = _public_alphafold_cif(target)
+    if not cif_path:
+        return registered
+    converted = out_dir / "prepared_receptors" / f"{target.upper()}_alphafold_from_public.pdb"
+    if not converted.exists():
+        _convert_alphafold_cif_to_pdb(cif_path, converted)
+    return converted
 
 
 def _translate_to_center(mol: Any, center: tuple[float, float, float]) -> None:
@@ -86,6 +255,128 @@ def _write_sdf(mol: Any, path: Path) -> None:
     writer = Chem.SDWriter(str(path))
     writer.write(mol)
     writer.close()
+
+
+def _generate_ligand_sdf(smiles: str, path: Path, *, center: tuple[float, float, float] | None = None) -> str:
+    if Chem is None or AllChem is None:
+        raise HTTPException(status_code=503, detail="RDKit is required to generate ligand SDF files from SMILES.")
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise HTTPException(status_code=422, detail="Could not parse molecule input as SMILES.")
+    working = Chem.AddHs(mol)
+    status = AllChem.EmbedMolecule(working, randomSeed=23)
+    if status != 0:
+        status = AllChem.EmbedMolecule(working, randomSeed=23, useRandomCoords=True)
+    if status != 0:
+        raise HTTPException(status_code=422, detail="RDKit could not generate a 3D conformer for this molecule.")
+    props = AllChem.MMFFGetMoleculeProperties(working)
+    if props is not None:
+        AllChem.MMFFOptimizeMolecule(working, maxIters=250)
+    else:
+        AllChem.UFFOptimizeMolecule(working, maxIters=250)
+    if center:
+        _translate_to_center(working, center)
+    _write_sdf(working, path)
+    return Chem.MolToSmiles(mol, canonical=True)
+
+
+def _tool_manifest() -> dict[str, dict[str, Any]]:
+    manifest = {}
+    for name in ["gnina", "vina", "smina", "obabel"]:
+        tool = resolve_tool(name)
+        manifest[name] = {"available": tool.available, "path": tool.path, "via_wsl": tool.via_wsl}
+    return manifest
+
+
+def _tool_path_for(tool_name: str, path: Path) -> str:
+    tool = resolve_tool(tool_name)
+    return windows_to_wsl_path(path) if tool.via_wsl else str(path.resolve())
+
+
+def _upsert_csv_row(path: Path, row: dict[str, Any], key: str = "candidate_id") -> None:
+    import pandas as pd
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    clean_row = {field: value for field, value in row.items() if not isinstance(value, (dict, list))}
+    frame = pd.DataFrame([clean_row])
+    if path.exists():
+        existing = pd.read_csv(path)
+        if key in existing.columns:
+            existing = existing[existing[key].astype(str) != str(clean_row.get(key))]
+        frame = pd.concat([existing, frame], ignore_index=True, sort=False)
+    frame.to_csv(path, index=False)
+
+
+def _convert_pose_to_sdf(input_path: Path, output_path: Path) -> None:
+    if not resolve_tool("obabel").available:
+        return
+    result = _run_obabel(input_path, output_path, timeout=600)
+    if result.returncode != 0 or not output_path.exists():
+        raise HTTPException(status_code=502, detail=f"OpenBabel pose conversion failed: {(result.stderr or result.stdout)[:700]}")
+
+
+def _pose_sources_from_docking(raw: dict[str, Any]) -> list[dict[str, Any]]:
+    sources = []
+    if raw.get("gnina_pose_sdf_url"):
+        sources.append(
+            {
+                "id": "gnina",
+                "label": "GNINA CNN docked pose",
+                "url": raw["gnina_pose_sdf_url"],
+                "receptor_url": raw.get("gnina_receptor_url") or raw.get("receptor_url"),
+                "format": "sdf",
+                "method_tier": "REAL" if raw.get("gnina_status") == "completed" else "FAILED",
+                "download_url": raw["gnina_pose_sdf_url"],
+            }
+        )
+    if raw.get("vina_docked_sdf_url"):
+        sources.append(
+            {
+                "id": "vina",
+                "label": "AutoDock Vina docked pose",
+                "url": raw["vina_docked_sdf_url"],
+                "receptor_url": raw.get("vina_receptor_url") or raw.get("receptor_url"),
+                "format": "sdf",
+                "method_tier": "REAL" if raw.get("vina_status") == "completed" else "FAILED",
+                "download_url": raw["vina_docked_sdf_url"],
+            }
+        )
+    if raw.get("smina_docked_sdf_url"):
+        sources.append(
+            {
+                "id": "smina",
+                "label": "Smina minimized/rescored pose",
+                "url": raw["smina_docked_sdf_url"],
+                "receptor_url": raw.get("smina_receptor_url") or raw.get("receptor_url"),
+                "format": "sdf",
+                "method_tier": "REAL" if raw.get("smina_status") == "completed" else "FAILED",
+                "download_url": raw["smina_docked_sdf_url"],
+            }
+        )
+    if raw.get("docked_sdf_url") and not any(source["url"] == raw.get("docked_sdf_url") for source in sources):
+        sources.append(
+            {
+                "id": "docked",
+                "label": "Docked pose",
+                "url": raw["docked_sdf_url"],
+                "receptor_url": raw.get("receptor_url"),
+                "format": "sdf",
+                "method_tier": "REAL" if raw.get("docking_status") == "completed" else "FAILED",
+                "download_url": raw["docked_sdf_url"],
+            }
+        )
+    if not sources and raw.get("sdf_url"):
+        sources.append(
+            {
+                "id": "conformer",
+                "label": "Generated RDKit conformer",
+                "url": raw["sdf_url"],
+                "format": "sdf",
+                "method_tier": "PROXY",
+                "download_url": raw["sdf_url"],
+            }
+        )
+    return sources
 
 
 def _descriptor_payload(mol: Any) -> dict[str, Any]:
@@ -150,6 +441,269 @@ def _binding_class(affinity: float) -> str:
     return "weak preview"
 
 
+@router.get("/docking-tools")
+def docking_tools() -> dict[str, Any]:
+    manifest = _tool_manifest()
+    return {
+        "tools": manifest,
+        "default_engine": "gnina" if manifest["gnina"]["available"] else "smina" if manifest["smina"]["available"] else "vina",
+        "real_time_docking": any(manifest[name]["available"] for name in ["gnina", "vina", "smina"]),
+        "requires_obabel_for_vina_smina": True,
+        "claim_boundary": "Tool availability only. Docking outputs remain computational hypotheses until redocking, orthogonal scoring, and wet-lab validation.",
+    }
+
+
+@router.post("/realtime-dock")
+@router.post("/gnina-dock")
+def realtime_dock(payload: RealtimeDockRequest) -> dict[str, Any]:
+    target = _safe_slug(payload.target.upper(), "CUSTOM")
+    candidate_id = _safe_slug(payload.candidate_id or f"DESIGN_{target}_{hashlib.sha1(str(time.time_ns()).encode()).hexdigest()[:8]}", "DESIGN")
+    tool_manifest = _tool_manifest()
+    requested_engine = payload.engine
+    engine = requested_engine
+    if engine == "auto":
+        engine = "gnina" if tool_manifest["gnina"]["available"] else "smina" if tool_manifest["smina"]["available"] else "vina"
+    if not tool_manifest.get(engine, {}).get("available"):
+        raise HTTPException(status_code=503, detail=f"{engine} is not available on Windows PATH or WSL PATH. Install the tool or choose another engine.")
+    if engine in {"vina", "smina"} and not tool_manifest["obabel"]["available"]:
+        raise HTTPException(status_code=503, detail="OpenBabel is required for Vina/Smina receptor and ligand PDBQT conversion.")
+
+    out_dir = OUTPUT_DIR / "realtime_docking" / target / candidate_id
+    out_dir.mkdir(parents=True, exist_ok=True)
+    requested_receptor = (
+        _path_from_url_or_path(payload.receptor_path)
+        or _path_from_url_or_path(payload.receptor_url)
+    )
+    raw_receptor = _resolve_receptor_for_target(target, out_dir, requested_receptor)
+    if not raw_receptor or not raw_receptor.exists():
+        raise HTTPException(status_code=422, detail=f"Receptor structure was not found for target {target}.")
+    receptor = clean_receptor_pdb(raw_receptor, out_dir / "prepared_receptors" / f"{raw_receptor.stem}_clean.pdb")
+    pocket = resolve_pocket(target, receptor, default_box_size=30.0, registry_path=POCKETS_CONFIG)
+    center = (
+        (payload.box_center.x, payload.box_center.y, payload.box_center.z)
+        if payload.box_center
+        else tuple(float(value) for value in pocket["center"])
+    )
+    size_tuple = (
+        (payload.box_size.x, payload.box_size.y, payload.box_size.z)
+        if payload.box_size
+        else tuple(float(value) for value in pocket["size"])
+    )
+    cubic_size = max(float(value) for value in size_tuple) if payload.box_size else effective_cubic_box_size(pocket)
+
+    ligand = _path_from_url_or_path(payload.ligand_sdf_path) or _path_from_url_or_path(payload.ligand_sdf_url)
+    canonical_smiles = payload.smiles or ""
+    if not ligand or not ligand.exists():
+        if not payload.smiles:
+            raise HTTPException(status_code=422, detail="Provide either a ligand SDF artifact or a SMILES string for docking.")
+        ligand = out_dir / f"{candidate_id}_generated.sdf"
+        canonical_smiles = _generate_ligand_sdf(payload.smiles, ligand, center=center)
+    elif Chem is not None and ligand.suffix.lower() == ".sdf":
+        centered = out_dir / f"{candidate_id}_centered_input.sdf"
+        ligand = _center_ligand_sdf(ligand, centered, center)
+
+    log_path = out_dir / f"{candidate_id}_{engine}.log"
+    started = time.time()
+    raw: dict[str, Any] = {
+        "target_id": target,
+        "candidate_id": candidate_id,
+        "canonical_smiles": canonical_smiles,
+        "smiles": canonical_smiles,
+        "requested_engine": requested_engine,
+        "actual_engine_used": engine,
+        "receptor_path": str(receptor),
+        "receptor_url": _artifact_url(receptor),
+        "ligand_sdf_path": str(ligand),
+        "sdf_url": _artifact_url(ligand) if ligand.resolve().is_relative_to(OUTPUT_DIR.resolve()) else None,
+        "pocket_source": pocket.get("source"),
+        "pocket_pdb_id": pocket.get("pdb_id"),
+        "reference_ligand": pocket.get("reference_ligand"),
+        "pocket_method_tier": pocket.get("method_tier"),
+        "pocket_provenance_note": pocket.get("provenance_note"),
+        "box_center": {"x": center[0], "y": center[1], "z": center[2]},
+        "box_size": {"x": size_tuple[0], "y": size_tuple[1], "z": size_tuple[2]},
+        "docking_runtime_s": None,
+        "claim_boundary": "Real docking engine output is computational evidence only; not measured binding, efficacy, safety, or clinical evidence.",
+    }
+
+    if engine == "gnina":
+        pose_path = out_dir / f"{candidate_id}_gnina.sdf"
+        args = [
+            "--no_gpu",
+            "--cpu",
+            str(payload.cpu),
+            "--seed",
+            "17",
+            "--exhaustiveness",
+            str(payload.exhaustiveness),
+            "--num_modes",
+            str(payload.num_modes),
+            "-r",
+            _tool_path_for("gnina", receptor),
+            "-l",
+            _tool_path_for("gnina", ligand),
+            "--center_x",
+            f"{center[0]:.3f}",
+            "--center_y",
+            f"{center[1]:.3f}",
+            "--center_z",
+            f"{center[2]:.3f}",
+            "--size_x",
+            str(cubic_size),
+            "--size_y",
+            str(cubic_size),
+            "--size_z",
+            str(cubic_size),
+            "-o",
+            _tool_path_for("gnina", pose_path),
+        ]
+        run = run_external("gnina", args, cwd=out_dir, timeout=1800, check=False)
+        text = run.stdout + "\n" + run.stderr
+        log_path.write_text(text, encoding="utf-8", errors="replace")
+        raw.update(_parse_gnina_output(text))
+        raw.update(
+            {
+                "gnina_status": "completed" if run.returncode == 0 and pose_path.exists() else "failed",
+                "gnina_returncode": run.returncode,
+                "gnina_pose_sdf_path": str(pose_path),
+                "gnina_pose_sdf_url": _artifact_url(pose_path) if pose_path.exists() else None,
+                "gnina_log_path": str(log_path),
+                "gnina_log_url": _artifact_url(log_path),
+                "gnina_receptor_url": _artifact_url(receptor),
+                "gnina_mode": "gnina_cpu_curated_pocket" if str(pocket.get("method_tier")).upper() in {"REAL", "CURATED"} else "gnina_cpu_exploratory_blind_box",
+                "gnina_center_x": center[0],
+                "gnina_center_y": center[1],
+                "gnina_center_z": center[2],
+                "gnina_box_size": cubic_size,
+                "gnina_box_size_x": size_tuple[0],
+                "gnina_box_size_y": size_tuple[1],
+                "gnina_box_size_z": size_tuple[2],
+                "gnina_warnings": _parse_gnina_warnings(text),
+                "gnina_output_excerpt": "\n".join(text.splitlines()[-30:]),
+            }
+        )
+        if raw["gnina_status"] == "completed":
+            _upsert_csv_row(OUTPUT_DIR / "gnina" / "results.csv", raw)
+    else:
+        receptor_pdbqt = out_dir / "prepared_receptors" / f"{receptor.stem}.pdbqt"
+        if not receptor_pdbqt.exists():
+            receptor_conversion = _run_obabel(receptor, receptor_pdbqt, "-xr", timeout=900)
+            if receptor_conversion.returncode != 0 or not receptor_pdbqt.exists():
+                raise HTTPException(status_code=502, detail=f"OpenBabel receptor conversion failed: {(receptor_conversion.stderr or receptor_conversion.stdout)[:700]}")
+        ligand_pdbqt = out_dir / f"{candidate_id}.pdbqt"
+        if not ligand_pdbqt.exists():
+            ligand_conversion = _run_obabel(ligand, ligand_pdbqt, timeout=600)
+            if ligand_conversion.returncode != 0 or not ligand_pdbqt.exists():
+                raise HTTPException(status_code=502, detail=f"OpenBabel ligand conversion failed: {(ligand_conversion.stderr or ligand_conversion.stdout)[:700]}")
+        out_pose = out_dir / f"{candidate_id}_{engine}.pdbqt"
+        if engine == "vina":
+            args = [
+                "--receptor",
+                _tool_path_for(engine, receptor_pdbqt),
+                "--ligand",
+                _tool_path_for(engine, ligand_pdbqt),
+                "--center_x",
+                f"{center[0]:.3f}",
+                "--center_y",
+                f"{center[1]:.3f}",
+                "--center_z",
+                f"{center[2]:.3f}",
+                "--size_x",
+                str(size_tuple[0]),
+                "--size_y",
+                str(size_tuple[1]),
+                "--size_z",
+                str(size_tuple[2]),
+                "--exhaustiveness",
+                str(payload.exhaustiveness),
+                "--num_modes",
+                str(payload.num_modes),
+                "--cpu",
+                str(payload.cpu),
+                "--out",
+                _tool_path_for(engine, out_pose),
+            ]
+        else:
+            args = [
+                "-r",
+                _tool_path_for(engine, receptor_pdbqt),
+                "-l",
+                _tool_path_for(engine, ligand_pdbqt),
+                "--center_x",
+                f"{center[0]:.3f}",
+                "--center_y",
+                f"{center[1]:.3f}",
+                "--center_z",
+                f"{center[2]:.3f}",
+                "--size_x",
+                str(size_tuple[0]),
+                "--size_y",
+                str(size_tuple[1]),
+                "--size_z",
+                str(size_tuple[2]),
+                "--exhaustiveness",
+                str(payload.exhaustiveness),
+                "--num_modes",
+                str(payload.num_modes),
+                "--cpu",
+                str(payload.cpu),
+                "-o",
+                _tool_path_for(engine, out_pose),
+            ]
+        run = run_external(engine, args, cwd=out_dir, timeout=1800, check=False)
+        text = run.stdout + "\n" + run.stderr
+        log_path.write_text(text, encoding="utf-8", errors="replace")
+        docked_sdf = out_dir / f"{candidate_id}_{engine}.sdf"
+        if out_pose.exists():
+            _convert_pose_to_sdf(out_pose, docked_sdf)
+        affinity = parse_affinity_text(text)
+        engine_fields = {
+            f"{engine}_status": "completed" if run.returncode == 0 and out_pose.exists() else "failed",
+            f"{engine}_returncode": run.returncode,
+            f"{engine}_affinity_kcal_mol": affinity,
+            f"{engine}_docked_sdf_path": str(docked_sdf) if docked_sdf.exists() else None,
+            f"{engine}_docked_sdf_url": _artifact_url(docked_sdf) if docked_sdf.exists() else None,
+            f"{engine}_log_path": str(log_path),
+            f"{engine}_log_url": _artifact_url(log_path),
+            f"{engine}_receptor_url": _artifact_url(receptor),
+            f"{engine}_output_excerpt": "\n".join(text.splitlines()[-30:]),
+        }
+        raw.update(
+            {
+                "docking_status": "completed" if run.returncode == 0 and out_pose.exists() else "failed",
+                "docking_mode": f"{engine}_real_curated_pocket" if str(pocket.get("method_tier")).upper() in {"REAL", "CURATED"} else f"{engine}_real_exploratory",
+                "docking_is_real": run.returncode == 0 and out_pose.exists(),
+                "affinity_kcal_mol": affinity,
+                "vina_affinity_kcal_mol": affinity if engine == "vina" else None,
+                "smina_affinity_kcal_mol": affinity if engine == "smina" else None,
+                "docked_sdf_path": str(docked_sdf) if docked_sdf.exists() else None,
+                "docked_sdf_url": _artifact_url(docked_sdf) if docked_sdf.exists() else None,
+                "vina_pose_pdbqt_path": str(out_pose) if engine == "vina" else None,
+                "smina_pose_pdbqt_path": str(out_pose) if engine == "smina" else None,
+                "vina_pose_pdbqt_url": _artifact_url(out_pose) if engine == "vina" and out_pose.exists() else None,
+                "smina_pose_pdbqt_url": _artifact_url(out_pose) if engine == "smina" and out_pose.exists() else None,
+                "docking_log_path": str(log_path),
+                "docking_log_url": _artifact_url(log_path),
+                "docking_output_excerpt": "\n".join(text.splitlines()[-30:]),
+                **engine_fields,
+            }
+        )
+        if raw["docking_status"] == "completed":
+            _upsert_csv_row(OUTPUT_DIR / "docking" / "results.csv", raw)
+
+    raw["docking_runtime_s"] = round(time.time() - started, 2)
+    raw["pose_sources"] = _pose_sources_from_docking(raw)
+    raw["default_pose_source"] = "gnina" if any(source["id"] == "gnina" for source in raw["pose_sources"]) else raw["pose_sources"][0]["id"] if raw["pose_sources"] else None
+    return {
+        "status": raw.get("gnina_status") or raw.get("docking_status") or "completed",
+        "candidate_id": candidate_id,
+        "target": target,
+        "engine": engine,
+        "tool_manifest": tool_manifest,
+        "raw": raw,
+    }
+
+
 @router.post("/dock-preview")
 def dock_preview(payload: DockPreviewRequest) -> dict[str, Any]:
     if Chem is None or AllChem is None:
@@ -184,7 +738,7 @@ def dock_preview(payload: DockPreviewRequest) -> dict[str, Any]:
         force_field_name = "UFF"
 
     descriptors = _descriptor_payload(mol)
-    receptor = registered_receptor_path(target, STRUCTURES_DIR, registry_path=POCKETS_CONFIG)
+    receptor = _resolve_receptor_for_target(target, out_dir)
     pocket = resolve_pocket(target, receptor, default_box_size=24.0, registry_path=POCKETS_CONFIG) if receptor.exists() else None
     if pocket:
         _translate_to_center(working, tuple(float(value) for value in pocket["center"]))
@@ -214,7 +768,7 @@ def dock_preview(payload: DockPreviewRequest) -> dict[str, Any]:
         "png_path": str(png_path) if png_path.exists() else None,
         "png_url": _artifact_url(png_path) if png_path.exists() else None,
         "receptor_path": str(receptor) if receptor.exists() else None,
-        "receptor_url": _structure_url(receptor),
+        "receptor_url": _receptor_url(receptor),
         "structure_mode": f"rdkit_{force_field_name.lower()}_pocket_aligned_conformer",
         "conformer_energy_kcal_mol": round(conformer_energy, 4) if conformer_energy is not None else None,
         "docking_status": "preview_completed",
@@ -246,7 +800,7 @@ def dock_preview(payload: DockPreviewRequest) -> dict[str, Any]:
                 "label": "RDKit pocket-aligned preview pose",
                 "url": _artifact_url(sdf_path),
                 "download_url": _artifact_url(sdf_path),
-                "receptor_url": _structure_url(receptor),
+                "receptor_url": _receptor_url(receptor),
                 "format": "sdf",
                 "method_tier": "PREVIEW",
             }

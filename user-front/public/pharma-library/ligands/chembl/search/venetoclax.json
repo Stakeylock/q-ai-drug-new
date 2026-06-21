@@ -1,0 +1,233 @@
+{
+  "molecules": [
+    {
+      "atc_classifications": [
+        "L01XX52"
+      ],
+      "availability_type": 1,
+      "biotherapeutic": null,
+      "black_box_warning": 0,
+      "chemical_probe": 1,
+      "chirality": 2,
+      "cross_references": [
+        {
+          "xref_id": "venetoclax",
+          "xref_name": "venetoclax",
+          "xref_src": "DailyMed"
+        },
+        {
+          "xref_id": "human/EPAR/venclyxto",
+          "xref_name": "venclyxto",
+          "xref_src": "EMA"
+        }
+      ],
+      "dosed_ingredient": true,
+      "first_approval": 2016,
+      "first_in_class": 1,
+      "helm_notation": null,
+      "inorganic_flag": 0,
+      "max_phase": "4.0",
+      "molecule_chembl_id": "CHEMBL3137309",
+      "molecule_hierarchy": {
+        "active_chembl_id": "CHEMBL3137309",
+        "molecule_chembl_id": "CHEMBL3137309",
+        "parent_chembl_id": "CHEMBL3137309"
+      },
+      "molecule_properties": {
+        "alogp": "8.66",
+        "aromatic_rings": 5,
+        "full_molformula": "C45H50ClN7O7S",
+        "full_mwt": "868.46",
+        "hba": 11,
+        "hbd": 3,
+        "heavy_atoms": 61,
+        "mw_freebase": "868.46",
+        "np_likeness_score": "-1.02",
+        "num_ro5_violations": 3,
+        "psa": "172.03",
+        "qed_weighted": "0.08",
+        "ro3_pass": "N",
+        "rtb": 13
+      },
+      "molecule_structures": {
+        "canonical_smiles": "CC1(C)CCC(CN2CCN(c3ccc(C(=O)NS(=O)(=O)c4ccc(NCC5CCOCC5)c([N+](=O)[O-])c4)c(Oc4cnc5[nH]ccc5c4)c3)CC2)=C(c2ccc(Cl)cc2)C1",
+        "molfile": "\n     RDKit          2D\n\n 61 68  0  0  0  0  0  0  0  0999 V2000\n   11.7762    5.4095    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.4907    4.9970    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617    4.9970    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617    4.1720    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.3473    3.7595    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.6328    4.1720    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.9183    3.7595    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.1059    3.6162    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.6362    4.5347    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.9183    2.9345    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.6328    2.5220    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.3473    2.9345    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617    1.6970    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617    2.5220    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.7762    3.7595    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.4907    4.1720    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   13.2052    5.4095    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0\n    7.4894   -2.0155    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.7048   -2.2705    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.2039   -2.4280    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.9183   -2.0155    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.6328   -2.4280    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    8.9183   -1.1905    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.2039   -0.7780    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    7.4894   -1.1905    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.7048   -0.9356    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    6.2198   -1.6030    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   16.0630   -0.3655    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   16.0630    0.4595    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   17.4920    0.4595    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   16.7775    0.8720    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   15.3486   -1.6030    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   15.3486   -0.7780    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   16.7775   -0.7780    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   17.4920   -0.3655    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617    0.0470    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   10.3473    0.4595    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.3473    1.2845    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.7762    1.2845    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.7762    0.4595    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617   -0.7780    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.7762   -1.1905    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.7762   -2.0155    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617   -2.4280    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.0617   -3.2530    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.3473   -3.6655    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   11.7762   -3.6655    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   10.3473   -2.0155    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.3473   -1.1905    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   13.2052   -2.8405    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   13.2052   -2.0155    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.4907   -3.2530    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n   13.9196   -3.2530    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   14.6341   -2.8405    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   14.6341   -2.0155    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   13.9196   -1.6030    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.0782   -2.5386    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   12.9032   -3.9675    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   15.3486   -3.2530    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   16.0630   -2.8405    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   15.3486   -4.0780    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\n  2 16  2  0\n  3  1  2  0\n  3  4  1  0\n  4 15  2  0\n  5  4  1  0\n  5 12  2  0\n  6  5  1  0\n  7  8  1  0\n  7  9  1  0\n  7 10  1  0\n  7  6  1  0\n 10 11  1  0\n 12 11  1  0\n 12 14  1  0\n 13 14  1  0\n 13 39  1  0\n 16 15  1  0\n 17  2  1  0\n 18 19  1  0\n 18 25  2  0\n 19 27  2  0\n 20 18  1  0\n 20 21  2  0\n 21 22  1  0\n 21 23  1  0\n 24 23  2  0\n 25 24  1  0\n 25 26  1  0\n 27 26  1  0\n 28 29  1  0\n 28 34  1  0\n 30 31  1  0\n 31 29  1  0\n 32 33  1  0\n 33 28  1  0\n 34 35  1  0\n 35 30  1  0\n 36 37  1  0\n 36 41  1  0\n 37 38  1  0\n 38 13  1  0\n 39 40  1  0\n 40 36  1  0\n 41 49  2  0\n 42 41  1  0\n 42 43  2  0\n 43 44  1  0\n 44 48  2  0\n 45 46  2  0\n 45 44  1  0\n 47 45  1  0\n 47 52  1  0\n 48 22  1  0\n 49 48  1  0\n 50 51  1  0\n 50 52  1  0\n 50 53  2  0\n 51 56  2  0\n 52 57  2  0\n 53 54  1  0\n 54 55  2  0\n 55 32  1  0\n 56 55  1  0\n 52 58  2  0\n 54 59  1  0\n 59 60  1  0\n 59 61  2  0\nM  CHG  2  59   1  60  -1\nM  END\n> <chembl_id>\nCHEMBL3137309\n\n> <chembl_pref_name>\nVENETOCLAX",
+        "standard_inchi": "InChI=1S/C45H50ClN7O7S/c1-45(2)15-11-33(39(26-45)31-3-5-34(46)6-4-31)29-51-17-19-52(20-18-51)35-7-9-38(42(24-35)60-36-23-32-12-16-47-43(32)49-28-36)44(54)50-61(57,58)37-8-10-40(41(25-37)53(55)56)48-27-30-13-21-59-22-14-30/h3-10,12,16,23-25,28,30,48H,11,13-15,17-22,26-27,29H2,1-2H3,(H,47,49)(H,50,54)",
+        "standard_inchi_key": "LQBVNQSMGBZMKD-UHFFFAOYSA-N"
+      },
+      "molecule_synonyms": [
+        {
+          "molecule_synonym": "ABBVIE",
+          "syn_type": "PND",
+          "synonyms": "AbbVie"
+        },
+        {
+          "molecule_synonym": "ABT 199",
+          "syn_type": "PND",
+          "synonyms": "ABT 199"
+        },
+        {
+          "molecule_synonym": "ABT-199",
+          "syn_type": "PND",
+          "synonyms": "ABT-199"
+        },
+        {
+          "molecule_synonym": "ABT-199",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "ABT-199"
+        },
+        {
+          "molecule_synonym": "Abt199",
+          "syn_type": "OTHER",
+          "synonyms": "ABT199"
+        },
+        {
+          "molecule_synonym": "ABT199",
+          "syn_type": "PND",
+          "synonyms": "ABT199"
+        },
+        {
+          "molecule_synonym": "C45H50CLN7O7S",
+          "syn_type": "PND",
+          "synonyms": "C45H50ClN7O7S"
+        },
+        {
+          "molecule_synonym": "CHRONIC LYMPHOCYTIC LEUKAEMIA THERAPY",
+          "syn_type": "PND",
+          "synonyms": "chronic lymphocytic leukaemia therapy"
+        },
+        {
+          "molecule_synonym": "GDC-0199",
+          "syn_type": "PND",
+          "synonyms": "GDC-0199"
+        },
+        {
+          "molecule_synonym": "GDC-0199",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "GDC-0199"
+        },
+        {
+          "molecule_synonym": "RG-7601",
+          "syn_type": "PND",
+          "synonyms": "RG-7601"
+        },
+        {
+          "molecule_synonym": "RG-7601",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "RG-7601"
+        },
+        {
+          "molecule_synonym": "RG7601",
+          "syn_type": "PND",
+          "synonyms": "RG7601"
+        },
+        {
+          "molecule_synonym": "RG7601",
+          "syn_type": "RESEARCH_CODE",
+          "synonyms": "RG7601"
+        },
+        {
+          "molecule_synonym": "UNII-N54AIC43PW",
+          "syn_type": "PND",
+          "synonyms": "UNII-N54AIC43PW"
+        },
+        {
+          "molecule_synonym": "VENCLEXTA",
+          "syn_type": "PND",
+          "synonyms": "VENCLEXTA"
+        },
+        {
+          "molecule_synonym": "Venclexta",
+          "syn_type": "TRADE_NAME",
+          "synonyms": "VENCLEXTA"
+        },
+        {
+          "molecule_synonym": "VENCLYXTO",
+          "syn_type": "PND",
+          "synonyms": "Venclyxto"
+        },
+        {
+          "molecule_synonym": "Venclyxto",
+          "syn_type": "TRADE_NAME",
+          "synonyms": "VENCLYXTO"
+        },
+        {
+          "molecule_synonym": "VENETOCLAX",
+          "syn_type": "PND",
+          "synonyms": "Venetoclax"
+        },
+        {
+          "molecule_synonym": "Venetoclax",
+          "syn_type": "ATC",
+          "synonyms": "VENETOCLAX"
+        },
+        {
+          "molecule_synonym": "Venetoclax",
+          "syn_type": "EMA",
+          "synonyms": "VENETOCLAX"
+        },
+        {
+          "molecule_synonym": "Venetoclax",
+          "syn_type": "FDA",
+          "synonyms": "VENETOCLAX"
+        },
+        {
+          "molecule_synonym": "Venetoclax",
+          "syn_type": "INN",
+          "synonyms": "VENETOCLAX"
+        },
+        {
+          "molecule_synonym": "Venetoclax",
+          "syn_type": "MERCK_INDEX",
+          "synonyms": "VENETOCLAX"
+        },
+        {
+          "molecule_synonym": "Venetoclax",
+          "syn_type": "OTHER",
+          "synonyms": "VENETOCLAX"
+        },
+        {
+          "molecule_synonym": "Venetoclax",
+          "syn_type": "USAN",
+          "synonyms": "VENETOCLAX"
+        },
+        {
+          "molecule_synonym": "VENETOCLAX (ABT-199)",
+          "syn_type": "PND",
+          "synonyms": "Venetoclax (ABT-199)"
+        },
+        {
+          "molecule_synonym": "VENETOCLAXVENCLEXTAABT-199A-12314-[4-[[2-(4-CHLOROPHENYL)-4,4-DIMETHYLCYCLOHEX-1-EN-1-YL]METHYL]PIPERAZIN-1-YL]-N-[[3-NITRO-4-[[(TETRAHYDRO-2H-PYRAN-4-YL)METHYL]AMINO]PHENYL]SULFONYL]-2-[(1H-PYRROLO[2,3-B]PYRIDIN-5-YL)OXY]BENZAMIDE",
+          "syn_type": "PND",
+          "synonyms": "VenetoclaxVenclextaABT-199A-12314-[4-[[2-(4-Chlorophenyl)-4,4-dimethylcyclohex-1-en-1-yl]methyl]piperazin-1-yl]-N-[[3-nitro-4-[[(tetrahydro-2H-pyran-4-yl)methyl]amino]phenyl]sulfonyl]-2-[(1H-pyrrolo[2,3-b]pyridin-5-yl)oxy]benzamide"
+        }
+      ],
+      "molecule_type": "Small molecule",
+      "natural_product": 1,
+      "oral": true,
+      "orphan": 0,
+      "parenteral": false,
+      "polymer_flag": 0,
+      "pref_name": "VENETOCLAX",
+      "prodrug": 0,
+      "score": 23.0,
+      "structure_type": "MOL",
+      "therapeutic_flag": true,
+      "topical": false,
+      "usan_stem": "-toclax",
+      "usan_stem_definition": "bcl-2 (B-cell lymphoma 2) inhibitors",
+      "usan_substem": "-toclax",
+      "usan_year": 2013,
+      "veterinary": 0,
+      "withdrawn_flag": false
+    }
+  ],
+  "page_meta": {
+    "limit": 1,
+    "next": "/chembl/api/data/molecule/search.json?limit=1&offset=1&q=venetoclax",
+    "offset": 0,
+    "previous": null,
+    "total_count": 2
+  },
+  "_license_notice": "Data from the ChEMBL Database. Please review the licensing terms at https://www.ebi.ac.uk/chembl/"
+}
