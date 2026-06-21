@@ -22,6 +22,7 @@ NVIDIA_ESM2_URL = "https://health.api.nvidia.com/v1/biology/meta/esm2-650m"
 DIFFUSIONGEMMA_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
 DIFFUSIONGEMMA_MODEL = "google/diffusiongemma-26b-a4b-it"
 MEDGEMMA_MODEL = "google/medgemma-1.5-4b-it"
+MAX_VISION_IMAGE_URL_LENGTH = 2_500_000
 LOCAL_ENV_FILES = (
     Path(".env"),
     Path(".env.local"),
@@ -51,7 +52,7 @@ class DockingVisionReviewRequest(BaseModel):
     pose_source: str | None = Field(default=None, max_length=128)
     receptor_url: str | None = Field(default=None, max_length=2048)
     ligand_url: str | None = Field(default=None, max_length=2048)
-    image_url: str | None = Field(default=None, max_length=2048)
+    image_url: str | None = Field(default=None, max_length=MAX_VISION_IMAGE_URL_LENGTH)
     notes: str | None = Field(default=None, max_length=4000)
     provider: str | None = Field(default=None, max_length=64)
     max_tokens: int = Field(default=900, ge=128, le=4096)

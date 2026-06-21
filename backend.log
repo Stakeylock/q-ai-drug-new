@@ -1,9 +1,2 @@
-INFO:     127.0.0.1:65241 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:65282 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:65312 - "POST /v1/chemistry/dock-preview HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54396 - "GET /v1/billing/summary HTTP/1.1" 401 Unauthorized
-INFO:     127.0.0.1:40077 - "GET /v1/tools HTTP/1.1" 200 OK
-INFO:     127.0.0.1:1671 - "GET /v1/billing/summary HTTP/1.1" 401 Unauthorized
-INFO:     127.0.0.1:64823 - "GET /v1/tools HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35630 - "POST /v1/chemistry/dock-preview HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35692 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45247 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:1911 - "POST /v1/vision/docking-review HTTP/1.1" 200 OK
