@@ -86,6 +86,25 @@ $$$$
     assert metadata["QED"] > 0
 
 
+def test_realtime_dock_rejects_local_paths_outside_allowed_assets(tmp_path, monkeypatch):
+    output_dir = tmp_path / "outputs"
+    public_dir = tmp_path / "public"
+    structures_dir = tmp_path / "structures"
+    allowed = output_dir / "ligands" / "allowed.sdf"
+    outside = tmp_path / "outside.sdf"
+    _write_text(allowed, "allowed")
+    _write_text(outside, "outside")
+    monkeypatch.setattr(chemistry_routes, "OUTPUT_DIR", output_dir)
+    monkeypatch.setattr(chemistry_routes, "FRONTEND_PUBLIC_DIR", public_dir)
+    monkeypatch.setattr(chemistry_routes, "STRUCTURES_DIR", structures_dir)
+
+    assert chemistry_routes._path_from_url_or_path(str(allowed)) == allowed.resolve()
+    with pytest.raises(Exception) as exc:
+        chemistry_routes._path_from_url_or_path(str(outside))
+
+    assert getattr(exc.value, "status_code", None) == 403
+
+
 def test_dashboard_smoke_current_artifacts():
     if not (api.DEFAULT_OUTPUT_DIR / "top_candidates.csv").exists():
         pytest.skip("research artifacts are not present in this checkout")

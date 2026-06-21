@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 from dataclasses import asdict, dataclass, replace
 from typing import Any
 
@@ -430,34 +431,76 @@ def tier_allows(tier: str, module_id: str) -> bool:
     return TIER_ORDER.index(tier_key) >= TIER_ORDER.index(module.tier_minimum)
 
 
+def _payload_float(payload: dict[str, Any], *keys: str, default: float = 0.0) -> float:
+    for key in keys:
+        value = payload.get(key)
+        if value is None or value == "":
+            continue
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            continue
+    return default
+
+
+def _safe_formula_eval(expression: str, variables: dict[str, float]) -> float:
+    parsed = ast.parse(expression, mode="eval")
+
+    def visit(node: ast.AST) -> float:
+        if isinstance(node, ast.Expression):
+            return visit(node.body)
+        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+            return float(node.value)
+        if isinstance(node, ast.Name):
+            if node.id not in variables:
+                raise ValueError(f"Unknown estimator variable: {node.id}")
+            return variables[node.id]
+        if isinstance(node, ast.UnaryOp):
+            operand = visit(node.operand)
+            if isinstance(node.op, ast.UAdd):
+                return operand
+            if isinstance(node.op, ast.USub):
+                return -operand
+        if isinstance(node, ast.BinOp):
+            left = visit(node.left)
+            right = visit(node.right)
+            if isinstance(node.op, ast.Add):
+                return left + right
+            if isinstance(node.op, ast.Sub):
+                return left - right
+            if isinstance(node.op, ast.Mult):
+                return left * right
+            if isinstance(node.op, ast.Div):
+                if right == 0:
+                    raise ValueError("Division by zero in credit estimator")
+                return left / right
+        raise ValueError("Unsupported credit estimator expression")
+
+    return visit(parsed)
+
+
 def estimate_credits(module_id: str, payload: dict[str, Any] | None = None) -> float:
     payload = payload or {}
     module = get_module(module_id)
-    molecule_count = float(payload.get("molecule_count") or payload.get("candidate_count") or 0)
-    docking_pairs = float(payload.get("docking_pairs") or 0)
-    gnina_pairs = float(payload.get("gnina_pairs") or 0)
-    qm_rows = float(payload.get("qm_rows") or 0)
-    records_requested = float(payload.get("records_requested") or payload.get("max_records_per_target") or 0)
-    generated_molecules = float(payload.get("generated_molecules") or payload.get("n_generate") or 0)
-    pose_count = float(payload.get("pose_count") or payload.get("candidate_count") or 0)
-    target_count = float(payload.get("target_count") or 1)
-    receptor_count = float(payload.get("receptor_count") or 1)
-    annotation_count = float(payload.get("annotation_count") or 0)
-    expression_locals = {
+    target_ids = payload.get("target_ids")
+    target_count_default = float(len(target_ids)) if isinstance(target_ids, list) and target_ids else 1.0
+    molecule_count = _payload_float(payload, "molecule_count", "candidate_count", "max_molecules", "max_ligands")
+    variables = {
         "molecule_count": molecule_count,
         "candidate_count": molecule_count,
-        "docking_pairs": docking_pairs,
-        "gnina_pairs": gnina_pairs,
-        "qm_rows": qm_rows,
-        "records_requested": records_requested,
-        "generated_molecules": generated_molecules,
-        "pose_count": pose_count,
-        "target_count": target_count,
-        "receptor_count": receptor_count,
-        "annotation_count": annotation_count,
+        "docking_pairs": _payload_float(payload, "docking_pairs"),
+        "gnina_pairs": _payload_float(payload, "gnina_pairs"),
+        "qm_rows": _payload_float(payload, "qm_rows"),
+        "records_requested": _payload_float(payload, "records_requested", "max_records_per_target"),
+        "generated_molecules": _payload_float(payload, "generated_molecules", "n_generate"),
+        "training_rows": _payload_float(payload, "training_rows", "row_count", "records_requested"),
+        "pose_count": _payload_float(payload, "pose_count", "candidate_count"),
+        "target_count": _payload_float(payload, "target_count", default=target_count_default),
+        "receptor_count": _payload_float(payload, "receptor_count", default=1.0),
+        "annotation_count": _payload_float(payload, "annotation_count"),
     }
     try:
-        value = eval(module.credit_estimator, {"__builtins__": {}}, expression_locals)
+        value = _safe_formula_eval(module.credit_estimator, variables)
     except Exception:
         value = 1.0
     return round(max(float(value), 1.0), 2)
@@ -472,41 +515,3 @@ def module_registry_document() -> dict[str, Any]:
         "claim_boundary": "Computational research hypothesis only. Not a therapeutic, diagnostic, clinical, or regulatory claim. Wet-lab validation is required.",
     }
 
-
-
-# ---------------------------------------------------------------------------
-# Credit estimation (co-located here to avoid circular imports from base.py)
-# ---------------------------------------------------------------------------
-
-_CREDIT_RATES = {
-    "q_filter": 0.001,
-    "q_orbital_analyzer": 0.05,
-    "q_dock_studio": 0.1,
-    "onco_data_builder": 0.5,
-    "activity_model_studio": 0.002,
-    "q_rank": 0.001,
-    "wet_lab_triage_board": 0.01,
-    "q_report": 0.05,
-    "applicability_domain_guard": 0.001,
-}
-
-_CREDIT_BASES = {
-    "onco_data_builder": 1.0,
-}
-
-
-def estimate_credits(module_id: str, payload: dict) -> float:
-    """Estimate credits for a module run."""
-    base = _CREDIT_BASES.get(module_id, 0.0)
-    rate = _CREDIT_RATES.get(module_id, 0.01)
-    n = (
-        payload.get("max_molecules")
-        or payload.get("max_ligands")
-        or (len(payload.get("target_ids", [])) * 500 if payload.get("target_ids") else None)
-        or 100
-    )
-    try:
-        n = int(n)
-    except (TypeError, ValueError):
-        n = 100
-    return round(max(0.1, float(base + n * rate)), 4)

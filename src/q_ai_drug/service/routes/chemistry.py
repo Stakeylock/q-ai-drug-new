@@ -57,10 +57,10 @@ TARGET_ALPHAFOLD_IDS = {
 
 
 class DockPreviewRequest(BaseModel):
-    smiles: str = Field(..., min_length=1)
-    target: str = Field(default="CUSTOM", min_length=1)
-    candidate_id: str | None = None
-    objective: str | None = None
+    smiles: str = Field(..., min_length=1, max_length=4096)
+    target: str = Field(default="CUSTOM", min_length=1, max_length=64)
+    candidate_id: str | None = Field(default=None, max_length=128)
+    objective: str | None = Field(default=None, max_length=1000)
     selected_elements: list[str] = Field(default_factory=list)
     starters: list[str] = Field(default_factory=list)
     tier: str | None = None
@@ -74,14 +74,14 @@ class DockingBox(BaseModel):
 
 
 class RealtimeDockRequest(BaseModel):
-    smiles: str | None = None
-    target: str = Field(default="CUSTOM", min_length=1)
-    candidate_id: str | None = None
+    smiles: str | None = Field(default=None, min_length=1, max_length=4096)
+    target: str = Field(default="CUSTOM", min_length=1, max_length=64)
+    candidate_id: str | None = Field(default=None, max_length=128)
     engine: Literal["auto", "gnina", "vina", "smina"] = "gnina"
-    ligand_sdf_path: str | None = None
-    ligand_sdf_url: str | None = None
-    receptor_path: str | None = None
-    receptor_url: str | None = None
+    ligand_sdf_path: str | None = Field(default=None, max_length=2048)
+    ligand_sdf_url: str | None = Field(default=None, max_length=2048)
+    receptor_path: str | None = Field(default=None, max_length=2048)
+    receptor_url: str | None = Field(default=None, max_length=2048)
     box_center: DockingBox | None = None
     box_size: DockingBox | None = None
     exhaustiveness: int = Field(default=4, ge=1, le=32)
@@ -99,6 +99,30 @@ def _artifact_url(path: Path) -> str:
     return "/artifacts/" + "/".join(quote(part) for part in rel.split("/"))
 
 
+def _is_relative_to(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
+
+
+def _allowed_local_asset_roots() -> list[Path]:
+    return [
+        OUTPUT_DIR.resolve(),
+        STRUCTURES_DIR.resolve(),
+        FRONTEND_PUBLIC_DIR.resolve(),
+        Path(os.getenv("QAI_LEGACY_STRUCTURES_DIR", "data/structures_havetosee")).resolve(),
+    ]
+
+
+def _guard_local_asset_path(path: Path) -> Path:
+    resolved = path.resolve()
+    if any(_is_relative_to(resolved, root) for root in _allowed_local_asset_roots()):
+        return resolved
+    raise HTTPException(status_code=403, detail="Local chemistry paths must stay inside artifacts, structures, or pharma-library assets.")
+
+
 def _path_from_url_or_path(raw: str | None) -> Path | None:
     if not raw:
         return None
@@ -113,10 +137,10 @@ def _path_from_url_or_path(raw: str | None) -> Path | None:
             raise HTTPException(status_code=403, detail="Artifact path escapes output directory.") from None
         return path
     if text.startswith("/structures/"):
-        return (STRUCTURES_DIR / Path(text.removeprefix("/structures/")).name).resolve()
+        return _guard_local_asset_path(STRUCTURES_DIR / Path(text.removeprefix("/structures/")).name)
     if text.startswith("/structures-havetosee/"):
         legacy_dir = Path(os.getenv("QAI_LEGACY_STRUCTURES_DIR", "data/structures_havetosee"))
-        return (legacy_dir / Path(text.removeprefix("/structures-havetosee/")).name).resolve()
+        return _guard_local_asset_path(legacy_dir / Path(text.removeprefix("/structures-havetosee/")).name)
     if text.startswith("/pharma-library/"):
         path = (FRONTEND_PUBLIC_DIR / text.removeprefix("/")).resolve()
         try:
@@ -126,7 +150,7 @@ def _path_from_url_or_path(raw: str | None) -> Path | None:
         return path
     if text.startswith("http://") or text.startswith("https://"):
         return None
-    return Path(text).resolve()
+    return _guard_local_asset_path(Path(text))
 
 
 def _structure_url(path: Path | None) -> str | None:

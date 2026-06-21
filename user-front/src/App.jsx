@@ -346,7 +346,7 @@ export default function App() {
       }));
       if (isolatedRun?.run_id) {
         try {
-          await appendRunEvent(isolatedRun.run_id, runUserId, { module, event, status, message, progress, data, artifacts });
+          await appendRunEvent(isolatedRun.run_id, runUserId, { module, event, status, message, progress, data, artifacts }, isolatedRun.event_token);
         } catch (error) {
           setRun((current) => ({
             ...current,
@@ -470,7 +470,7 @@ export default function App() {
         { candidate_rows: rawCandidates.length, source: "outputs/cancer_proof_v1/top_candidates.csv" },
       );
     } catch (error) {
-      warning = `${warning ? `${warning} ` : ""}Candidate API unavailable; only user molecules and synthetic placeholders may appear: ${error.message}`;
+      warning = `${warning ? `${warning} ` : ""}Candidate API unavailable; only user molecules and clearly labelled generated starter designs may appear: ${error.message}`;
       await recordEvent("02_ligand_library", "ligand_library_failed", "warning", `Candidate API unavailable: ${error.message}`, {});
     }
     let dataFabric = null;
@@ -1408,9 +1408,9 @@ function ChemistryBench({ selectedProteins, patient, tier, onAddMolecule }) {
             <div className="starter-grid">
               {starters.map((starter) => (
                 <button className={selectedStarters.includes(starter.name) ? "selected" : ""} type="button" key={starter.name} onClick={() => toggleStarter(starter.name)}>
-                  <strong>{starter.name}</strong>
-                  <span>{starter.type}</span>
-                  <small>{starter.note}</small>
+                  <strong className="starter-name">{starter.name}</strong>
+                  <span className="starter-type">{starter.type}</span>
+                  <small className="starter-note">{starter.note}</small>
                 </button>
               ))}
             </div>
@@ -2386,11 +2386,26 @@ function ToolPayloadView({ payload }) {
       {Object.entries(payload).map(([key, value]) => (
         <div key={key}>
           <strong>{key.replaceAll("_", " ")}</strong>
-          <span>{Array.isArray(value) ? value.join(", ") : typeof value === "object" ? JSON.stringify(value) : String(value ?? "NA")}</span>
+          <span>{formatToolValue(value)}</span>
         </div>
       ))}
     </div>
   );
+}
+
+function formatToolValue(value) {
+  if (value === null || value === undefined || value === "") return "NA";
+  if (Array.isArray(value)) {
+    if (!value.length) return "None";
+    if (typeof value[0] === "object") return `${value.length} record${value.length === 1 ? "" : "s"}`;
+    return value.slice(0, 6).join(", ") + (value.length > 6 ? `, +${value.length - 6} more` : "");
+  }
+  if (typeof value === "object") {
+    const keys = Object.keys(value);
+    if (!keys.length) return "None";
+    return keys.slice(0, 5).join(", ") + (keys.length > 5 ? `, +${keys.length - 5} more` : "");
+  }
+  return String(value);
 }
 
 function MyAccount({ session, tier, billingWarning, tools, logout }) {
@@ -3148,7 +3163,7 @@ function ExportTab({ candidate }) {
         <Metric label="Best use" value="Research triage and wet-lab planning" />
         <Metric label="Contains limitations" value="Yes" />
         <Metric label="Safety rows" value={simulation.rows.length} />
-        <Metric label="Artifact links" value={candidate.raw ? "Included where available" : "Synthetic preview"} />
+        <Metric label="Artifact links" value={candidate.raw ? "Included where available" : "Generated preview"} />
       </div>
     </div>
   );
@@ -3180,7 +3195,7 @@ function ArtifactsTab({ candidate }) {
             <span>{String(url).split("/").pop()}</span>
           </a>
         ))}
-        {!links.length && <p>No downloadable artifacts are available for this synthetic preview candidate.</p>}
+        {!links.length && <p>No downloadable artifacts are available for this candidate yet.</p>}
       </div>
       {candidate.raw?.pose_sources?.length > 0 && (
         <div className="procedure-card">
@@ -4000,6 +4015,27 @@ function buildResearchToolPayload(toolId, { patient, selectedProteins, run, cust
         data_fabric: candidate.raw?.realtime_data_fabric || null,
       })),
       claim_boundary: "Realtime datapoints support prioritization and auditability only; not measured efficacy or safety.",
+    };
+  }
+  if (toolId === "docking-stack") {
+    return {
+      ...base,
+      engines: ["GNINA CNN", "AutoDock Vina", "Smina", "OpenBabel"],
+      default_action: "Open Molecule Workbench, select a candidate, then run GNINA + Vina + Smina.",
+      candidate_pose_matrix: candidates.map((candidate) => ({
+        id: candidate.id,
+        target: candidate.target,
+        receptor: candidate.raw?.receptor_url || candidate.raw?.gnina_receptor_url || "needs receptor prep",
+        box_center: formatVector(candidate.raw?.box_center || candidate.raw),
+        box_size: formatBox(candidate.raw?.box_size || candidate.raw),
+        gnina_pose: Boolean(candidate.raw?.gnina_pose_sdf_url),
+        vina_pose: Boolean(candidate.raw?.vina_docked_sdf_url || candidate.raw?.vina_pose_pdbqt_url),
+        smina_pose: Boolean(candidate.raw?.smina_docked_sdf_url || candidate.raw?.smina_pose_pdbqt_url),
+        rdkit_input: Boolean(candidate.raw?.sdf_url || candidate.raw?.ligand_sdf_url),
+        default_pose_source: candidate.raw?.default_pose_source || "not set",
+      })),
+      required_outputs: ["gnina_pose_sdf_url", "vina_docked_sdf_url", "smina_docked_sdf_url", "receptor_url", "box_center", "box_size"],
+      claim_boundary: "Docking outputs are computational pose hypotheses only; validate by redocking, interaction fingerprints, orthogonal scoring, and assay data.",
     };
   }
   if (toolId === "literature") return { ...base, queries: selectedProteins.map((protein) => `${protein.gene} ${patient.diagnosis.replaceAll("_", " ")} inhibitor structure activity`) };

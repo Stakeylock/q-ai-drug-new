@@ -25,5 +25,6 @@ def test_tier_policy_and_credit_estimate():
     assert not tier_allows("student_free", "q_dock_studio")
     assert tier_allows("academic_researcher", "q_dock_studio")
     credits = estimate_credits("q_dock_studio", {"docking_pairs": 100, "gnina_pairs": 10})
-    assert credits > 1
+    assert credits == 60
+    assert estimate_credits("q_generate", {"n_generate": 1000}) == 11
 

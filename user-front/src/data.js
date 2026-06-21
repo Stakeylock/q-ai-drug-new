@@ -407,6 +407,7 @@ export const RESEARCH_TOOLKIT = [
   tool("asset-library", "Pharma Asset Library", "Browse downloaded AlphaFold receptors, PAE metadata, ChEMBL ligands, SDF files, and structure images."),
   tool("resource-registry", "Research Source Registry", "Track core databases, ML/QM models, local availability, licenses, and pharma-readiness gaps."),
   tool("data-fabric", "Realtime Data Fabric", "Pull ChEMBL, PubChem, UniProt, Open Targets, RDKit, and model-hook evidence for current proteins and ligands."),
+  tool("docking-stack", "Docking Stack Runner", "Prepare GNINA CNN, AutoDock Vina, Smina, OpenBabel, receptor, box, and pose-source checks."),
   tool("literature", "Literature Query Planner", "Prepare PubMed/ChEMBL/PubChem/AlphaFold lookups with reproducible search strings."),
   tool("sar", "SAR Matrix", "Compare ranked molecules by substituent, score deltas, ADMET, and quantum contribution."),
   tool("counter-screen", "Counter-Screen Planner", "Suggest off-target panels and safety assays from the simulation bench."),

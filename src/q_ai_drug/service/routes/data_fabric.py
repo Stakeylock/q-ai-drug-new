@@ -42,23 +42,23 @@ OPEN_TARGETS_GRAPHQL = "https://api.platform.opentargets.org/api/v4/graphql"
 
 
 class FabricTarget(BaseModel):
-    gene: str
-    uniprot: str | None = None
-    ensembl_id: str | None = None
-    role: str | None = None
+    gene: str = Field(..., min_length=1, max_length=64)
+    uniprot: str | None = Field(default=None, max_length=64)
+    ensembl_id: str | None = Field(default=None, max_length=64)
+    role: str | None = Field(default=None, max_length=256)
 
 
 class FabricLigand(BaseModel):
-    candidate_id: str | None = None
-    smiles: str | None = None
-    chembl_id: str | None = None
-    target: str | None = None
+    candidate_id: str | None = Field(default=None, max_length=128)
+    smiles: str | None = Field(default=None, max_length=4096)
+    chembl_id: str | None = Field(default=None, max_length=64)
+    target: str | None = Field(default=None, max_length=64)
 
 
 class DataFabricRequest(BaseModel):
-    targets: list[FabricTarget] = Field(default_factory=list)
-    ligands: list[FabricLigand] = Field(default_factory=list)
-    diagnosis: str | None = None
+    targets: list[FabricTarget] = Field(default_factory=list, max_length=25)
+    ligands: list[FabricLigand] = Field(default_factory=list, max_length=250)
+    diagnosis: str | None = Field(default=None, max_length=500)
     max_chembl_activities: int = Field(default=80, ge=1, le=500)
     max_ligands: int = Field(default=60, ge=1, le=250)
     ttl_seconds: int = Field(default=DEFAULT_TTL_SECONDS, ge=60, le=7 * 24 * 60 * 60)

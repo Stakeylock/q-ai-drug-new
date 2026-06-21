@@ -109,15 +109,19 @@ export function createIsolatedRun(payload) {
   });
 }
 
-export function appendRunEvent(runId, userId, payload) {
+export function appendRunEvent(runId, userId, payload, eventToken = null) {
   return apiFetch(`/v1/runs/${encodeURIComponent(runId)}/events?user_id=${encodeURIComponent(userId || "demo-user")}`, {
     method: "POST",
+    headers: eventToken ? { "X-QDF-Run-Token": eventToken } : {},
     body: JSON.stringify(payload),
   });
 }
 
-export function fetchRunEvents(runId, userId, limit = 300) {
-  return apiFetch(`/v1/runs/${encodeURIComponent(runId)}/events?user_id=${encodeURIComponent(userId || "demo-user")}&limit=${limit}`);
+export function fetchRunEvents(runId, userId, limit = 300, eventToken = null) {
+  return apiFetch(
+    `/v1/runs/${encodeURIComponent(runId)}/workspace-events?user_id=${encodeURIComponent(userId || "demo-user")}&limit=${limit}`,
+    { headers: eventToken ? { "X-QDF-Run-Token": eventToken } : {} },
+  );
 }
 
 export function assistantStatus() {

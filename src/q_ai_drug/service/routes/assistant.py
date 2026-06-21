@@ -48,12 +48,12 @@ Operating rules:
 
 class ChatMessage(BaseModel):
     role: Literal["system", "user", "assistant"] = "user"
-    content: str = Field(..., min_length=1)
+    content: str = Field(..., min_length=1, max_length=12000)
 
 
 class AssistantChatRequest(BaseModel):
-    messages: list[ChatMessage] = Field(..., min_length=1)
-    page: str | None = None
+    messages: list[ChatMessage] = Field(..., min_length=1, max_length=40)
+    page: str | None = Field(default=None, max_length=128)
     app_state: dict[str, Any] = Field(default_factory=dict)
     max_tokens: int = Field(default=4096, ge=128, le=16384)
     temperature: float = Field(default=0.35, ge=0, le=2)
@@ -62,9 +62,9 @@ class AssistantChatRequest(BaseModel):
 
 
 class Esm2AnalyzeRequest(BaseModel):
-    sequence: str = Field(..., min_length=1)
-    protein_name: str | None = None
-    question: str | None = None
+    sequence: str = Field(..., min_length=1, max_length=20000)
+    protein_name: str | None = Field(default=None, max_length=128)
+    question: str | None = Field(default=None, max_length=2000)
     output_format: Literal["npz", "h5"] = "npz"
     return_embedding_b64: bool = False
 

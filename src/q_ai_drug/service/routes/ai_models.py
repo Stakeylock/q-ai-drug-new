@@ -30,30 +30,30 @@ LOCAL_ENV_FILES = (
 
 
 class ProteinEvidenceTarget(BaseModel):
-    gene: str
-    uniprot: str | None = None
-    alphafold_id: str | None = None
-    role: str | None = None
-    variants: list[str] = Field(default_factory=list)
-    sequence: str | None = None
+    gene: str = Field(..., min_length=1, max_length=64)
+    uniprot: str | None = Field(default=None, max_length=64)
+    alphafold_id: str | None = Field(default=None, max_length=96)
+    role: str | None = Field(default=None, max_length=256)
+    variants: list[str] = Field(default_factory=list, max_length=50)
+    sequence: str | None = Field(default=None, max_length=20000)
 
 
 class ProteinEvidenceRequest(BaseModel):
-    targets: list[ProteinEvidenceTarget] = Field(..., min_length=1)
+    targets: list[ProteinEvidenceTarget] = Field(..., min_length=1, max_length=25)
     patient_context: dict[str, Any] = Field(default_factory=dict)
     use_esm: bool = True
     output_format: Literal["npz", "h5"] = "npz"
 
 
 class DockingVisionReviewRequest(BaseModel):
-    candidate_id: str
-    target: str | None = None
-    pose_source: str | None = None
-    receptor_url: str | None = None
-    ligand_url: str | None = None
-    image_url: str | None = None
-    notes: str | None = None
-    provider: str | None = None
+    candidate_id: str = Field(..., min_length=1, max_length=128)
+    target: str | None = Field(default=None, max_length=64)
+    pose_source: str | None = Field(default=None, max_length=128)
+    receptor_url: str | None = Field(default=None, max_length=2048)
+    ligand_url: str | None = Field(default=None, max_length=2048)
+    image_url: str | None = Field(default=None, max_length=2048)
+    notes: str | None = Field(default=None, max_length=4000)
+    provider: str | None = Field(default=None, max_length=64)
     max_tokens: int = Field(default=900, ge=128, le=4096)
 
 
