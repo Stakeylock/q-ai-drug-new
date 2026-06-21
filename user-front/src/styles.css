@@ -241,7 +241,17 @@ h2 {
   line-height: 1.7;
 }
 
-.split-text span {
+.split-text {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.split-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.split-text .split-char {
   display: inline-block;
   opacity: 0;
   transform: translateY(0.65em) rotate(3deg);
@@ -2754,9 +2764,29 @@ h3 {
 
 .auth-screen {
   min-height: 100vh;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 500px);
-  gap: 32px;
-  padding: 32px max(20px, calc((100vw - 1180px) / 2));
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1.18fr) minmax(380px, 520px);
+  gap: clamp(28px, 4vw, 72px);
+  padding: clamp(22px, 3vw, 44px) clamp(24px, 4vw, 72px);
+}
+
+.auth-hero {
+  width: 100%;
+  max-width: 820px;
+  min-width: 0;
+  justify-self: end;
+}
+
+.auth-hero h1 {
+  max-width: 820px;
+  font-size: clamp(52px, 5vw, 88px);
+}
+
+.auth-card {
+  width: min(100%, 520px);
+  justify-self: start;
 }
 
 .auth-card,
@@ -2816,9 +2846,19 @@ h3 {
 }
 
 .app-shell {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+  padding: clamp(14px, 1.4vw, 24px) clamp(16px, 2vw, 36px);
+}
+
+.app-shell.rail-collapsed {
+  grid-template-columns: 86px minmax(0, 1fr);
+}
+
+.user-main {
+  width: 100%;
 }
 
 .user-rail {
@@ -2827,7 +2867,19 @@ h3 {
 
 .user-header {
   min-height: 64px;
+  grid-template-columns: minmax(360px, 0.8fr) minmax(460px, 1.2fr) auto;
+  align-items: start;
   padding: 8px 0;
+}
+
+.user-header h1 {
+  max-width: 720px;
+  font-size: clamp(42px, 4.2vw, 72px);
+}
+
+.workspace-tabs {
+  justify-content: flex-start;
+  align-content: flex-start;
 }
 
 .workspace-tabs button,
@@ -3353,6 +3405,15 @@ h3 {
 }
 
 @media (max-width: 1280px) {
+  .app-shell,
+  .app-shell.rail-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .user-header {
+    grid-template-columns: 1fr;
+  }
+
   .asset-library-grid,
   .source-stack-columns,
   .hero-panel {
@@ -3374,7 +3435,15 @@ h3 {
 
 @media (max-width: 860px) {
   .auth-screen {
+    max-width: none;
+    grid-template-columns: 1fr;
     padding: 18px;
+  }
+
+  .auth-hero,
+  .auth-card {
+    max-width: none;
+    justify-self: stretch;
   }
 
   .asset-summary-grid,

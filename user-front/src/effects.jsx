@@ -32,13 +32,32 @@ export function ParticleField({ count = 34 }) {
 }
 
 export function SplitText({ text, as: Tag = "span", className = "" }) {
+  let charIndex = 0;
+
   return (
-    <Tag className={`split-text ${className}`}>
-      {text.split("").map((char, index) => (
-        <span key={`${char}-${index}`} style={{ "--char-delay": `${index * 0.025}s` }}>
-          {char === " " ? "\u00a0" : char}
-        </span>
-      ))}
+    <Tag className={`split-text ${className}`.trim()} aria-label={text}>
+      {String(text)
+        .split(/(\s+)/)
+        .map((part, partIndex) => {
+          if (/^\s+$/.test(part)) {
+            return part;
+          }
+
+          return (
+            <span className="split-word" aria-hidden="true" key={`${part}-${partIndex}`}>
+              {[...part].map((char) => {
+                const delay = charIndex * 0.025;
+                const key = `${partIndex}-${charIndex}-${char}`;
+                charIndex += 1;
+                return (
+                  <span className="split-char" key={key} style={{ "--char-delay": `${delay}s` }}>
+                    {char}
+                  </span>
+                );
+              })}
+            </span>
+          );
+        })}
     </Tag>
   );
 }
