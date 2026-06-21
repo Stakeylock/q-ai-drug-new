@@ -6,3 +6,11 @@ E:\QC-Intern\qc1\src\q_ai_drug\service\routes\chemistry.py:306: FutureWarning: T
   frame = pd.concat([existing, frame], ignore_index=True, sort=False)
 E:\QC-Intern\qc1\src\q_ai_drug\service\routes\chemistry.py:306: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
   frame = pd.concat([existing, frame], ignore_index=True, sort=False)
+E:\QC-Intern\qc1\src\q_ai_drug\service\routes\chemistry.py:306: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  frame = pd.concat([existing, frame], ignore_index=True, sort=False)
+E:\QC-Intern\qc1\src\q_ai_drug\service\routes\chemistry.py:306: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  frame = pd.concat([existing, frame], ignore_index=True, sort=False)
+E:\QC-Intern\qc1\src\q_ai_drug\service\routes\chemistry.py:306: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  frame = pd.concat([existing, frame], ignore_index=True, sort=False)
+E:\QC-Intern\qc1\src\q_ai_drug\service\routes\chemistry.py:306: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  frame = pd.concat([existing, frame], ignore_index=True, sort=False)
