@@ -37,14 +37,16 @@ from q_ai_drug.service.routes.assistant import router as assistant_router
 from q_ai_drug.service.routes.auth import router as auth_router
 from q_ai_drug.service.routes.chemistry import router as chemistry_router
 from q_ai_drug.service.routes.data_fabric import router as data_fabric_router
+from q_ai_drug.service.routes.industrial import router as industrial_router
 from q_ai_drug.service.routes.runs import router as runs_router
 from q_ai_drug.service.routes.tools import router as tools_router
 from q_ai_drug.service.routes.uploads import router as uploads_router
-from q_ai_drug.service.settings import get_settings
+from q_ai_drug.service.settings import get_settings, validate_runtime_settings
 from q_ai_drug.service.usage import record_usage
 from q_ai_drug.service.workers import run_cancer_proof_job
 
 app = FastAPI(title="Q-AI Drug Discovery Platform", version="0.1.0")
+validate_runtime_settings(get_settings())
 mimetypes.add_type("application/octet-stream", ".npz")
 mimetypes.add_type("application/x-hdf5", ".h5")
 mimetypes.add_type("chemical/x-mdl-sdfile", ".sdf")
@@ -87,6 +89,7 @@ app.include_router(assistant_router)
 app.include_router(ai_models_router)
 app.include_router(chemistry_router)
 app.include_router(data_fabric_router)
+app.include_router(industrial_router)
 app.include_router(runs_router)
 
 

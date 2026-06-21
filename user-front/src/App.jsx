@@ -8,18 +8,27 @@ import {
   assistantStatus,
   billingSummary,
   createProject,
+  createDecisionGate,
   createIsolatedRun,
   dockPreviewMolecule,
   enrichDataFabric,
+  exportWetLabAssayPacket,
+  fetchBenchmarkValidationPlan,
+  fetchCheminformaticsFeatureMatrix,
+  fetchIndustrialAudit,
+  fetchIndustrialReadiness,
   fetchProteinEvidence,
   fetchDataFabricStatus,
   fetchDockingTools,
   fetchResourceRegistry,
   fetchTools,
   fetchTopCandidates,
+  generateWetLabAssayPlan,
+  importWetLabResults,
   appendRunEvent,
   login,
   setBillingPlan,
+  signCandidateReport,
   signup,
   reviewDockingVision,
   runRealtimeDocking,
@@ -2142,6 +2151,7 @@ function ResearchTools({ patient, selectedProteins, run, customMolecules, startP
   const [fabricError, setFabricError] = useState("");
   const tool = RESEARCH_TOOLKIT.find((item) => item.id === activeTool) || RESEARCH_TOOLKIT[0];
   const toolPayload = buildResearchToolPayload(tool.id, { patient, selectedProteins, run, customMolecules, notes, registry, fabricStatus });
+  const industrialCandidates = [...customMolecules, ...(run.candidates || [])].slice(0, 8);
 
   useEffect(() => {
     let cancelled = false;
@@ -2206,6 +2216,7 @@ function ResearchTools({ patient, selectedProteins, run, customMolecules, startP
           </label>
         </div>
       </div>
+      <IndustrialValidationWorkbench patient={patient} selectedProteins={selectedProteins} candidates={industrialCandidates} notes={notes} />
       <section className="workflow-map">
         <div className="panel-head">
           <div>
@@ -2229,6 +2240,299 @@ function ResearchTools({ patient, selectedProteins, run, customMolecules, startP
       <ResourceStrategyPanel registry={registry} error={registryError} />
       <AssetLibraryPanel />
     </SpotlightCard>
+  );
+}
+
+function IndustrialValidationWorkbench({ patient, selectedProteins, candidates, notes }) {
+  const [plan, setPlan] = useState(null);
+  const [packet, setPacket] = useState(null);
+  const [feedback, setFeedback] = useState(null);
+  const [audit, setAudit] = useState(null);
+  const [readiness, setReadiness] = useState(null);
+  const [benchmark, setBenchmark] = useState(null);
+  const [featureMatrix, setFeatureMatrix] = useState(null);
+  const [busy, setBusy] = useState("");
+  const [error, setError] = useState("");
+  const [selectedCandidateId, setSelectedCandidateId] = useState(candidates[0]?.id || "");
+  const [secondReviewer, setSecondReviewer] = useState("medchem-lead");
+  const [resultCsv, setResultCsv] = useState("candidate_id,assay,endpoint,value,unit,qc_status,scientist\n");
+
+  useEffect(() => {
+    if (!selectedCandidateId && candidates[0]?.id) setSelectedCandidateId(candidates[0].id);
+  }, [candidates, selectedCandidateId]);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.allSettled([
+      fetchIndustrialReadiness(),
+      fetchBenchmarkValidationPlan(),
+      fetchCheminformaticsFeatureMatrix(),
+      fetchIndustrialAudit(20),
+    ]).then((results) => {
+      if (cancelled) return;
+      if (results[0].status === "fulfilled") setReadiness(results[0].value);
+      if (results[1].status === "fulfilled") setBenchmark(results[1].value);
+      if (results[2].status === "fulfilled") setFeatureMatrix(results[2].value);
+      if (results[3].status === "fulfilled") setAudit(results[3].value);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const candidatePayloads = candidates.map(candidateToIndustrialCandidate);
+  const selectedCandidate = candidates.find((candidate) => candidate.id === selectedCandidateId) || candidates[0] || null;
+  const selectedPayload = selectedCandidate ? candidateToIndustrialCandidate(selectedCandidate) : null;
+
+  function requestPayload() {
+    return {
+      requester: "frontend-researcher",
+      program_stage: "hit_triage",
+      case_context: {
+        case_id: patient.caseId,
+        diagnosis: patient.diagnosis,
+        selected_targets: selectedProteins.map((protein) => `${protein.gene}:${protein.alphafoldId}`),
+        notes,
+      },
+      candidates: candidatePayloads,
+      include_formats: ["json", "csv", "benchling_csv", "sdf_manifest", "mol2_manifest", "pdbqt_manifest", "markdown"],
+    };
+  }
+
+  async function refreshAudit() {
+    try {
+      setAudit(await fetchIndustrialAudit(30));
+    } catch {
+      // Audit refresh is helpful, not blocking for the core workflow.
+    }
+  }
+
+  async function runPlan() {
+    setBusy("plan");
+    setError("");
+    try {
+      const payload = await generateWetLabAssayPlan(requestPayload());
+      setPlan(payload);
+      await refreshAudit();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function runPacketExport() {
+    setBusy("packet");
+    setError("");
+    try {
+      const payload = await exportWetLabAssayPacket(requestPayload());
+      setPacket(payload);
+      await refreshAudit();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function uploadResults() {
+    setBusy("results");
+    setError("");
+    try {
+      const payload = await importWetLabResults({
+        csv_text: resultCsv,
+        actor: "frontend-researcher",
+        source: "research_tools_csv_paste",
+        reason: "import assay results from Research Tools workbench",
+      });
+      setFeedback(payload);
+      await refreshAudit();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function gateCandidate(action) {
+    if (!selectedPayload) {
+      setError("No candidate is available for a decision gate yet.");
+      return;
+    }
+    setBusy(action);
+    setError("");
+    try {
+      const payload = await createDecisionGate({
+        candidate_id: selectedPayload.id,
+        action,
+        actor: "frontend-researcher",
+        second_reviewer: action === "promote_to_wet_lab" ? secondReviewer : null,
+        reason: action === "promote_to_wet_lab" ? "research evidence packet is ready for controlled wet-lab validation" : "workflow triage from Research Tools",
+        evidence_snapshot: selectedPayload,
+      });
+      setFeedback(payload);
+      await refreshAudit();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function signReport() {
+    if (!selectedPayload) {
+      setError("No candidate is available to sign.");
+      return;
+    }
+    setBusy("signature");
+    setError("");
+    try {
+      const payload = await signCandidateReport({
+        report_id: `${selectedPayload.id}-research-report`,
+        signer: "frontend-researcher",
+        signer_role: "researcher",
+        reason: "approve research-only report for wet-lab planning",
+        report_payload: {
+          candidate: selectedPayload,
+          plan: plan?.candidates?.find((candidate) => candidate.candidate_id === selectedPayload.id) || null,
+          notes,
+        },
+      });
+      setFeedback(payload);
+      await refreshAudit();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy("");
+    }
+  }
+
+  const candidatePlans = plan?.candidates || [];
+  const gateCounts = plan?.summary?.decision_gates || {};
+  const exportEntries = Object.entries(packet?.exports || {});
+
+  return (
+    <section className="industrial-workbench" aria-labelledby="industrial-workbench-heading">
+      <div className="panel-head">
+        <div>
+          <p className="eyebrow">Wet-lab and pharma governance loop</p>
+          <h3 id="industrial-workbench-heading">Executable validation workstation</h3>
+        </div>
+        <ShinyText>{plan ? `${plan.summary.candidate_count} planned` : `${candidates.length} candidate inputs`}</ShinyText>
+      </div>
+      <div className="industrial-metrics">
+        <Metric label="Compliance docs" value={readiness ? `${Math.round((readiness.compliance_doc_completion || 0) * 100)}%` : "loading"} />
+        <Metric label="Industrial docs" value={readiness ? `${Math.round((readiness.industrial_doc_completion || 0) * 100)}%` : "loading"} />
+        <Metric label="Benchmark targets" value={benchmark?.target_count || "loading"} />
+        <Metric label="Cheminformatics modules" value={featureMatrix?.features?.length || "loading"} />
+      </div>
+      <div className="industrial-actions">
+        <button className="secondary-action" type="button" onClick={runPlan} disabled={Boolean(busy)}>
+          {busy === "plan" ? "Planning..." : "Generate assay plan"}
+        </button>
+        <button className="secondary-action" type="button" onClick={runPacketExport} disabled={Boolean(busy)}>
+          {busy === "packet" ? "Exporting..." : "Export lab packet"}
+        </button>
+        <button className="secondary-action" type="button" onClick={signReport} disabled={Boolean(busy || !selectedPayload)}>
+          {busy === "signature" ? "Signing..." : "E-sign frozen report"}
+        </button>
+      </div>
+      <div className="industrial-grid">
+        <article className="industrial-card">
+          <strong>Candidate portfolio board</strong>
+          <label className="inline-select">
+            Candidate
+            <select value={selectedCandidateId} onChange={(event) => setSelectedCandidateId(event.target.value)}>
+              {candidates.map((candidate) => (
+                <option value={candidate.id} key={candidate.id}>{candidate.id}</option>
+              ))}
+              {!candidates.length && <option value="">No candidates yet</option>}
+            </select>
+          </label>
+          <div className="portfolio-gates">
+            {["test_now", "needs_review", "needs_admet_review", "needs_synthesis_review", "watchlist"].map((gate) => (
+              <span key={gate}>
+                {gate.replaceAll("_", " ")}
+                <strong>{gateCounts[gate] || 0}</strong>
+              </span>
+            ))}
+          </div>
+          <div className="industrial-actions compact">
+            <button className="tool-toggle" type="button" onClick={() => gateCandidate("promote_to_wet_lab")} disabled={Boolean(busy || !selectedPayload)}>
+              Promote to wet lab
+            </button>
+            <button className="tool-toggle" type="button" onClick={() => gateCandidate("needs_synthesis_review")} disabled={Boolean(busy || !selectedPayload)}>
+              Synthesis review
+            </button>
+            <button className="tool-toggle" type="button" onClick={() => gateCandidate("needs_admet_review")} disabled={Boolean(busy || !selectedPayload)}>
+              ADMET review
+            </button>
+            <button className="tool-toggle" type="button" onClick={() => gateCandidate("reject")} disabled={Boolean(busy || !selectedPayload)}>
+              Reject
+            </button>
+          </div>
+          <label>
+            Second reviewer for wet-lab promotion
+            <input value={secondReviewer} onChange={(event) => setSecondReviewer(event.target.value)} />
+          </label>
+        </article>
+        <article className="industrial-card">
+          <strong>Assay result upload</strong>
+          <p>Paste CSV from wet-lab or CRO output. The backend maps endpoint rows and returns active-learning/recalibration guidance.</p>
+          <textarea value={resultCsv} onChange={(event) => setResultCsv(event.target.value)} />
+          <button className="secondary-action" type="button" onClick={uploadResults} disabled={Boolean(busy)}>
+            {busy === "results" ? "Importing..." : "Import assay results"}
+          </button>
+        </article>
+      </div>
+      {error && <div className="warning-box">{error}</div>}
+      {candidatePlans.length > 0 && (
+        <div className="industrial-plan-grid">
+          {candidatePlans.slice(0, 6).map((candidate) => (
+            <article className="industrial-card" key={candidate.candidate_id}>
+              <span>{candidate.decision_gate.gate.replaceAll("_", " ")}</span>
+              <strong>{candidate.candidate_id}</strong>
+              <p>{candidate.decision_gate.rationale}</p>
+              <small>{candidate.assays.length} assay types: IC50/Ki, Kd, cellular, selectivity, ADME, hERG, tox.</small>
+            </article>
+          ))}
+        </div>
+      )}
+      {exportEntries.length > 0 && (
+        <div className="industrial-card">
+          <strong>Packet exports</strong>
+          <div className="artifact-link-grid">
+            {exportEntries.map(([filename, content]) => (
+              <button className="tool-toggle" type="button" key={filename} onClick={() => downloadText(filename, content, filename.endsWith(".json") ? "application/json" : "text/plain")}>
+                {filename}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      {feedback && (
+        <div className="industrial-card">
+          <strong>{feedback.import_id ? "Closed-loop feedback" : feedback.signature_id ? "Electronic signature" : "Decision gate"}</strong>
+          <pre>{JSON.stringify(feedback, null, 2)}</pre>
+        </div>
+      )}
+      {audit?.rows?.length > 0 && (
+        <div className="industrial-card">
+          <strong>Recent audit trail</strong>
+          <div className="audit-strip">
+            {audit.rows.slice(-5).reverse().map((row) => (
+              <span key={row.audit_id}>
+                {row.action}
+                <small>{row.actor} | {String(row.event_hash).slice(0, 10)}</small>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="research-only wide-note">
+        This workstation supports research-use validation planning, lab handoff, auditability, and feedback learning. It does not create treatment, clinical safety, efficacy, or regulatory claims.
+      </div>
+    </section>
   );
 }
 
@@ -3588,6 +3892,56 @@ function displayCandidateSmiles(candidate) {
   if (isUsableSmiles(candidate?.smiles)) return candidate.smiles;
   if (raw.evidence_kind === "reference_ligand") return "SDF asset; canonical SMILES is parsed after docking/prep.";
   return "Not available";
+}
+
+function candidateToIndustrialCandidate(candidate) {
+  const raw = candidate?.raw || {};
+  const smiles = displayCandidateSmiles(candidate);
+  const admetRisks = unique([
+    raw.hERG_risk,
+    raw.cyp_risk,
+    raw.dili_risk,
+    raw.ames_risk,
+    raw.bbb_risk,
+    raw.toxicity_risk,
+    raw.pains === "fail" ? "PAINS alert" : null,
+    raw.brenk === "fail" ? "Brenk alert" : null,
+    numeric(candidate?.admet, 0.5) < 0.4 ? "low ADMET score" : null,
+  ].filter(Boolean).map(String));
+  const synthesisFlags = unique([
+    raw.synthesis_flag,
+    raw.procurement_status === "unknown" ? "purchasability unknown" : null,
+    raw.evidence_kind === "reference_ligand" ? "reference comparator, not new IP" : null,
+    raw.lipinski_violations && raw.lipinski_violations !== "0" ? "Lipinski review" : null,
+  ].filter(Boolean).map(String));
+  const poseUrl =
+    raw.gnina_pose_sdf_url ||
+    raw.vina_docked_sdf_url ||
+    raw.smina_docked_sdf_url ||
+    raw.docked_sdf_url ||
+    raw.sdf_url ||
+    null;
+  return {
+    id: candidate?.id || raw.candidate_id || "candidate",
+    target: candidate?.target || raw.target_id || null,
+    smiles: isUsableSmiles(smiles) ? smiles : null,
+    inchikey: raw.inchikey || raw.InChIKey || null,
+    predicted_activity: numeric(candidate?.activity ?? candidate?.score, 0.5),
+    docking_score: numeric(candidate?.affinityValue ?? raw.gnina_affinity_kcal_mol ?? raw.vina_affinity_kcal_mol ?? raw.affinity_kcal_mol, null),
+    admet_score: numeric(candidate?.admet ?? raw.admet_score, null),
+    uncertainty: Math.max(0.05, Math.min(0.9, 1 - numeric(candidate?.score, 0.5) + (candidate?.realEvidence ? -0.08 : 0.08))),
+    applicability_domain: raw.applicability_domain || raw.domain_label || (candidate?.realEvidence ? "in-domain pending assay" : "review required"),
+    pose_url: poseUrl,
+    admet_risks: admetRisks,
+    synthesis_flags: synthesisFlags,
+    evidence_tier: candidate?.realEvidence ? "exploratory_computational" : "proxy_or_preview",
+    metadata: {
+      tags: candidate?.tags || [],
+      rationale: candidate?.rationale,
+      default_pose_source: raw.default_pose_source,
+      gnina_cnn_score: raw.gnina_cnn_pose_score,
+    },
+  };
 }
 
 function normalizeBackendCandidate(candidate, proteinEvidence = null, dataFabric = null) {

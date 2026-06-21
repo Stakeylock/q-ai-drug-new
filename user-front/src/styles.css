@@ -2443,6 +2443,111 @@ label {
   border-radius: 14px;
 }
 
+.industrial-workbench {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 12%, transparent), transparent 44%),
+    rgba(255, 255, 255, 0.055);
+  padding: 16px;
+}
+
+.industrial-workbench h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 48px);
+  line-height: 0.98;
+}
+
+.industrial-metrics,
+.industrial-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.industrial-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.industrial-actions.compact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.industrial-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.85fr) minmax(360px, 1.15fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.industrial-card {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 14px;
+}
+
+.industrial-card > strong {
+  color: var(--ink);
+}
+
+.industrial-card p,
+.industrial-card small,
+.industrial-card span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.industrial-card pre {
+  max-height: 260px;
+  overflow: auto;
+  margin: 0;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--ink);
+  padding: 12px;
+  white-space: pre-wrap;
+}
+
+.portfolio-gates {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.portfolio-gates span,
+.audit-strip span {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.055);
+  padding: 10px;
+  font-size: 12px;
+}
+
+.portfolio-gates strong {
+  color: var(--ink);
+  font-size: 18px;
+}
+
+.audit-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
 .workflow-map {
   display: grid;
   gap: 14px;
@@ -3061,6 +3166,7 @@ h3 {
 .workflow-map,
 .asset-library-panel,
 .resource-strategy-panel,
+.industrial-workbench,
 .viewer3d-shell {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.22);
@@ -3073,20 +3179,23 @@ h3 {
 
 .workflow-map,
 .resource-strategy-panel,
-.asset-library-panel {
+.asset-library-panel,
+.industrial-workbench {
   border-radius: 28px;
   padding: 18px;
 }
 
 .workflow-map .eyebrow,
 .resource-strategy-panel .eyebrow,
-.asset-library-panel .eyebrow {
+.asset-library-panel .eyebrow,
+.industrial-workbench .eyebrow {
   color: #ffffff;
 }
 
 .workflow-map .shiny-text,
 .resource-strategy-panel .shiny-text,
-.asset-library-panel .shiny-text {
+.asset-library-panel .shiny-text,
+.industrial-workbench .shiny-text {
   color: #ffffff;
 }
 
@@ -3095,6 +3204,7 @@ h3 {
 .gap-card,
 .asset-row,
 .ligand-card,
+.industrial-card,
 .asset-section-head,
 .source-notice-grid span {
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -3424,6 +3534,17 @@ h3 {
     grid-template-columns: minmax(260px, 0.4fr) minmax(0, 1fr);
   }
 
+  .industrial-metrics,
+  .industrial-plan-grid,
+  .audit-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .industrial-grid,
+  .portfolio-gates {
+    grid-template-columns: 1fr;
+  }
+
   .gap-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3453,6 +3574,13 @@ h3 {
   .source-notice-grid,
   .research-tools .tools-layout,
   .research-tools .tool-payload {
+    grid-template-columns: 1fr;
+  }
+
+  .industrial-metrics,
+  .industrial-plan-grid,
+  .audit-strip,
+  .industrial-actions.compact {
     grid-template-columns: 1fr;
   }
 

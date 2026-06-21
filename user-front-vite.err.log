@@ -260,3 +260,6 @@ Error: connect ECONNREFUSED 127.0.0.1:8000
 [2m9:59:46 AM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /v1/runs/run_20260621_042612_7d3ea114/events?user_id=cf2399b2-1c96-45bd-9afb-346b8d8816d4[39m
 Error: connect ECONNREFUSED 127.0.0.1:8000
     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1634:16)
+[2m2:03:41 PM[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /v1/assistant/chat[39m
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)

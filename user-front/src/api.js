@@ -102,6 +102,57 @@ export function reviewDockingVision(payload) {
   });
 }
 
+export function generateWetLabAssayPlan(payload) {
+  return apiFetch("/v1/industrial/wet-lab/assay-plan", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function exportWetLabAssayPacket(payload) {
+  return apiFetch("/v1/industrial/wet-lab/assay-packet", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function importWetLabResults(payload) {
+  return apiFetch("/v1/industrial/wet-lab/results/import", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function createDecisionGate(payload) {
+  return apiFetch("/v1/industrial/decision-gates", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function signCandidateReport(payload) {
+  return apiFetch("/v1/industrial/e-signatures", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchIndustrialAudit(limit = 80) {
+  return apiFetch(`/v1/industrial/audit-log?limit=${limit}`);
+}
+
+export function fetchIndustrialReadiness() {
+  return apiFetch("/v1/industrial/readiness");
+}
+
+export function fetchBenchmarkValidationPlan() {
+  return apiFetch("/v1/industrial/benchmarks/validation-plan");
+}
+
+export function fetchCheminformaticsFeatureMatrix() {
+  return apiFetch("/v1/industrial/cheminformatics/feature-matrix");
+}
+
 export function createIsolatedRun(payload) {
   return apiFetch("/v1/runs", {
     method: "POST",
