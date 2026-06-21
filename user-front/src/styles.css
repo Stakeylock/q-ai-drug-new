@@ -794,6 +794,11 @@ label {
   border-color: color-mix(in srgb, var(--accent-3) 45%, var(--line));
 }
 
+.live-event.limited {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  background: color-mix(in srgb, var(--accent) 8%, rgba(255, 255, 255, 0.055));
+}
+
 .live-event.failed {
   border-color: color-mix(in srgb, var(--danger) 50%, var(--line));
 }

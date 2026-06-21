@@ -465,7 +465,7 @@ export default function App() {
       await recordEvent(
         "02_ligand_library",
         "benchmark_comparator_read",
-        customMolecules.length ? "completed" : "warning",
+        customMolecules.length ? "completed" : "limited",
         `${rawCandidates.length} benchmark/reference candidate row(s) read. These do not substitute for user-supplied ligands.`,
         { candidate_rows: rawCandidates.length, source: "outputs/cancer_proof_v1/top_candidates.csv" },
       );
@@ -525,16 +525,16 @@ export default function App() {
     await recordEvent(
       "03_docking",
       "docking_artifact_review",
-      rawCandidates.some((candidate) => candidate.gnina_pose_sdf_url || candidate.docked_sdf_url) ? "completed" : "warning",
+      rawCandidates.some((candidate) => candidate.gnina_pose_sdf_url || candidate.docked_sdf_url) ? "completed" : "limited",
       rawCandidates.some((candidate) => candidate.gnina_pose_sdf_url || candidate.docked_sdf_url)
         ? "Existing docking artifacts were inspected and labelled by source; run per-molecule GNINA/Vina from Molecule Workbench for user-derived docking."
         : "No real docking artifacts were produced in this run. Use Molecule Workbench real docking for user ligands.",
       { comparator_pose_rows: rawCandidates.filter((candidate) => candidate.gnina_pose_sdf_url || candidate.docked_sdf_url).length },
     );
-    await recordEvent("04_interaction_fingerprints", "module_gap", "warning", "Interaction fingerprints are not recomputed in this interactive run unless a full backend evidence job is launched.", {});
-    await recordEvent("05_physics_refinement", "module_gap", "warning", "Physics refinement is not recomputed in this interactive run; existing MD-like fields are treated as comparator evidence only.", {});
+    await recordEvent("04_interaction_fingerprints", "module_limit", "limited", "Interaction fingerprints are not recomputed in this interactive run unless a full backend evidence job is launched.", {});
+    await recordEvent("05_physics_refinement", "module_limit", "limited", "Physics refinement is not recomputed in this interactive run; existing MD-like fields are treated as comparator evidence only.", {});
     await recordEvent("06_admet_tox", "admet_review", "completed", "ADMET/tox descriptor fields were read from candidate artifacts and live RDKit descriptors where available.", {});
-    await recordEvent("07_quantum_qm", "qm_review", "warning", "QM/QML fields are read when present; conformer-ensemble xTB is not launched by this UI run yet.", {});
+    await recordEvent("07_quantum_qm", "qm_review", "limited", "QM/QML fields are read when present; conformer-ensemble xTB is not launched by this UI run yet.", {});
 
     let candidates = rankCandidates(rawCandidates || [], selectedProteins, patient, tierConfig.maxCandidates, proteinEvidence, dataFabric);
     const previewTargets = candidates.filter(candidateNeedsStructurePreview);
@@ -564,17 +564,24 @@ export default function App() {
       dockingToolStatus = await fetchDockingTools();
       const stackEngines = availableDockingEngines(dockingToolStatus);
       const stackLimit = Math.min(candidates.length, Math.max(3, selectedProteins.length * 2));
-      const stackTargets = candidates.filter(candidateCanRunDocking).slice(0, stackLimit);
+      const ligandReadyCandidates = candidates.filter(candidateHasDockingInput);
+      const receptorSkipped = ligandReadyCandidates.filter((candidate) => !candidateHasDockingReceptor(candidate)).slice(0, 12);
+      const stackTargets = ligandReadyCandidates.filter(candidateCanRunDocking).slice(0, stackLimit);
       if (stackTargets.length) {
         await recordEvent(
           "03_docking",
           "full_stack_docking_started",
           "started",
-          `Running ${stackEngines.map((item) => item.toUpperCase()).join(", ")} for ${stackTargets.length} top dockable candidate(s).`,
-          { engines: stackEngines, candidate_ids: stackTargets.map((candidate) => candidate.id) },
+          `Running ${stackEngines.map((item) => item.toUpperCase()).join(", ")} for ${stackTargets.length} receptor-ready candidate(s).${receptorSkipped.length ? ` ${receptorSkipped.length} candidate(s) skipped until receptor prep exists.` : ""}`,
+          {
+            engines: stackEngines,
+            candidate_ids: stackTargets.map((candidate) => candidate.id),
+            skipped_no_receptor: receptorSkipped.map((candidate) => ({ id: candidate.id, target: candidate.target })),
+          },
         );
         let stackCompleted = 0;
         let stackFailed = 0;
+        const stackErrors = [];
         const updatedById = new Map(candidates.map((candidate) => [candidate.id, candidate]));
         for (const candidate of stackTargets) {
           const result = await runDockingStackForCandidate(candidate, {
@@ -597,17 +604,35 @@ export default function App() {
           updatedById.set(candidate.id, result.candidate);
           stackCompleted += result.results.length;
           stackFailed += result.errors.length;
+          stackErrors.push(...result.errors.map((error) => ({ candidate_id: candidate.id, target: candidate.target, ...error })));
         }
         candidates = candidates.map((candidate) => updatedById.get(candidate.id) || candidate);
         if (stackFailed) {
           warning = `${warning ? `${warning} ` : ""}${stackFailed} docking engine run(s) failed; completed engine poses remain attached.`;
         }
+        if (receptorSkipped.length) {
+          warning = `${warning ? `${warning} ` : ""}${receptorSkipped.length} candidate(s) were skipped because no receptor asset was available.`;
+        }
         await recordEvent(
           "03_docking",
           "full_stack_docking_completed",
-          stackFailed ? "warning" : "completed",
-          `${stackCompleted} docking engine run(s) completed across GNINA/Vina/Smina; ${stackFailed} failed.`,
-          { completed_engine_runs: stackCompleted, failed_engine_runs: stackFailed },
+          stackFailed || receptorSkipped.length ? "warning" : "completed",
+          `${stackCompleted} docking engine run(s) completed across GNINA/Vina/Smina; ${stackFailed} failed; ${receptorSkipped.length} skipped for missing receptor prep.`,
+          {
+            completed_engine_runs: stackCompleted,
+            failed_engine_runs: stackFailed,
+            skipped_no_receptor: receptorSkipped.map((candidate) => ({ id: candidate.id, target: candidate.target })),
+            errors: stackErrors.slice(0, 12),
+          },
+        );
+      } else if (receptorSkipped.length) {
+        warning = `${warning ? `${warning} ` : ""}${receptorSkipped.length} candidate(s) were not docked because no receptor asset was available.`;
+        await recordEvent(
+          "03_docking",
+          "full_stack_docking_skipped",
+          "warning",
+          `No receptor-ready candidates were available for GNINA/Vina/Smina; ${receptorSkipped.length} candidate(s) need receptor prep.`,
+          { engines: stackEngines, skipped_no_receptor: receptorSkipped.map((candidate) => ({ id: candidate.id, target: candidate.target })) },
         );
       }
     } catch (error) {
@@ -625,7 +650,7 @@ export default function App() {
       "09_assay_handoff",
       "handoff_ready",
       "completed",
-      "Research dossier is ready with module gaps, source reads, benchmark-comparator warnings, and wet-lab validation boundary.",
+      "Research dossier is ready with module limits, source reads, benchmark-comparator labels, and wet-lab validation boundary.",
       { export_tabs: ["Molecules", "Research Tools", "Artifacts"] },
     );
     setRun((current) => ({
@@ -829,6 +854,12 @@ function LivePipelineConsole({ run, minimized, setMinimized, setWorkspaceTab }) 
             <div>
               <strong>{event.event}</strong>
               <p>{event.message}</p>
+              {event.data?.skipped_no_receptor?.length > 0 && (
+                <small>Skipped until receptor prep: {event.data.skipped_no_receptor.map((item) => `${item.id || "candidate"} (${item.target || "target"})`).join(", ")}</small>
+              )}
+              {event.data?.errors?.length > 0 && (
+                <small>Engine errors: {event.data.errors.map((item) => `${item.candidate_id || "candidate"} ${String(item.engine || "").toUpperCase()}: ${item.message}`).join(" | ")}</small>
+              )}
               {event.artifacts?.length > 0 && (
                 <small>{event.artifacts.map((artifact) => artifact.label || artifact.path).join(", ")}</small>
               )}
@@ -3526,9 +3557,28 @@ function candidateNeedsStructurePreview(candidate) {
   return Boolean(candidateSeedSmiles(candidate));
 }
 
-function candidateCanRunDocking(candidate) {
+function candidateHasDockingInput(candidate) {
   const raw = candidate?.raw || {};
   return Boolean(candidateSeedSmiles(candidate) || raw.sdf_url || raw.ligand_sdf_url || raw.docked_sdf_url || raw.gnina_pose_sdf_url);
+}
+
+const DOCKING_RECEPTOR_TARGETS = new Set(PHARMA_ASSET_LIBRARY.receptors.map((asset) => asset.gene.toUpperCase()));
+
+function candidateHasDockingReceptor(candidate) {
+  const raw = candidate?.raw || {};
+  const target = String(candidate?.target || raw.target_id || "").toUpperCase();
+  return Boolean(
+    raw.receptor_url ||
+      raw.gnina_receptor_url ||
+      raw.vina_receptor_url ||
+      raw.smina_receptor_url ||
+      raw.receptor_path ||
+      DOCKING_RECEPTOR_TARGETS.has(target),
+  );
+}
+
+function candidateCanRunDocking(candidate) {
+  return candidateHasDockingInput(candidate) && candidateHasDockingReceptor(candidate);
 }
 
 function displayCandidateSmiles(candidate) {

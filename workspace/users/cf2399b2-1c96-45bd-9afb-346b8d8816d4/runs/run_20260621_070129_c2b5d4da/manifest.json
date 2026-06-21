@@ -97,6 +97,16 @@
         "Open Targets"
       ],
       "ligand_count": 10
+    },
+    {
+      "timestamp": "2026-06-21T07:02:02.453010+00:00",
+      "target_count": 6,
+      "ligand_count": 10,
+      "chembl_activity_datapoints": 120,
+      "chembl_unique_molecules": 67,
+      "pubchem_property_hits": 10,
+      "rdkit_descriptor_hits": 10,
+      "cache_dir": "data/research_resources/realtime_cache"
     }
   ],
   "jobs": [
@@ -176,8 +186,116 @@
       "progress": 26,
       "artifacts": [],
       "data_checksum": "84596ba5ecbb1eb715b16c75ce6f1dd981cb383b8b1b32a1fd406c9ce0d3e646"
+    },
+    {
+      "module": "02_ligand_library",
+      "event": "source_read",
+      "status": "completed",
+      "timestamp": "2026-06-21T07:02:02.453010+00:00",
+      "progress": 26,
+      "artifacts": [],
+      "data_checksum": "f7221bdf5cc1b9df9a7ccaf7655d50a3f2d2cdd2996296c4c0c8475eca1d95b9"
+    },
+    {
+      "module": "03_docking",
+      "event": "docking_artifact_review",
+      "status": "completed",
+      "timestamp": "2026-06-21T07:02:02.770015+00:00",
+      "progress": 38,
+      "artifacts": [],
+      "data_checksum": "df946d675933b381a370eeafe5945f2851966585c8acf6cd17008ad588abb334"
+    },
+    {
+      "module": "04_interaction_fingerprints",
+      "event": "module_gap",
+      "status": "warning",
+      "timestamp": "2026-06-21T07:02:03.031697+00:00",
+      "progress": 49,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "05_physics_refinement",
+      "event": "module_gap",
+      "status": "warning",
+      "timestamp": "2026-06-21T07:02:03.089218+00:00",
+      "progress": 60,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "06_admet_tox",
+      "event": "admet_review",
+      "status": "completed",
+      "timestamp": "2026-06-21T07:02:03.364221+00:00",
+      "progress": 70,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "07_quantum_qm",
+      "event": "qm_review",
+      "status": "warning",
+      "timestamp": "2026-06-21T07:02:03.410229+00:00",
+      "progress": 80,
+      "artifacts": [],
+      "data_checksum": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "module": "03_docking",
+      "event": "structure_preview_started",
+      "status": "started",
+      "timestamp": "2026-06-21T07:02:03.682092+00:00",
+      "progress": 38,
+      "artifacts": [],
+      "data_checksum": "daa19a15710f467b443422f1fb8b6831f05b52b21111e59875d59ba179785502"
+    },
+    {
+      "module": "03_docking",
+      "event": "structure_preview_completed",
+      "status": "completed",
+      "timestamp": "2026-06-21T07:02:04.985858+00:00",
+      "progress": 38,
+      "artifacts": [],
+      "data_checksum": "5b6c0b5913dd41ae2b3542de1cc74a6680f547e53cd1abf826bc23ec4557c19c"
+    },
+    {
+      "module": "03_docking",
+      "event": "full_stack_docking_started",
+      "status": "started",
+      "timestamp": "2026-06-21T07:02:07.310018+00:00",
+      "progress": 38,
+      "artifacts": [],
+      "data_checksum": "27eece5f466ebf3804c27447668136bd3320110cc450974e65f60fbdaf933c01"
+    },
+    {
+      "module": "03_docking",
+      "event": "full_stack_docking_completed",
+      "status": "warning",
+      "timestamp": "2026-06-21T07:12:06.187220+00:00",
+      "progress": 38,
+      "artifacts": [],
+      "data_checksum": "d73988c9fac18bf6fa869088bee19d33575981c2f1d043326c66b3e6def44f87"
+    },
+    {
+      "module": "08_sar_decision",
+      "event": "rerank_completed",
+      "status": "completed",
+      "timestamp": "2026-06-21T07:12:06.448436+00:00",
+      "progress": 91,
+      "artifacts": [],
+      "data_checksum": "9bcccc0c6ae3c2d4dfdfbe8562ca0c06d1ce5c71b9d6457f4b85f4a3f227990f"
+    },
+    {
+      "module": "09_assay_handoff",
+      "event": "handoff_ready",
+      "status": "completed",
+      "timestamp": "2026-06-21T07:12:06.504018+00:00",
+      "progress": 100,
+      "artifacts": [],
+      "data_checksum": "ac469d29f2b60cded5e44a1d76405e6efd1b6effb056f2ca1da87306bd3ebea4"
     }
   ],
   "claim_boundary": "In-silico research run. No clinical, regulatory, safety, or efficacy claims.",
-  "updated_at": "2026-06-21T07:01:42.450234+00:00"
+  "updated_at": "2026-06-21T07:12:06.504018+00:00"
 }

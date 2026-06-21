@@ -40,6 +40,7 @@ FRONTEND_PUBLIC_DIR = Path(os.getenv("QAI_FRONTEND_PUBLIC_DIR", "user-front/publ
 POCKETS_CONFIG = Path(os.getenv("QAI_POCKETS_CONFIG", "configs/oncology_pockets.yaml"))
 TARGET_ALPHAFOLD_IDS = {
     "EGFR": "AF-P00533-F1",
+    "ROS1": "AF-P08922-F1",
     "KRAS": "AF-P01116-F1",
     "BRAF": "AF-P15056-F1",
     "MET": "AF-P08581-F1",

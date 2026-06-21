@@ -444,6 +444,7 @@ export const PHARMA_ASSET_LIBRARY = {
   ],
   receptors: [
     receptorAsset("EGFR", "P00533", "AF-P00533-F1", "NSCLC, CRC, GBM", "Kinase receptor"),
+    receptorAsset("ROS1", "P08922", "AF-P08922-F1", "NSCLC", "Kinase fusion"),
     receptorAsset("KRAS", "P01116", "AF-P01116-F1", "NSCLC, CRC, PDAC", "RAS GTPase"),
     receptorAsset("BRAF", "P15056", "AF-P15056-F1", "Melanoma, CRC, NSCLC", "MAPK kinase pathway"),
     receptorAsset("MET", "P08581", "AF-P08581-F1", "NSCLC", "RTK bypass resistance"),

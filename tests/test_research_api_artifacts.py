@@ -105,6 +105,17 @@ def test_realtime_dock_rejects_local_paths_outside_allowed_assets(tmp_path, monk
     assert getattr(exc.value, "status_code", None) == 403
 
 
+def test_ros1_public_alphafold_receptor_is_registered():
+    assert chemistry_routes.TARGET_ALPHAFOLD_IDS["ROS1"] == "AF-P08922-F1"
+    assert (
+        chemistry_routes.FRONTEND_PUBLIC_DIR
+        / "pharma-library"
+        / "receptors"
+        / "alphafold"
+        / "AF-P08922-F1-model_v6.cif"
+    ).exists()
+
+
 def test_dashboard_smoke_current_artifacts():
     if not (api.DEFAULT_OUTPUT_DIR / "top_candidates.csv").exists():
         pytest.skip("research artifacts are not present in this checkout")
