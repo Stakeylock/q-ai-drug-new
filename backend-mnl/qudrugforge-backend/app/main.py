@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
 
 # 3. Instantiate FastAPI application
 app = FastAPI(
-    title="QuDrugForge Backend",
+    title=settings.APP_NAME,
     description="Quantum AI Drug Discovery Platform Application Backend - Phase 1 Foundation",
     version="1.0.0-phase1",
     lifespan=lifespan,
@@ -88,7 +88,7 @@ async def root():
     Root endpoint serving basic service identifiers.
     """
     return {
-        "service": "QuDrugForge Backend",
+        "service": settings.APP_NAME,
         "status": "running",
         "docs": "/docs",
         "api_prefix": settings.API_V1_PREFIX

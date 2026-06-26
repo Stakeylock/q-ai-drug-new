@@ -20,22 +20,31 @@ export default function MarketingLayout({
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
-            <Link href="#features" className="text-sm font-bold uppercase tracking-widest text-text-secondary transition hover:text-primary">
+            <Link href="/#features" className="text-sm font-bold uppercase tracking-widest text-text-secondary transition hover:text-primary">
               Features
             </Link>
-            <Link href="#workflow" className="text-sm font-bold uppercase tracking-widest text-text-secondary transition hover:text-primary">
+            <Link href="/#workflow" className="text-sm font-bold uppercase tracking-widest text-text-secondary transition hover:text-primary">
               Workflow
             </Link>
-            <Link href="#targets" className="text-sm font-bold uppercase tracking-widest text-text-secondary transition hover:text-primary">
+            <Link href="/#targets" className="text-sm font-bold uppercase tracking-widest text-text-secondary transition hover:text-primary">
               Targets
+            </Link>
+            <Link href="/pricing" className="text-sm font-bold uppercase tracking-widest text-text-secondary transition hover:text-primary">
+              Pricing
             </Link>
           </div>
 
 
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
+              href="/pricing"
+              className="rounded-lg px-2 py-2 text-xs font-bold uppercase tracking-wider text-text-secondary transition hover:text-primary md:hidden"
+            >
+              Pricing
+            </Link>
+            <Link
               href="/login"
-              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-text-muted transition hover:border-accent/40 hover:text-text"
+              className="hidden rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-text-muted transition hover:border-accent/40 hover:text-text sm:inline-flex"
             >
               Login
             </Link>

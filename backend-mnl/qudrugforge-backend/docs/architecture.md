@@ -8,7 +8,7 @@ This document details the architectural layout, system component interaction, an
 
 ```mermaid
 graph TD
-    Client[Next.js Frontend] <--> |HTTPS / WSS| Backend[QuDrugForge Backend<br>FastAPI Application]
+    Client[Next.js Frontend] <--> |HTTPS / WSS| Backend[Quinfosys™ QuDrugForge Backend<br>FastAPI Application]
     Backend <--> |PyMongo/Motor| DB[(MongoDB Database<br>Metadata & Operations)]
     Backend <--> |Storage Interface| FS[(Storage Provider<br>Local / S3 / R2 / Blob)]
     Backend <--> |HTTP/REST| Compute[q-ai-drug Compute Backend<br>Scientific/Quantum Pipeline Engine]
@@ -18,7 +18,7 @@ graph TD
 
 ## 2. System Components & Separation of Concerns
 
-### A. QuDrugForge Backend (This Repository)
+### A. Quinfosys™ QuDrugForge Backend (This Repository)
 * **Role**: Primary application orchestrator.
 * **Responsibilities**:
   * User authentication, workspace authorization, and project management.

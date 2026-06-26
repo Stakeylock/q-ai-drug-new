@@ -1,16 +1,49 @@
-2026-06-21 01:01:10,483 - qudrugforge-logging - INFO - Logging setup complete. Active level: DEBUG
-2026-06-21 01:01:10,483 - qudrugforge-main - INFO - CORS origins configured: ['http://localhost:3001', 'http://127.0.0.1:3001', 'http://localhost:3000', 'http://127.0.0.1:3000']
-2026-06-21 01:01:10,535 - qudrugforge-main - INFO - Initializing QuDrugForge platform backend...
-2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\uploads
-2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\artifacts
-2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\reports
-2026-06-21 01:01:10,535 - qudrugforge-storage-local - INFO - Ensured storage directory exists: E:\QC-Intern\qc1\backend-mnl\qudrugforge-backend\storage\temp
-2026-06-21 01:01:10,535 - qudrugforge-database - INFO - Attempting connection to MongoDB database: qudrugforge_dev...
-2026-06-21 01:01:13,676 - qudrugforge-database - ERROR - MongoDB connection handshake failed: 127.0.0.1:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 3.0s, Topology Description: <TopologyDescription id: 6a36ea7eca76aca472b5c12c, topology_type: Unknown, servers: [<ServerDescription ('127.0.0.1', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27017: [WinError 10061] No connection could be made because the target machine actively refused it (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
-2026-06-21 01:01:13,678 - qudrugforge-database - WARNING - Platform starting without active MongoDB connection (Development grace mode).
-INFO:     127.0.0.1:43629 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43729 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43732 - "GET /v1/tools HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:43731 - "GET /api/v1/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43734 - "GET /api/v1/tools HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:43735 - "GET /research/top-candidates?limit=1 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:38489 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38491 - "GET / HTTP/1.1" 307 Temporary Redirect
+INFO:     127.0.0.1:38491 - "GET /dashboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:18414 - "GET /v1/billing/summary HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:18415 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:18416 - "GET /v1/billing/summary HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:18417 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47036 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:11863 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42277 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42276 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58094 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58095 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:26053 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:26052 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7752 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7753 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:7751 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:22951 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:23649 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:23648 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53620 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33138 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62887 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62886 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:24229 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64043 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46659 - "POST /v1/assistant/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32093 - "POST /v1/assistant/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41148 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41147 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41146 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38076 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46715 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46714 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:11954 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46713 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:22073 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:22072 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:22070 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:22071 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36649 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36648 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36647 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36646 - "GET /v1/assistant/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:17337 - "GET /v1/tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:17336 - "GET /v1/billing/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42526 - "GET /v1/ai/model-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:17335 - "GET /v1/assistant/status HTTP/1.1" 200 OK

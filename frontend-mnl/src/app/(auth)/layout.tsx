@@ -53,7 +53,7 @@ export default function AuthLayout({
           <div className="flex items-center gap-3">
             <Image 
               src={logo} 
-              alt="Quinfosys QuDrugForge Logo" 
+              alt="Quinfosys™ QuDrugForge Logo"
               width={150} 
               height={36} 
               priority
@@ -62,7 +62,7 @@ export default function AuthLayout({
           </div>
           <div className="space-y-1">
             <h1 className="text-lg font-bold tracking-tight text-slate-100 xl:text-xl">
-              Quinfosys™ QuDrugForge™
+              Quinfosys™ QuDrugForge
             </h1>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-400">
               Quantum AI Drug Discovery Platform
@@ -97,7 +97,7 @@ export default function AuthLayout({
           <div className="flex lg:hidden items-center gap-2">
             <Image 
               src={logo} 
-              alt="Quinfosys QuDrugForge Logo" 
+              alt="Quinfosys™ QuDrugForge Logo"
               width={90} 
               height={22} 
               priority

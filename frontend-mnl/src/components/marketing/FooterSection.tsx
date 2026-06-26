@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function FooterSection() {
   return (
     <footer className="mt-24 border-t border-border/50 bg-card/30 px-6 py-16 backdrop-blur-sm md:px-12 lg:px-16">
@@ -8,7 +10,7 @@ export function FooterSection() {
               Quinfosys<span style={{ verticalAlign: "super", fontSize: "0.65em", lineHeight: 0 }}>™</span> QuDrugForge
             </p>
             <p className="mt-4 max-w-sm text-sm font-medium leading-relaxed text-text-secondary">
-              The next generation of quantum-enhanced oncology drug discovery. 
+              The next generation of quantum-enhanced oncology drug discovery.
               Accelerating research from molecular ideation to clinical validation.
             </p>
             <div className="mt-6 flex gap-4">
@@ -22,9 +24,10 @@ export function FooterSection() {
           <div>
             <h4 className="text-xs font-black uppercase tracking-[0.2em] text-text">Platform</h4>
             <ul className="mt-6 space-y-4 text-sm font-medium text-text-secondary">
-              <li><a href="#features" className="hover:text-primary">Molecular Explorer</a></li>
-              <li><a href="#workflow" className="hover:text-primary">Research Pipeline</a></li>
-              <li><a href="#targets" className="hover:text-primary">Target Selection</a></li>
+              <li><Link href="/#features" className="hover:text-primary">Molecular Explorer</Link></li>
+              <li><Link href="/#workflow" className="hover:text-primary">Research Pipeline</Link></li>
+              <li><Link href="/#targets" className="hover:text-primary">Target Selection</Link></li>
+              <li><Link href="/pricing" className="hover:text-primary">Pricing</Link></li>
               <li><a href="#" className="hover:text-primary">API Documentation</a></li>
             </ul>
           </div>
@@ -52,4 +55,4 @@ export function FooterSection() {
       </div>
     </footer>
   );
-}
+}

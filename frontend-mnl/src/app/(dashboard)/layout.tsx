@@ -105,6 +105,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Organization",
     items: [
       { label: "Team", href: "/settings?section=team", icon: "users", matchHref: "/team" },
+      { label: "Pricing", href: "/pricing", icon: "receipt" },
       { label: "Billing", href: "/settings?section=billing", icon: "receipt", matchHref: "/billing" },
       { label: "Audit Logs", href: "/settings?section=audit", icon: "archive", matchHref: "/audit-logs" },
       { label: "Settings", href: "/settings", icon: "settings" },
@@ -471,7 +472,7 @@ function DashboardLayoutContent({
             <div className={`flex ${isSidebarCollapsed ? "justify-center" : "justify-start"}`}>
               <Image
                 src={logo}
-                alt="Quinfosys QuDrugForge"
+                alt="Quinfosys™ QuDrugForge"
                 width={180}
                 height={43}
                 priority

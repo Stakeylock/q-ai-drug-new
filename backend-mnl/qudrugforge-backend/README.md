@@ -22,7 +22,7 @@ QuDrugForge relies on a strictly structured decoupled architecture:
 
 ```mermaid
 graph TD
-    Client[Next.js Frontend] <--> |HTTPS / WSS| Backend[QuDrugForge Backend<br>FastAPI App]
+    Client[Next.js Frontend] <--> |HTTPS / WSS| Backend[Quinfosys™ QuDrugForge Backend<br>FastAPI App]
     Backend <--> |PyMongo/Motor| DB[(MongoDB Database)]
     Backend <--> |Storage Interface| FS[(Storage Provider)]
     Backend <--> |HTTP/REST / Subprocess| Compute[q-ai-drug Compute Backend]

@@ -69,3 +69,27 @@ INFO:     127.0.0.1:18526 - "GET /v1/chemistry/chemical-db?limit=100 HTTP/1.1" 2
 INFO:     127.0.0.1:18527 - "GET /v1/billing/summary HTTP/1.1" 200 OK
 INFO:     127.0.0.1:18525 - "GET /v1/chemistry/docking-tools HTTP/1.1" 200 OK
 INFO:     127.0.0.1:20616 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:14254 - "GET /v1/industrial/benchmarks/validation-plan HTTP/1.1" 200 OK
+INFO:     127.0.0.1:14255 - "GET /v1/industrial/cheminformatics/feature-matrix HTTP/1.1" 200 OK
+INFO:     127.0.0.1:14253 - "GET /v1/industrial/readiness HTTP/1.1" 200 OK
+INFO:     127.0.0.1:14256 - "GET /v1/industrial/audit-log?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:14258 - "GET /v1/research/data-fabric/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:14257 - "GET /research/resource-registry HTTP/1.1" 200 OK
+INFO:     127.0.0.1:30447 - "GET /v1/industrial/benchmarks/validation-plan HTTP/1.1" 200 OK
+INFO:     127.0.0.1:30448 - "GET /v1/industrial/cheminformatics/feature-matrix HTTP/1.1" 200 OK
+INFO:     127.0.0.1:30450 - "GET /v1/industrial/audit-log?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:30449 - "GET /v1/industrial/readiness HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47248 - "GET /v1/research/data-fabric/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:9290 - "GET /research/resource-registry HTTP/1.1" 200 OK
+INFO:     127.0.0.1:11875 - "POST /v1/industrial/wet-lab/results/import HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:49697 - "GET /v1/chemistry/chemical-db?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48014 - "GET /v1/chemistry/chemical-db?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49696 - "GET /v1/chemistry/docking-tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62899 - "GET /v1/chemistry/docking-tools HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42135 - "POST /v1/chemistry/dock-preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56122 - "POST /v1/chemistry/realtime-dock HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37573 - "GET /artifacts/realtime_docking/EGFR/SANDBOX_EGFR_248298/SANDBOX_EGFR_248298_gnina.sdf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46095 - "GET /artifacts/realtime_docking/EGFR/SANDBOX_EGFR_248298/prepared_receptors/1M17_clean.pdb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46096 - "GET /artifacts/realtime_docking/EGFR/SANDBOX_EGFR_248298/SANDBOX_EGFR_248298_gnina.sdf HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:3805 - "POST /v1/vision/docking-review HTTP/1.1" 200 OK
+INFO:     127.0.0.1:5703 - "POST /v1/vision/docking-review HTTP/1.1" 200 OK

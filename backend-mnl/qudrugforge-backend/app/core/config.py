@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     Leverages pydantic-settings to automatically pull parameters from environment variables
     or a local .env configuration file.
     """
-    APP_NAME: str = Field(default="QuDrugForge Backend")
+    APP_NAME: str = Field(default="Quinfosys™ QuDrugForge Backend")
     APP_ENV: str = Field(default="development")
     APP_DEBUG: bool = Field(default=True)
 

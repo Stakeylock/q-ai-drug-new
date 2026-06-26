@@ -123,6 +123,7 @@ export function ProjectSidebar({
       items: [
         { label: "All Projects", href: ProjectRoutes.global.researchProjects(), icon: "folderKanban" },
         { label: "Experiments", href: ProjectRoutes.global.history(), icon: "flask" },
+        { label: "Pricing", href: "/pricing", icon: "receipt" },
       ],
     }
   ];
@@ -172,7 +173,7 @@ export function ProjectSidebar({
           <div className={`flex ${isSidebarCollapsed ? "justify-center" : "justify-start"}`}>
             <Image
               src={logo}
-              alt="Quinfosys QuDrugForge"
+              alt="Quinfosys™ QuDrugForge"
               width={180}
               height={43}
               priority

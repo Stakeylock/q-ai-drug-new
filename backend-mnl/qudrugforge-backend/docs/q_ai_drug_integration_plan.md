@@ -14,7 +14,7 @@ To maintain a clean division of labor and security boundaries:
 ```mermaid
 sequenceDiagram
     participant FE as Next.js Frontend
-    participant BE as QuDrugForge Backend
+    participant BE as Quinfosys™ QuDrugForge Backend
     participant DB as MongoDB
     participant ST as Storage Service
     participant CE as q-ai-drug Compute

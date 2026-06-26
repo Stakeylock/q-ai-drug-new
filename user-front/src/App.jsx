@@ -68,6 +68,30 @@ const SESSION_KEY = "qai_user_front_session";
 const COPILOT_HISTORY_KEY = "qdf_copilot_history";
 const RAIL_COLLAPSED_KEY = "qdf_rail_collapsed";
 const FULL_DOCKING_STACK_ENGINES = ["gnina", "vina", "smina"];
+const ANNUAL_PRICE_FACTOR = 0.8;
+const FALLBACK_CURRENCY_RATES = {
+  USD: 1,
+  INR: 83.5,
+  EUR: 0.92,
+  GBP: 0.79,
+  AED: 3.67,
+  AUD: 1.52,
+  CAD: 1.37,
+  CHF: 0.9,
+  JPY: 157,
+  SGD: 1.35,
+};
+const TIER_PRICES = {
+  student_free: { usd: 0, inr: 0, seats: "1 researcher", eyebrow: "Learn and explore" },
+  student_pro: { usd: 12, inr: 999, seats: "1 researcher", eyebrow: "Student projects" },
+  academic_researcher: { usd: 39, inr: 3299, seats: "Up to 5 researchers", eyebrow: "Academic labs" },
+  professional_individual: { usd: 79, inr: 6599, seats: "1 professional", eyebrow: "Independent experts" },
+  startup_team: { usd: 199, inr: 16999, seats: "Up to 10 researchers", eyebrow: "Growing discovery teams" },
+  cro_service_lab: { usd: 399, inr: 33999, seats: "Up to 20 researchers", eyebrow: "Client delivery" },
+  industry_biotech: { usd: 799, inr: 67999, seats: "Up to 40 researchers", eyebrow: "Program operations" },
+  enterprise_pharma: { usd: 1499, inr: 127499, seats: "Up to 100 researchers", eyebrow: "Portfolio scale" },
+  private_deployment: { usd: null, inr: null, seats: "Custom seats", eyebrow: "Private infrastructure" },
+};
 
 function readSession() {
   try {
@@ -232,6 +256,28 @@ export default function App() {
     setSession(null);
     writeSession(null);
     setRun({ status: "idle", activeStage: -1, progress: 0, logs: [], candidates: [], project: null, backendJob: null, proteinEvidence: null, dataFabric: null, isolatedRun: null, events: [], warning: "" });
+  }
+
+  async function choosePricingTier(tierId) {
+    setBillingWarning("");
+    if (session.demo) {
+      const nextSession = {
+        ...session,
+        tier: tierId,
+        billing: demoBilling(tierId),
+      };
+      setSession(nextSession);
+      writeSession(nextSession);
+      return;
+    }
+    try {
+      const billing = await setBillingPlan(session.token, tierId);
+      const nextSession = { ...session, tier: billing?.plan_tier || tierId, billing };
+      setSession(nextSession);
+      writeSession(nextSession);
+    } catch (error) {
+      setBillingWarning(`Plan change could not be completed: ${error.message}`);
+    }
   }
 
   function updatePatient(field, value) {
@@ -733,6 +779,17 @@ export default function App() {
             </div>
           ))}
         </section>
+        <nav className="rail-navigation" aria-label="Account and plan navigation">
+          <button
+            className={workspaceTab === "pricing" ? "active" : ""}
+            type="button"
+            onClick={() => setWorkspaceTab("pricing")}
+            aria-label="View pricing and plans"
+          >
+            <span className="rail-nav-icon">$</span>
+            <span className="rail-nav-label">Pricing</span>
+          </button>
+        </nav>
         <button className="logout" type="button" onClick={logout}>
           Log out
         </button>
@@ -814,6 +871,9 @@ export default function App() {
         {workspaceTab === "account" && (
           <MyAccount session={session} tier={tier} billingWarning={billingWarning} tools={tools} logout={logout} />
         )}
+        {workspaceTab === "pricing" && (
+          <PricingExperience currentTier={tier} onSelectTier={choosePricingTier} />
+        )}
       </main>
     </div>
   );
@@ -885,60 +945,77 @@ function LivePipelineConsole({ run, minimized, setMinimized, setWorkspaceTab }) 
 }
 
 function AuthPage({ authMode, setAuthMode, authForm, updateAuth, handleAuthSubmit, busyAuth, authError, continueDemo }) {
+  function showPricing() {
+    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function chooseLandingTier(tierId) {
+    updateAuth("tier", tierId);
+    document.getElementById("account-access")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   return (
-    <main className="auth-screen">
+    <main className="auth-landing">
       <AuroraBackground />
-      <section className="auth-hero">
-        <BrandBlock />
-        <Reveal>
-          <p className="eyebrow">Patient-informed computational discovery</p>
-          <SplitText as="h1" text="QuDrugForge by Quinfosys." />
-          <p className="lead">
-            Log in, select a tier, collect de-identified patient research context, choose AlphaFold proteins by diagnosis,
-            and launch a computational candidate pipeline.
-          </p>
-        </Reveal>
+      <section className="auth-screen">
+        <section className="auth-hero">
+          <BrandBlock />
+          <Reveal>
+            <p className="eyebrow">Patient-informed computational discovery</p>
+            <SplitText as="h1" text="Quinfosys™ QuDrugForge." />
+            <p className="lead">
+              Log in, select a tier, collect de-identified patient research context, choose AlphaFold proteins by diagnosis,
+              and launch a computational candidate pipeline.
+            </p>
+            <button className="landing-pricing-link" type="button" onClick={showPricing}>
+              Explore all pricing tiers
+              <span aria-hidden="true">↓</span>
+            </button>
+          </Reveal>
+        </section>
+        <SpotlightCard className="auth-card" as="section">
+          <div id="account-access" className="auth-anchor" />
+          <div className="auth-tabs">
+            <button className={authMode === "login" ? "active" : ""} type="button" onClick={() => setAuthMode("login")}>
+              Login
+            </button>
+            <button className={authMode === "signup" ? "active" : ""} type="button" onClick={() => setAuthMode("signup")}>
+              Create account
+            </button>
+          </div>
+          <form onSubmit={handleAuthSubmit} className="auth-form">
+            <label>
+              Email
+              <input value={authForm.email} onChange={(event) => updateAuth("email", event.target.value)} type="email" required />
+            </label>
+            <label>
+              Password
+              <input value={authForm.password} onChange={(event) => updateAuth("password", event.target.value)} type="password" required />
+            </label>
+            {authMode === "signup" && (
+              <>
+                <label>
+                  Display name
+                  <input value={authForm.displayName} onChange={(event) => updateAuth("displayName", event.target.value)} />
+                </label>
+                <label>
+                  Organization
+                  <input value={authForm.organizationName} onChange={(event) => updateAuth("organizationName", event.target.value)} />
+                </label>
+              </>
+            )}
+            <TierSelector value={authForm.tier} onChange={(tier) => updateAuth("tier", tier)} />
+            {authError && <div className="form-error">{authError}</div>}
+            <MagnetButton className="primary" disabled={busyAuth}>
+              {busyAuth ? "Connecting..." : authMode === "signup" ? "Create secure workspace" : "Log in"}
+            </MagnetButton>
+            <button className="demo-link" type="button" onClick={continueDemo}>
+              Continue in tier demo mode
+            </button>
+          </form>
+        </SpotlightCard>
       </section>
-      <SpotlightCard className="auth-card" as="section">
-        <div className="auth-tabs">
-          <button className={authMode === "login" ? "active" : ""} type="button" onClick={() => setAuthMode("login")}>
-            Login
-          </button>
-          <button className={authMode === "signup" ? "active" : ""} type="button" onClick={() => setAuthMode("signup")}>
-            Create account
-          </button>
-        </div>
-        <form onSubmit={handleAuthSubmit} className="auth-form">
-          <label>
-            Email
-            <input value={authForm.email} onChange={(event) => updateAuth("email", event.target.value)} type="email" required />
-          </label>
-          <label>
-            Password
-            <input value={authForm.password} onChange={(event) => updateAuth("password", event.target.value)} type="password" required />
-          </label>
-          {authMode === "signup" && (
-            <>
-              <label>
-                Display name
-                <input value={authForm.displayName} onChange={(event) => updateAuth("displayName", event.target.value)} />
-              </label>
-              <label>
-                Organization
-                <input value={authForm.organizationName} onChange={(event) => updateAuth("organizationName", event.target.value)} />
-              </label>
-            </>
-          )}
-          <TierSelector value={authForm.tier} onChange={(tier) => updateAuth("tier", tier)} />
-          {authError && <div className="form-error">{authError}</div>}
-          <MagnetButton className="primary" disabled={busyAuth}>
-            {busyAuth ? "Connecting..." : authMode === "signup" ? "Create secure workspace" : "Log in"}
-          </MagnetButton>
-          <button className="demo-link" type="button" onClick={continueDemo}>
-            Continue in tier demo mode
-          </button>
-        </form>
-      </SpotlightCard>
+      <PricingExperience landing currentTier={authForm.tier} onSelectTier={chooseLandingTier} />
     </main>
   );
 }
@@ -948,11 +1025,185 @@ function BrandBlock() {
     <div className="brand-block">
       <img src="/logo-quinfo.jpeg" alt="Quinfosys" />
       <div>
-        <strong>QuDrugForge</strong>
-        <span>by Quinfosys</span>
+        <strong>Quinfosys™</strong>
+        <span>QuDrugForge</span>
       </div>
     </div>
   );
+}
+
+function PricingExperience({ landing = false, currentTier, onSelectTier }) {
+  const [billingCycle, setBillingCycle] = useState("annual");
+  const [currency, setCurrency] = useState("USD");
+  const [rates, setRates] = useState(FALLBACK_CURRENCY_RATES);
+  const [ratesAreLive, setRatesAreLive] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("https://open.er-api.com/v6/latest/USD", { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (payload?.result === "success" && payload.rates) {
+          setRates({ ...payload.rates, USD: 1 });
+          setRatesAreLive(true);
+        }
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+
+  const currencies = Object.keys(rates).sort((left, right) => {
+    const priority = ["USD", "INR"];
+    const leftIndex = priority.indexOf(left);
+    const rightIndex = priority.indexOf(right);
+    if (leftIndex !== -1 || rightIndex !== -1) {
+      if (leftIndex === -1) return 1;
+      if (rightIndex === -1) return -1;
+      return leftIndex - rightIndex;
+    }
+    return left.localeCompare(right);
+  });
+
+  return (
+    <section id={landing ? "pricing" : undefined} className={`pricing-page ${landing ? "pricing-landing" : ""}`}>
+      <div className="pricing-heading">
+        <div>
+          <p className="eyebrow">Plans for every research stage</p>
+          <h2>Start lean. Scale the science.</h2>
+          <p>
+            Every tier includes the core QuDrugForge research workflow. Higher tiers increase throughput,
+            collaboration, compute depth, and governance.
+          </p>
+        </div>
+        <div className="pricing-controls" aria-label="Pricing controls">
+          <div className="billing-toggle">
+            {["monthly", "annual"].map((cycle) => (
+              <button
+                className={billingCycle === cycle ? "active" : ""}
+                type="button"
+                key={cycle}
+                onClick={() => setBillingCycle(cycle)}
+              >
+                {cycle === "annual" ? "Annual · save 20%" : "Monthly"}
+              </button>
+            ))}
+          </div>
+          <div className="currency-control">
+            <div className="currency-shortcuts">
+              {["USD", "INR"].map((code) => (
+                <button
+                  className={currency === code ? "active" : ""}
+                  type="button"
+                  key={code}
+                  onClick={() => setCurrency(code)}
+                >
+                  {code}
+                </button>
+              ))}
+            </div>
+            <label>
+              <span>Other currency</span>
+              <select value={currency} onChange={(event) => setCurrency(event.target.value)}>
+                {currencies.map((code) => (
+                  <option key={code} value={code}>
+                    {code} · {currencyName(code)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="pricing-grid">
+        {TIER_ORDER.map((tierId) => {
+          const config = TIERS[tierId];
+          const price = TIER_PRICES[tierId];
+          const displayedPrice = convertedTierPrice(price, currency, rates, billingCycle);
+          const isCurrent = currentTier === tierId;
+          const isFeatured = tierId === "academic_researcher";
+          return (
+            <article className={`pricing-card ${isFeatured ? "featured" : ""} ${isCurrent ? "current" : ""}`} key={tierId}>
+              <div className="pricing-card-topline">
+                <span>{price.eyebrow}</span>
+                {isCurrent && <em>Selected</em>}
+              </div>
+              <h3>{config.label}</h3>
+              <p className="pricing-audience">{config.audience}</p>
+              <div className="pricing-price">
+                {displayedPrice === null ? (
+                  <>
+                    <strong>Custom</strong>
+                    <small>Tailored deployment and capacity</small>
+                  </>
+                ) : (
+                  <>
+                    <strong>{formatCurrency(displayedPrice, currency)}</strong>
+                    <small>
+                      / month {billingCycle === "annual" && price.usd > 0 ? "billed annually" : ""}
+                    </small>
+                  </>
+                )}
+              </div>
+              <p className="pricing-seats">{price.seats}</p>
+              <div className="pricing-limits">
+                <span><strong>{config.maxProteins}</strong> proteins</span>
+                <span><strong>{config.maxCandidates}</strong> candidates</span>
+                <span><strong>{config.depth.replaceAll("_", " ")}</strong> depth</span>
+              </div>
+              <ul>
+                {config.needs.map((feature) => (
+                  <li key={feature}><span>✓</span>{feature}</li>
+                ))}
+              </ul>
+              <button
+                className={isFeatured ? "pricing-cta featured" : "pricing-cta"}
+                type="button"
+                onClick={() => onSelectTier(tierId)}
+              >
+                {isCurrent ? "Keep this tier" : price.usd === null ? "Contact sales" : `Choose ${config.label}`}
+              </button>
+            </article>
+          );
+        })}
+      </div>
+      <div className="pricing-footnote">
+        <span>Prices exclude applicable taxes and usage overages.</span>
+        <span>
+          {currency === "USD" || currency === "INR"
+            ? `${currency} uses localized pricing.`
+            : ratesAreLive
+              ? `${currency} is converted using current market rates.`
+              : `${currency} is an estimate; checkout rates may vary.`}
+        </span>
+      </div>
+    </section>
+  );
+}
+
+function convertedTierPrice(price, currency, rates, billingCycle) {
+  if (price.usd === null) return null;
+  const basePrice = currency === "INR" ? price.inr : price.usd * (rates[currency] || 1);
+  const adjustedPrice = billingCycle === "annual" ? basePrice * ANNUAL_PRICE_FACTOR : basePrice;
+  if (adjustedPrice >= 10000) return Math.round(adjustedPrice / 100) * 100;
+  if (adjustedPrice >= 1000) return Math.round(adjustedPrice / 10) * 10;
+  return Math.round(adjustedPrice);
+}
+
+function formatCurrency(value, currency) {
+  return new Intl.NumberFormat("en", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: value < 100 ? 2 : 0,
+  }).format(value);
+}
+
+function currencyName(currency) {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "currency" }).of(currency) || currency;
+  } catch {
+    return currency;
+  }
 }
 
 function TierSelector({ value, onChange }) {

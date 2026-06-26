@@ -33,7 +33,7 @@ async def health_check():
 
     return {
         "status": "ok",
-        "service": "QuDrugForge Backend",
+        "service": settings.APP_NAME,
         "environment": settings.APP_ENV,
         "database": db_status,
         "storage": storage_status,

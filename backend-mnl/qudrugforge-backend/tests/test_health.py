@@ -6,7 +6,7 @@ async def test_root_endpoint(async_client):
     response = await async_client.get("/")
     assert response.status_code == 200
     data = response.json()
-    assert data["service"] == "QuDrugForge Backend"
+    assert data["service"] == "Quinfosys™ QuDrugForge Backend"
     assert data["status"] == "running"
 
 @pytest.mark.asyncio

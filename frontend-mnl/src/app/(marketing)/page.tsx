@@ -5,6 +5,7 @@ import { FeaturesSection } from "../../components/marketing/FeaturesSection";
 import { VisualizationSection } from "../../components/marketing/VisualizationSection";
 import { TargetsSection } from "../../components/marketing/TargetsSection";
 import { TechStackSection } from "../../components/marketing/TechStackSection";
+import { PricingSection } from "../../components/marketing/PricingSection";
 import { FooterSection } from "../../components/marketing/FooterSection";
 import { FadeInOnScroll } from "../../components/marketing/FadeInOnScroll";
 
@@ -12,7 +13,7 @@ export default function MarketingHomePage() {
   return (
     <main className="aurora-bg relative overflow-hidden text-text selection:bg-primary selection:text-white">
       <div className="bg-grid-noise pointer-events-none absolute inset-0 opacity-40" />
-      
+
       <div className="relative mx-auto max-w-7xl space-y-24 px-6 py-12 md:space-y-32 md:px-12 md:py-20 lg:space-y-40 lg:px-16 lg:py-24">
         {/* 1. Hero Section */}
         <FadeInOnScroll delayMs={0}>
@@ -49,9 +50,12 @@ export default function MarketingHomePage() {
           <TechStackSection />
         </FadeInOnScroll>
 
-        {/* 8. Footer (Already included in Layout, but adding here if needed for consistency) */}
+        {/* 8. Pricing */}
+        <FadeInOnScroll delayMs={700}>
+          <PricingSection />
+        </FadeInOnScroll>
       </div>
       <FooterSection />
     </main>
   );
-}
+}

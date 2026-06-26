@@ -1,4 +1,4 @@
-# Quinfosys™ QuDrugForge™ — Frontend
+# Quinfosys™ QuDrugForge — Frontend
 > **Quantum AI Drug Discovery Platform — AI-Powered Computational Molecular Intelligence**
 
 QuDrugForge™ is a highly advanced, web-based frontend for a Quantum AI Drug Discovery Platform. It demonstrates a project-centric computational research workspace tailored for oncology and molecular intelligence. It provides high-fidelity, interactive representations of structural biology, molecular properties, molecular dynamics, and quantum-assisted docking results within a premium, enterprise-grade scientific UI.
