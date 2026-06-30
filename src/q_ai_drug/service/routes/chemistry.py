@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 
 from q_ai_drug.docking.gnina_runner import _center_ligand_sdf, _parse_gnina_output, _parse_gnina_warnings
 from q_ai_drug.docking.pockets import clean_receptor_pdb, effective_cubic_box_size, registered_receptor_path, resolve_pocket
+from q_ai_drug.service import mongo_store
 from q_ai_drug.docking.vina_runner import _run_obabel, parse_affinity_text
 from q_ai_drug.tools.external import resolve_tool, run_external, windows_to_wsl_path
 
@@ -656,6 +657,16 @@ def _load_chemical_records(limit: int = 100) -> list[dict[str, Any]]:
     return [row for row in rows if row]
 
 
+def _record_artifact_urls(record: dict[str, Any]) -> dict[str, Any]:
+    safe_id = _safe_slug(str(record.get("chemical_id") or ""), "chemical")
+    markdown_path = _chemical_db_root() / "route_cards" / f"{safe_id}.md"
+    handoff_path = _chemical_db_root() / "handoffs" / f"{safe_id}_wet_lab_handoff.json"
+    hydrated = dict(record)
+    hydrated["route_card_url"] = hydrated.get("route_card_url") or (_artifact_url(markdown_path) if markdown_path.exists() else None)
+    hydrated["handoff_url"] = hydrated.get("handoff_url") or (_artifact_url(handoff_path) if handoff_path.exists() else None)
+    return hydrated
+
+
 def _first_mol_from_sdf(path: Path) -> Any | None:
     if Chem is None or not path.exists():
         return None
@@ -797,16 +808,22 @@ def register_chemical(payload: ChemicalDbRegisterRequest) -> dict[str, Any]:
     )
     record["route_card_url"] = _artifact_url(markdown_path)
     record["handoff_url"] = _artifact_url(handoff_path)
+    mongo_synced = mongo_store.upsert_chemical_record(record)
+    record["document_store"] = "mongodb" if mongo_synced else "file"
     return record
 
 
 @router.get("/chemical-db")
 def list_chemical_db(limit: int = 100) -> dict[str, Any]:
-    rows = _load_chemical_records(limit=max(1, min(limit, 500)))
+    mongo_rows = mongo_store.list_chemical_records(limit=max(1, min(limit, 500)))
+    rows = mongo_rows if mongo_rows is not None else _load_chemical_records(limit=max(1, min(limit, 500)))
+    rows = [_record_artifact_urls(row) for row in rows]
     return {
         "count": len(rows),
         "records": rows,
         "ready_for_wet_lab": sum(1 for row in rows if row.get("wet_lab_ready")),
+        "document_store": "mongodb" if mongo_rows is not None else "file",
+        "document_store_status": mongo_store.mongo_status(),
         "claim_boundary": "Chemical DB is a research-use design, synthesis-planning, and wet-lab handoff registry.",
     }
 
@@ -815,14 +832,10 @@ def list_chemical_db(limit: int = 100) -> dict[str, Any]:
 def get_chemical_record(chemical_id: str) -> dict[str, Any]:
     safe_id = _safe_slug(chemical_id, "chemical")
     path = _chemical_db_root() / "records" / f"{safe_id}.json"
-    record = _read_json(path, {})
+    record = mongo_store.get_chemical_record(safe_id) or _read_json(path, {})
     if not record:
         raise HTTPException(status_code=404, detail="Chemical record not found.")
-    markdown_path = _chemical_db_root() / "route_cards" / f"{safe_id}.md"
-    handoff_path = _chemical_db_root() / "handoffs" / f"{safe_id}_wet_lab_handoff.json"
-    record["route_card_url"] = _artifact_url(markdown_path) if markdown_path.exists() else None
-    record["handoff_url"] = _artifact_url(handoff_path) if handoff_path.exists() else None
-    return record
+    return _record_artifact_urls(record)
 
 
 @router.post("/chemical-db/{chemical_id}/handoff")
@@ -831,6 +844,13 @@ def create_chemical_handoff(chemical_id: str) -> dict[str, Any]:
     handoff = _wet_lab_handoff(record)
     path = _chemical_db_root() / "handoffs" / f"{record['chemical_id']}_wet_lab_handoff.json"
     _write_json(path, handoff)
+    updated_record = {
+        **record,
+        "latest_handoff": handoff,
+        "handoff_url": _artifact_url(path),
+        "updated_at": _now_iso(),
+    }
+    mongo_store.upsert_chemical_record(updated_record)
     return {
         **handoff,
         "handoff_url": _artifact_url(path),

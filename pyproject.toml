@@ -17,6 +17,7 @@ dependencies = [
   "pandas>=2.0",
   "python-multipart>=0.0.9",
   "pydantic>=2.0",
+  "pymongo>=4.6",
   "pyyaml>=6.0",
   "requests>=2.31",
   "rq>=1.16",
@@ -30,6 +31,7 @@ chem = ["rdkit>=2024.9.1"]
 postgres = ["alembic>=1.13", "psycopg[binary]>=3.1"]
 qm = ["qiskit>=1.0"]
 data = ["chembl-webresource-client>=0.10"]
+mongo = ["pymongo>=4.6"]
 interactions = ["prolif>=2.0"]
 dev = [
   "pytest>=7.4",

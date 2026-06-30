@@ -65,6 +65,10 @@ export function fetchTools() {
   return apiFetch("/v1/tools");
 }
 
+export function fetchServiceReadiness() {
+  return apiFetch("/ready");
+}
+
 export function fetchTopCandidates(limit = 120) {
   return apiFetch(`/research/top-candidates?limit=${limit}`);
 }

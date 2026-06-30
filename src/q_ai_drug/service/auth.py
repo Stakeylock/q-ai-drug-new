@@ -12,6 +12,7 @@ from typing import Any
 
 from fastapi import Header, HTTPException, status
 
+from q_ai_drug.service import mongo_store
 from q_ai_drug.service.db import ApiKeyRecord, OrganizationMemberRecord, UserRecord, session_scope
 from q_ai_drug.service.settings import get_settings
 
@@ -76,11 +77,16 @@ def _sign(message: str) -> str:
     return _b64url_encode(hmac.new(secret, message.encode("ascii"), hashlib.sha256).digest())
 
 
-def create_access_token(user: UserRecord, organization_id: str | None = None, role: str | None = None) -> str:
+def create_access_token_for_identity(
+    user_id: str,
+    email: str,
+    organization_id: str | None = None,
+    role: str | None = None,
+) -> str:
     now = datetime.now(timezone.utc)
     payload = {
-        "sub": user.id,
-        "email": user.email,
+        "sub": user_id,
+        "email": email,
         "org": organization_id,
         "role": role,
         "iat": int(now.timestamp()),
@@ -94,6 +100,10 @@ def create_access_token(user: UserRecord, organization_id: str | None = None, ro
         ]
     )
     return f"{signing_input}.{_sign(signing_input)}"
+
+
+def create_access_token(user: UserRecord, organization_id: str | None = None, role: str | None = None) -> str:
+    return create_access_token_for_identity(user.id, user.email, organization_id=organization_id, role=role)
 
 
 def decode_access_token(token: str) -> dict[str, Any]:
@@ -131,6 +141,27 @@ def _principal_for_user(user: UserRecord, api_key_id: str | None = None) -> Curr
     return CurrentPrincipal(user_id=user.id, email=user.email, organizations=organizations, api_key_id=api_key_id)
 
 
+def _principal_for_mongo_user(user: dict[str, Any], api_key_id: str | None = None) -> CurrentPrincipal | None:
+    user_id = str(user.get("id") or "")
+    email = str(user.get("email") or "")
+    if not user_id or not email or user.get("is_active") is False:
+        return None
+    memberships = mongo_store.list_core_documents(
+        "organization_members",
+        {"user_id": user_id},
+        sort=[("created_at", 1)],
+        limit=100,
+    )
+    if memberships is None:
+        return None
+    organizations = {
+        str(membership.get("organization_id")): str(membership.get("role") or "viewer")
+        for membership in memberships
+        if membership.get("organization_id")
+    }
+    return CurrentPrincipal(user_id=user_id, email=email, organizations=organizations, api_key_id=api_key_id)
+
+
 def get_current_principal(
     authorization: str | None = Header(default=None),
     x_api_key: str | None = Header(default=None, alias="X-API-Key"),
@@ -147,6 +178,16 @@ def get_current_principal(
 
     if credential:
         key_hash = hash_api_key(credential)
+        mongo_key = mongo_store.find_core_document("api_keys", {"key_hash": key_hash, "revoked_at": None})
+        if mongo_key and mongo_key.get("user_id"):
+            mongo_user = mongo_store.get_core_document("users", str(mongo_key["user_id"]))
+            if mongo_user:
+                principal = _principal_for_mongo_user(mongo_user, api_key_id=str(mongo_key.get("id") or ""))
+                if principal:
+                    organization_id = mongo_key.get("organization_id")
+                    if organization_id and organization_id not in principal.organizations:
+                        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="API key organization is not accessible")
+                    return principal
         with session_scope() as session:
             record = (
                 session.query(ApiKeyRecord)
@@ -166,6 +207,11 @@ def get_current_principal(
     if not bearer:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
     payload = decode_access_token(bearer)
+    mongo_user = mongo_store.get_core_document("users", str(payload["sub"]))
+    if mongo_user:
+        principal = _principal_for_mongo_user(mongo_user)
+        if principal:
+            return principal
     with session_scope() as session:
         user = session.get(UserRecord, str(payload["sub"]))
         if not user or not user.is_active:

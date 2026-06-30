@@ -12,7 +12,7 @@ from urllib.parse import quote
 
 import pandas as pd
 import yaml
-from fastapi import Body, Depends, FastAPI, HTTPException
+from fastapi import Body, Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -30,6 +30,7 @@ from q_ai_drug.service.access import choose_organization, get_project_for_princi
 from q_ai_drug.service.auth import CurrentPrincipal, get_current_principal
 from q_ai_drug.service.db import CandidateRecord, JobLogRecord, JobRecord, ProjectRecord, RunRecord, TargetRecord, init_database, session_scope
 from q_ai_drug.service.models import Job, JobCreate, ModelPredictRequest, Project, ProjectCreate
+from q_ai_drug.service.mongo_store import mongo_status
 from q_ai_drug.service.queue import enqueue_cancer_proof_run, queue_enabled, redis_connection
 from q_ai_drug.service.routes.artifacts import router as artifacts_router
 from q_ai_drug.service.routes.ai_models import router as ai_models_router
@@ -168,17 +169,28 @@ init_database()
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+def health() -> dict[str, Any]:
+    return {
+        "status": "ok",
+        "database": "ok",
+        "document_store": mongo_status(),
+    }
 
 
 @app.get("/ready")
 def ready() -> dict[str, Any]:
     with session_scope() as session:
         session.execute(select(ProjectRecord.id).limit(1)).first()
+    document_store = mongo_status()
+    if document_store.get("required") and not document_store.get("connected"):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail={"status": "not_ready", "database": "ok", "document_store": document_store},
+        )
     return {
         "status": "ready",
         "database": "ok",
+        "document_store": document_store,
         "queue_enabled": queue_enabled(),
     }
 

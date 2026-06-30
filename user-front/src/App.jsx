@@ -23,6 +23,7 @@ import {
   fetchDataFabricStatus,
   fetchDockingTools,
   fetchResourceRegistry,
+  fetchServiceReadiness,
   fetchTools,
   fetchTopCandidates,
   generateWetLabAssayPlan,
@@ -157,6 +158,7 @@ export default function App() {
   const [customMolecules, setCustomMolecules] = useState([]);
   const [railCollapsed, setRailCollapsed] = useState(() => window.localStorage.getItem(RAIL_COLLAPSED_KEY) === "1");
   const [consoleMinimized, setConsoleMinimized] = useState(false);
+  const [serviceStatus, setServiceStatus] = useState({ online: false, loading: true, error: "", document_store: null });
 
   const tier = session?.billing?.plan_tier || session?.tier || authForm.tier;
   const tierConfig = TIERS[tier] || TIERS.student_free;
@@ -172,6 +174,34 @@ export default function App() {
   useEffect(() => {
     window.localStorage.setItem(RAIL_COLLAPSED_KEY, railCollapsed ? "1" : "0");
   }, [railCollapsed]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer = null;
+
+    async function refreshServiceStatus() {
+      try {
+        const payload = await fetchServiceReadiness();
+        if (cancelled) return;
+        setServiceStatus({ ...payload, online: true, loading: false, error: "" });
+      } catch (error) {
+        if (cancelled) return;
+        setServiceStatus({
+          online: false,
+          loading: false,
+          error: error.message || "Backend is unavailable.",
+          document_store: null,
+        });
+      }
+    }
+
+    refreshServiceStatus();
+    timer = window.setInterval(refreshServiceStatus, 30000);
+    return () => {
+      cancelled = true;
+      if (timer) window.clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     if (!session?.token || session.demo) return;
@@ -735,6 +765,7 @@ export default function App() {
         busyAuth={busyAuth}
         authError={authError}
         continueDemo={continueDemo}
+        serviceStatus={serviceStatus}
       />
     );
   }
@@ -802,6 +833,7 @@ export default function App() {
           billingWarning={billingWarning}
           activeTab={workspaceTab}
           setActiveTab={setWorkspaceTab}
+          serviceStatus={serviceStatus}
         />
         <LivePipelineConsole
           run={run}
@@ -944,7 +976,7 @@ function LivePipelineConsole({ run, minimized, setMinimized, setWorkspaceTab }) 
   );
 }
 
-function AuthPage({ authMode, setAuthMode, authForm, updateAuth, handleAuthSubmit, busyAuth, authError, continueDemo }) {
+function AuthPage({ authMode, setAuthMode, authForm, updateAuth, handleAuthSubmit, busyAuth, authError, continueDemo, serviceStatus }) {
   function showPricing() {
     document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -972,6 +1004,7 @@ function AuthPage({ authMode, setAuthMode, authForm, updateAuth, handleAuthSubmi
               <span aria-hidden="true">↓</span>
             </button>
           </Reveal>
+          <InfraStatusCard serviceStatus={serviceStatus} compact />
         </section>
         <SpotlightCard className="auth-card" as="section">
           <div id="account-access" className="auth-anchor" />
@@ -1231,7 +1264,7 @@ const WORKSPACE_TABS = [
   ["account", "My Account"],
 ];
 
-function Header({ session, tier, billingWarning, activeTab, setActiveTab }) {
+function Header({ session, tier, billingWarning, activeTab, setActiveTab, serviceStatus }) {
   const tierConfig = TIERS[tier] || TIERS.student_free;
   return (
     <header className="user-header">
@@ -1246,8 +1279,50 @@ function Header({ session, tier, billingWarning, activeTab, setActiveTab }) {
           </button>
         ))}
       </nav>
-      {billingWarning && <small className="warn-text">{billingWarning}</small>}
+      <div className="header-status-stack">
+        <InfraStatusCard serviceStatus={serviceStatus} session={session} />
+        {billingWarning && <small className="warn-text">{billingWarning}</small>}
+      </div>
     </header>
+  );
+}
+
+function InfraStatusCard({ serviceStatus, session, compact = false }) {
+  const documentStore = serviceStatus?.document_store || {};
+  const apiOnline = Boolean(serviceStatus?.online);
+  const apiTone = serviceStatus?.loading ? "checking" : apiOnline ? "ok" : "offline";
+  const sqlTone = apiOnline && serviceStatus?.database === "ok" ? "ok" : apiOnline ? "checking" : "offline";
+  const mongoConnected = Boolean(documentStore.connected);
+  const storeTone = mongoConnected ? "ok" : documentStore.store === "file" ? "warn" : apiTone;
+  const apiLabel = serviceStatus?.loading ? "Checking API" : apiOnline ? "API ready" : "API offline";
+  const sqlLabel = serviceStatus?.database === "ok" ? "SQL ready" : "SQL pending";
+  const storeLabel = mongoConnected
+    ? `Mongo ${documentStore.database || "ready"}`
+    : documentStore.store === "file"
+      ? "File fallback"
+      : "Document store pending";
+  const modeLabel = session?.demo ? "Demo mode" : apiOnline ? "Live mode" : "Offline mode";
+
+  return (
+    <aside className={`infra-card ${compact ? "compact" : ""}`} aria-label="Infrastructure status">
+      <div className="infra-card-head">
+        <strong>{modeLabel}</strong>
+        <span>{documentStore.store === "mongodb" ? "MongoDB" : "local-safe"}</span>
+      </div>
+      <div className="infra-status-row">
+        <span className={`status-dot ${apiTone}`} />
+        <small>{apiLabel}</small>
+      </div>
+      <div className="infra-status-row">
+        <span className={`status-dot ${sqlTone}`} />
+        <small>{sqlLabel}</small>
+      </div>
+      <div className="infra-status-row">
+        <span className={`status-dot ${storeTone}`} />
+        <small>{storeLabel}</small>
+      </div>
+      {!compact && serviceStatus?.error && <em>{serviceStatus.error}</em>}
+    </aside>
   );
 }
 
@@ -2234,7 +2309,7 @@ function ChemicalDbPanel({ chemicalDb, chemicalRecord, refreshChemicalDb, regist
         <Metric label="Registered molecules" value={chemicalDb?.count || 0} />
         <Metric label="Wet-lab ready" value={chemicalDb?.ready_for_wet_lab || 0} />
         <Metric label="Latest chemical" value={chemicalRecord?.chemical_id || "none"} />
-        <Metric label="Evidence mode" value="research inventory" />
+        <Metric label="Store" value={chemicalDb?.document_store || "file"} />
       </div>
       {chemicalError && <div className="warning-box">{chemicalError}</div>}
       <div className="chemical-record-grid">

@@ -7,6 +7,7 @@ from q_ai_drug.service.routes import chemistry
 
 
 def test_chemical_db_registers_route_card_and_handoff(tmp_path, monkeypatch):
+    monkeypatch.setenv("QAI_MONGO_ENABLED", "0")
     monkeypatch.setattr(chemistry, "OUTPUT_DIR", tmp_path / "outputs")
     app = FastAPI()
     app.include_router(chemistry.router)
@@ -35,12 +36,14 @@ def test_chemical_db_registers_route_card_and_handoff(tmp_path, monkeypatch):
     record = response.json()
     assert record["docking_gate"]["gate"] == "passed_primary_docking"
     assert record["wet_lab_ready"] is True
+    assert record["document_store"] == "file"
     assert record["route_card_url"].endswith(".md")
     assert "non-executable planning support" in record["synthesis_route_card"]["claim_boundary"]
 
     listing = client.get("/v1/chemistry/chemical-db").json()
     assert listing["count"] == 1
     assert listing["ready_for_wet_lab"] == 1
+    assert listing["document_store"] == "file"
 
     handoff = client.post(f"/v1/chemistry/chemical-db/{record['chemical_id']}/handoff").json()
     assert handoff["wet_lab_ready"] is True

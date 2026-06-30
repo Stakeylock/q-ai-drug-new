@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 import time
-from typing import Iterator
+from typing import Any, Iterator
 
 from pathlib import Path
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, Text, create_engine
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, Text, create_engine, event
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import inspect as sqlalchemy_inspect
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship, sessionmaker
 
 from q_ai_drug.service.settings import get_settings, validate_runtime_settings
@@ -268,12 +269,92 @@ engine = create_engine(settings.database_url, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
 
 
+MONGO_MIRRORED_TABLES = {
+    UserRecord.__tablename__,
+    OrganizationRecord.__tablename__,
+    OrganizationMemberRecord.__tablename__,
+    ProjectRecord.__tablename__,
+    RunRecord.__tablename__,
+    JobRecord.__tablename__,
+    JobLogRecord.__tablename__,
+    TargetRecord.__tablename__,
+    MoleculeRecord.__tablename__,
+    CandidateRecord.__tablename__,
+    CandidateScoreRecord.__tablename__,
+    ModelRecord.__tablename__,
+    ModelVersionRecord.__tablename__,
+    ArtifactRecord.__tablename__,
+    ReportRecord.__tablename__,
+    ApiKeyRecord.__tablename__,
+    UsageEventRecord.__tablename__,
+    BillingAccountRecord.__tablename__,
+    CreditLedgerRecord.__tablename__,
+}
+
+
+def _mongo_safe_value(value: Any) -> Any:
+    if isinstance(value, datetime):
+        return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+    if isinstance(value, dict):
+        return {str(key): _mongo_safe_value(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_mongo_safe_value(item) for item in value]
+    return value
+
+
+def _mongo_document_from_model(instance: object) -> tuple[str, dict[str, Any]] | None:
+    table_name = getattr(instance, "__tablename__", None)
+    if table_name not in MONGO_MIRRORED_TABLES:
+        return None
+    mapper = sqlalchemy_inspect(instance).mapper
+    document = {column.key: _mongo_safe_value(getattr(instance, column.key)) for column in mapper.column_attrs}
+    if document.get("id") is None:
+        return None
+    document["_sql_table"] = table_name
+    document["_record_class"] = instance.__class__.__name__
+    return table_name, document
+
+
+@event.listens_for(Session, "after_flush")
+def _collect_mongo_sync_documents(session: Session, flush_context: object) -> None:
+    del flush_context
+    pending: dict[tuple[str, Any], tuple[str, dict[str, Any]]] = session.info.setdefault("_mongo_sync_documents", {})
+    for instance in list(session.new) + list(session.dirty):
+        document = _mongo_document_from_model(instance)
+        if document is None:
+            continue
+        collection_name, payload = document
+        pending[(collection_name, payload["id"])] = document
+
+
+@event.listens_for(Session, "after_commit")
+def _sync_mongo_documents_after_commit(session: Session) -> None:
+    pending = session.info.pop("_mongo_sync_documents", None)
+    if not pending:
+        return
+    try:
+        from q_ai_drug.service import mongo_store
+
+        mongo_store.sync_core_documents(pending.values())
+    except Exception:
+        # SQL remains the compatibility source of truth; /ready exposes Mongo failures.
+        return
+
+
+@event.listens_for(Session, "after_rollback")
+def _discard_mongo_documents_after_rollback(session: Session) -> None:
+    session.info.pop("_mongo_sync_documents", None)
+
+
 def init_database(retries: int = 8, delay_seconds: float = 1.5) -> None:
     last_error: SQLAlchemyError | None = None
     for attempt in range(1, retries + 1):
         try:
             Base.metadata.create_all(bind=engine)
             _repair_sqlite_schema()
+            from q_ai_drug.service import mongo_store
+
+            mongo_store.init_mongo_store(required=settings.mongodb_required)
             return
         except SQLAlchemyError as exc:
             last_error = exc
