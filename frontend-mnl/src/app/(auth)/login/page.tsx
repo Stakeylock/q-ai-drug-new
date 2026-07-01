@@ -16,6 +16,7 @@ import {
 } from "../_components";
 import { useAuthCredentialsForm } from "../_hooks/useAuthCredentialsForm";
 import { setToken, login, signup, toFriendlyErrorMessage } from "@/services";
+import { showToast } from "@/utils/toast";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -78,7 +79,7 @@ export default function LoginPage() {
       let response;
       try {
         response = await login("dev@test.com", "Password123!");
-      } catch (err) {
+      } catch {
         // If login fails, try to sign up the default dev user first
         await signup("dev@test.com", "Password123!", "Dev User", "Dev Workspace");
         response = await login("dev@test.com", "Password123!");
@@ -89,14 +90,18 @@ export default function LoginPage() {
         router.push("/workspace-selector");
         setIsLoading(false);
       }, 700);
-    } catch (err) {
+    } catch {
       setFormError("SSO login failed. Please sign up normally using the form.");
       setIsLoading(false);
     }
   };
 
   const handleContactSupport = () => {
-    alert("Enterprise Support Notice:\n\nA support ticket has been logged for your institutional IP (192.168.42.100). A platform coordinator will contact you shortly.");
+    showToast({
+      type: "info",
+      title: "Support request logged",
+      message: "A platform coordinator will contact you shortly.",
+    });
   };
 
   return (

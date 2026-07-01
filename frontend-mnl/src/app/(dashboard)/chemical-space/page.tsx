@@ -21,7 +21,7 @@ const EmbeddingPlot = dynamic(() => import("@/components/embeddings/EmbeddingPlo
 });
 import type { EmbeddingPoint } from "@/types/api";
 
-// Mock data fallbacks
+// Demo data used only when explicit demo mode is enabled.
 const MOCK_POINTS: EmbeddingPoint[] = [
   { x: 1.5, y: -2.2, molecule_id: "QDF-EGFR-001", dataset: "Generated", qed: 0.85, mw: 421.4, logp: 3.82, source: "generated" },
   { x: -3.1, y: 4.2, molecule_id: "FDA-101", dataset: "FDA", qed: 0.72, mw: 320.5, logp: 2.1, source: "fda" },
@@ -50,7 +50,7 @@ const PROPERTIES = [
 ];
 
 export default function ChemicalSpacePage() {
-  const [dataSource, setDataSource] = useState<string>("MOCK DATA");
+  const [dataSource, setDataSource] = useState<string>(isDemoMode() ? "MOCK DATA" : "REAL BACKEND DATA");
   const [points, setPoints] = useState<EmbeddingPoint[]>([]);
   const [selectedPoint, setSelectedPoint] = useState<EmbeddingPoint | null>(null);
   const [colorMode, setColorMode] = useState<"dataset" | "qed">("dataset");
@@ -130,6 +130,26 @@ export default function ChemicalSpacePage() {
   };
 
   const displayPoints = isDemoMode() ? MOCK_POINTS : points;
+  const displayClusters = useMemo(() => {
+    if (isDemoMode()) {
+      return CLUSTERS;
+    }
+
+    const colors = ["bg-indigo-500", "bg-cyan-500", "bg-emerald-500", "bg-amber-500", "bg-success"];
+    const counts = displayPoints.reduce((acc, point) => {
+      const key = point.dataset || point.source || "Unclassified";
+      acc.set(key, (acc.get(key) || 0) + 1);
+      return acc;
+    }, new Map<string, number>());
+
+    return Array.from(counts.entries()).map(([name, count], index) => ({
+      name,
+      count,
+      avgScore: 0,
+      novelty: "Measured",
+      color: colors[index % colors.length],
+    }));
+  }, [displayPoints]);
 
   if (!isLoading && displayPoints.length === 0) {
     return (
@@ -188,7 +208,7 @@ export default function ChemicalSpacePage() {
       {/* 2. Chemical Space Summary Metrics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <MetricCard label="Embedded Molecules" value={String(displayPoints.length)} helperText="Total active manifold" status="completed" />
-        <MetricCard label="Scaffold Clusters" value={isDemoMode() ? "42" : "4"} helperText="Unique structural types" status="completed" />
+        <MetricCard label="Scaffold Clusters" value={isDemoMode() ? "42" : String(displayClusters.length)} helperText="Unique structural types" status="completed" />
         <MetricCard label="Novel Region Leads" value={isDemoMode() ? "186" : displayPoints.filter(p => p.qed > 0.8).length.toString()} helperText="Low similarity to FDA" status="active" />
         <MetricCard label="Approved Neighbors" value={isDemoMode() ? "73" : "0"} helperText="Similar to known drugs" status="completed" />
         <MetricCard label="Applicability Alerts" value="0" helperText="Out-of-domain detections" status="completed" />
@@ -328,7 +348,7 @@ export default function ChemicalSpacePage() {
           <div className="ui-card-surface p-5 space-y-4">
             <h4 className="text-xs font-black uppercase tracking-widest text-text-secondary/60">Manifold Clusters</h4>
             <div className="space-y-2">
-              {CLUSTERS.map(cluster => (
+              {displayClusters.map(cluster => (
                 <div key={cluster.name} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted-bg/50 cursor-pointer transition-all">
                   <div className="flex items-center gap-3">
                     <div className={`h-2.5 w-2.5 rounded-full ${cluster.color}`} />

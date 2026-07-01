@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle, PharmaAssistantWidget } from "@/components/shared";
-import { BackendStatusBanner, ConnectionHealthIndicator } from "@/components/ui";
+import { ConnectionHealthIndicator } from "@/components/ui";
 import { ProjectSidebar } from "./ProjectSidebar";
 import { ProjectBreadcrumbs } from "./ProjectBreadcrumbs";
 import { isAuthenticated, removeToken, apiClient } from "@/services";
@@ -190,8 +190,6 @@ export function ProjectLayout({
             </div>
           </div>
         </header>
-
-        <BackendStatusBanner />
 
         <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6 lg:px-10">
           {children}

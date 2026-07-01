@@ -1219,7 +1219,7 @@ export async function getPipelineExperiments(projectId?: string): Promise<Pipeli
     }
     return [];
   } catch (err) {
-    console.error("DEBUG: getPipelineExperiments error:", err);
+    console.error("Failed to load pipeline experiments:", err);
     throw err;
   }
 }

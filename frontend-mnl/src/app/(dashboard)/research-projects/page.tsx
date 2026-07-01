@@ -14,6 +14,7 @@ import {
 } from "@/components/ui";
 import { useRouter } from "next/navigation";
 import { isDemoMode, apiClient } from "@/services/api";
+import { showToast } from "@/utils/toast";
 
 const MOCK_PROJECTS = [
   { 
@@ -111,6 +112,11 @@ export default function WorkspacePage() {
   const [diseaseFilter, setDiseaseFilter] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const demoMode = isDemoMode();
+  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
+  const [newProjectName, setNewProjectName] = useState("");
+  const [newProjectDisease, setNewProjectDisease] = useState("Oncology");
+  const [newProjectTarget, setNewProjectTarget] = useState("Genomics Target");
 
   const fetchProjects = async () => {
     try {
@@ -156,36 +162,78 @@ export default function WorkspacePage() {
     fetchProjects();
   }, []);
 
-  const handleCreateProject = async () => {
+  const handleCreateProject = () => {
     const wsId = localStorage.getItem("active_workspace_id");
     if (!wsId) {
-      alert("No active workspace selected. Please go back to the workspace selector.");
+      showToast({
+        type: "warning",
+        title: "Workspace Required",
+        message: "Select or create a workspace before starting a research project.",
+      });
       return;
     }
-    const name = prompt("Enter a name for the new research project:");
-    if (!name || !name.trim()) return;
-    const disease = prompt("Enter disease indication (e.g., Lung Cancer):", "Oncology");
-    const target = prompt("Enter target protein/gene (e.g., EGFR L858R):", "Genomics Target");
+    setIsCreateProjectOpen(true);
+  };
+
+  const handleCreateProjectSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const wsId = localStorage.getItem("active_workspace_id");
+    if (!wsId) {
+      showToast({
+        type: "warning",
+        title: "Workspace Required",
+        message: "Select or create a workspace before starting a research project.",
+      });
+      return;
+    }
+
+    const name = newProjectName.trim();
+    const disease = newProjectDisease.trim() || "Oncology";
+    const target = newProjectTarget.trim() || "Genomics Target";
+    if (!name) {
+      showToast({
+        type: "warning",
+        title: "Project Name Required",
+        message: "Give the research project a clear name before creating it.",
+      });
+      return;
+    }
 
     try {
       setIsLoading(true);
       const res = await apiClient.post<any>("/projects", {
         body: {
           workspace_id: wsId,
-          name: name.trim(),
+          name,
           description: `Research project targeting ${target} for ${disease}`,
-          disease_type: disease || "Oncology",
-          cancer_type: target || "Genomics Target"
+          disease_type: disease,
+          cancer_type: target
         }
       });
       if (res.success) {
-        alert(`Project "${name}" created successfully!`);
-        fetchProjects();
+        showToast({
+          type: "success",
+          title: "Project Created",
+          message: `${name} is ready for discovery workflows.`,
+        });
+        setIsCreateProjectOpen(false);
+        setNewProjectName("");
+        setNewProjectDisease("Oncology");
+        setNewProjectTarget("Genomics Target");
+        await fetchProjects();
       } else {
-        alert("Failed to create project.");
+        showToast({
+          type: "error",
+          title: "Create Failed",
+          message: res.message || "The backend could not create this project.",
+        });
       }
     } catch (err) {
-      alert("Error creating project: " + (err instanceof Error ? err.message : String(err)));
+      showToast({
+        type: "error",
+        title: "Create Failed",
+        message: err instanceof Error ? err.message : "The backend could not create this project.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -194,7 +242,11 @@ export default function WorkspacePage() {
   const handleLoadDemoDataset = async () => {
     const wsId = localStorage.getItem("active_workspace_id");
     if (!wsId) {
-      alert("No active workspace selected.");
+      showToast({
+        type: "warning",
+        title: "Workspace Required",
+        message: "Select or create a workspace before loading the demo dataset.",
+      });
       return;
     }
     try {
@@ -212,10 +264,18 @@ export default function WorkspacePage() {
         // Automatically route to the new project and pass a query param to trigger preloading
         router.push(`/research-projects/${res.data.id || res.data.project_id}?loadDemo=true`);
       } else {
-        alert("Failed to create demo project.");
+        showToast({
+          type: "error",
+          title: "Demo Load Failed",
+          message: res.message || "The backend could not create the demo project.",
+        });
       }
     } catch (err) {
-      alert("Error creating demo project: " + String(err));
+      showToast({
+        type: "error",
+        title: "Demo Load Failed",
+        message: err instanceof Error ? err.message : "The backend could not create the demo project.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -231,6 +291,30 @@ export default function WorkspacePage() {
     const matchesDisease = diseaseFilter === "all" || project.disease === diseaseFilter;
     return matchesSearch && matchesStatus && matchesDisease;
   });
+
+  const statusCounts = projects.reduce(
+    (acc, project) => {
+      const status = String(project.status || "draft").toLowerCase();
+      if (status === "running" || status === "active") acc.active += 1;
+      if (status === "completed") acc.completed += 1;
+      if (status === "warning" || status === "failed") acc.warning += 1;
+      acc.total += 1;
+      return acc;
+    },
+    { total: 0, active: 0, completed: 0, warning: 0 }
+  );
+  const otherProjectCount = Math.max(
+    statusCounts.total - statusCounts.active - statusCounts.completed - statusCounts.warning,
+    0
+  );
+  const statusWidth = (count: number) =>
+    statusCounts.total > 0 ? `${Math.round((count / statusCounts.total) * 100)}%` : "0%";
+  const statusLabel = (count: number) => count.toString().padStart(2, "0");
+  const dataSourceLabel = demoMode
+    ? "MOCK DATA"
+    : projects.length > 0
+      ? "REAL BACKEND DATA"
+      : "NO BACKEND PROJECTS";
 
   return (
     <FadeIn className="page-shell flex flex-col gap-8 pb-10">
@@ -254,6 +338,79 @@ export default function WorkspacePage() {
         }
       />
 
+      {isCreateProjectOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-bg/70 px-4 backdrop-blur-sm">
+          <form
+            onSubmit={handleCreateProjectSubmit}
+            className="w-full max-w-lg rounded-lg border border-border bg-card p-6 shadow-2xl"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-black tracking-tight text-text">New Research Project</h2>
+                <p className="mt-1 text-xs font-medium leading-5 text-muted-text/70">
+                  Define the disease context and primary target before initializing the discovery workspace.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsCreateProjectOpen(false)}
+                className="rounded-md border border-border px-2 py-1 text-xs font-black uppercase tracking-widest text-muted-text transition-colors hover:text-text"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <label className="block space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-text/60">Project Name</span>
+                <input
+                  value={newProjectName}
+                  onChange={(event) => setNewProjectName(event.target.value)}
+                  placeholder="e.g. EGFR NSCLC Discovery Program"
+                  className="h-11 w-full rounded-lg border border-border/50 bg-muted-bg px-3 text-sm font-medium text-text outline-none transition-colors focus:border-accent"
+                  autoFocus
+                />
+              </label>
+              <label className="block space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-text/60">Disease Indication</span>
+                <input
+                  value={newProjectDisease}
+                  onChange={(event) => setNewProjectDisease(event.target.value)}
+                  placeholder="e.g. Lung Cancer"
+                  className="h-11 w-full rounded-lg border border-border/50 bg-muted-bg px-3 text-sm font-medium text-text outline-none transition-colors focus:border-accent"
+                />
+              </label>
+              <label className="block space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-text/60">Target Protein / Gene</span>
+                <input
+                  value={newProjectTarget}
+                  onChange={(event) => setNewProjectTarget(event.target.value)}
+                  placeholder="e.g. EGFR L858R"
+                  className="h-11 w-full rounded-lg border border-border/50 bg-muted-bg px-3 text-sm font-medium text-text outline-none transition-colors focus:border-accent"
+                />
+              </label>
+            </div>
+
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setIsCreateProjectOpen(false)}
+                className="rounded-lg border border-border px-4 py-2 text-[11px] font-black uppercase tracking-widest text-muted-text transition-colors hover:text-text"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="rounded-lg bg-accent px-4 py-2 text-[11px] font-black uppercase tracking-widest text-bg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoading ? "Creating..." : "Create Project"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
       {/* Dynamic Data Provenance Badge */}
       <div className="flex items-center gap-2 px-6 py-2 bg-muted-bg border border-border/20 rounded-lg max-w-max animate-fade-in" data-testid="data-source-badge">
         <span className="text-[10px] font-bold text-muted-text/60 uppercase tracking-widest">Data Source:</span>
@@ -261,7 +418,7 @@ export default function WorkspacePage() {
           isDemoMode() ? "bg-warning/20 text-warning" :
           projects.length > 0 ? "bg-accent/20 text-accent" : "bg-warning/20 text-warning"
         }`}>
-          {isDemoMode() ? "MOCK DATA" : "REAL BACKEND DATA"}
+          {dataSourceLabel}
         </span>
       </div>
 
@@ -354,32 +511,32 @@ export default function WorkspacePage() {
             <div className="ui-card-surface p-5 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <span className="text-[24px] font-black text-text">14</span>
+                  <span className="text-[24px] font-black text-text">{statusLabel(statusCounts.total)}</span>
                   <span className="block text-[9px] font-bold uppercase tracking-widest text-muted-text/50">Total Programs</span>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[24px] font-black text-accent">06</span>
+                  <span className="text-[24px] font-black text-accent">{statusLabel(statusCounts.active)}</span>
                   <span className="block text-[9px] font-bold uppercase tracking-widest text-muted-text/50">Active Now</span>
                 </div>
               </div>
               <div className="h-1.5 w-full bg-muted-bg rounded-full overflow-hidden flex">
-                <div className="h-full bg-accent" style={{ width: '45%' }} />
-                <div className="h-full bg-success" style={{ width: '30%' }} />
-                <div className="h-full bg-warning" style={{ width: '15%' }} />
-                <div className="h-full bg-muted-text/20" style={{ width: '10%' }} />
+                <div className="h-full bg-accent" style={{ width: statusWidth(statusCounts.active) }} />
+                <div className="h-full bg-success" style={{ width: statusWidth(statusCounts.completed) }} />
+                <div className="h-full bg-warning" style={{ width: statusWidth(statusCounts.warning) }} />
+                <div className="h-full bg-muted-text/20" style={{ width: statusWidth(otherProjectCount) }} />
               </div>
               <div className="flex flex-wrap gap-x-4 gap-y-2">
                 <div className="flex items-center gap-1.5">
                   <div className="h-2 w-2 rounded-full bg-accent" />
-                  <span className="text-[9px] font-bold uppercase text-muted-text/70">Running (6)</span>
+                  <span className="text-[9px] font-bold uppercase text-muted-text/70">Running ({statusCounts.active})</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="h-2 w-2 rounded-full bg-success" />
-                  <span className="text-[9px] font-bold uppercase text-muted-text/70">Completed (4)</span>
+                  <span className="text-[9px] font-bold uppercase text-muted-text/70">Completed ({statusCounts.completed})</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="h-2 w-2 rounded-full bg-warning" />
-                  <span className="text-[9px] font-bold uppercase text-muted-text/70">Warning (2)</span>
+                  <span className="text-[9px] font-bold uppercase text-muted-text/70">Warning ({statusCounts.warning})</span>
                 </div>
               </div>
             </div>
@@ -390,22 +547,34 @@ export default function WorkspacePage() {
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-text/60">Recent Project Activity</h4>
             <div className="ui-card-surface p-0 overflow-hidden">
               <div className="divide-y divide-border/40">
-                {RECENT_ACTIVITY.map((item) => (
-                  <div key={item.id} className="p-4 hover:bg-surface-subtle/20 transition-colors">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <p className="text-[11px] font-bold text-text/90 leading-tight">{item.action}</p>
-                        <p className="text-[9px] font-medium text-muted-text/60 uppercase tracking-widest">
-                          Project: <span className="text-accent/80">{item.project}</span>
-                        </p>
+                {demoMode ? (
+                  RECENT_ACTIVITY.map((item) => (
+                    <div key={item.id} className="p-4 hover:bg-surface-subtle/20 transition-colors">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="space-y-1">
+                          <p className="text-[11px] font-bold text-text/90 leading-tight">{item.action}</p>
+                          <p className="text-[9px] font-medium text-muted-text/60 uppercase tracking-widest">
+                            Project: <span className="text-accent/80">{item.project}</span>
+                          </p>
+                        </div>
+                        <span className="text-[8px] font-black text-muted-text/40 uppercase whitespace-nowrap">{item.time}</span>
                       </div>
-                      <span className="text-[8px] font-black text-muted-text/40 uppercase whitespace-nowrap">{item.time}</span>
                     </div>
+                  ))
+                ) : (
+                  <div className="p-4">
+                    <p className="text-[11px] font-medium leading-relaxed text-muted-text/70">
+                      Backend activity events will appear here after project pipeline runs are recorded.
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
-              <button className="w-full py-3 text-[9px] font-black uppercase tracking-widest text-muted-text hover:text-accent hover:bg-accent/5 transition-all border-t border-border/40">
-                View All Activity
+              <button
+                type="button"
+                disabled={!demoMode}
+                className="w-full py-3 text-[9px] font-black uppercase tracking-widest text-muted-text hover:text-accent hover:bg-accent/5 transition-all border-t border-border/40 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {demoMode ? "View All Activity" : "No Activity Feed"}
               </button>
             </div>
           </section>
@@ -417,7 +586,12 @@ export default function WorkspacePage() {
             <p className="relative z-10 mt-2 text-[11px] text-muted-text/80 leading-relaxed">
               Ready to start a new oncology program? Configure your target, select datasets, and initialize the quantum discovery pipeline.
             </p>
-            <button className="relative z-10 mt-4 flex items-center gap-2 rounded bg-accent px-4 py-2 text-[10px] font-black uppercase tracking-widest text-bg hover:bg-accent/90 transition-all">
+            <button
+              type="button"
+              onClick={handleCreateProject}
+              disabled={isLoading}
+              className="relative z-10 mt-4 flex items-center gap-2 rounded bg-accent px-4 py-2 text-[10px] font-black uppercase tracking-widest text-bg hover:bg-accent/90 transition-all disabled:cursor-not-allowed disabled:opacity-50"
+            >
               <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
               Start New Program
             </button>

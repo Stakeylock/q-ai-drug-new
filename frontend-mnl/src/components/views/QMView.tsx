@@ -15,7 +15,8 @@ import {
   ProvenanceLegend,
   Button
 } from "@/components/ui";
-import { apiClient } from "@/services/api";
+import { apiClient, isDemoMode } from "@/services/api";
+import { showToast } from "@/utils/toast";
 
 export interface QMViewProps {
   projectId?: string;
@@ -40,6 +41,13 @@ export default function QMView({ projectId }: QMViewProps) {
   const activeProjectId = projectId || (typeof window !== "undefined" ? localStorage.getItem("active_project_id") : null);
 
   const fetchData = async () => {
+    if (isDemoMode()) {
+      setError(null);
+      setDataSource("DEMO DATA");
+      setIsLoading(false);
+      return null;
+    }
+
     try {
       if (!activeProjectId) return null;
       
@@ -107,7 +115,34 @@ export default function QMView({ projectId }: QMViewProps) {
   }, [runningStage, runStartTime]);
 
   const handleRunStage = async () => {
-    if (!activeProjectId) return;
+    if (!activeProjectId) {
+      showToast({
+        type: "warning",
+        title: "Project Required",
+        message: "Select an active research project before starting quantum workflows.",
+      });
+      return;
+    }
+
+    if (isDemoMode()) {
+      const now = new Date();
+      setPipelineSummary({
+        status: "completed",
+        stage_statuses: {
+          quantum: { status: "completed", progress: 100 },
+        },
+      });
+      setLastUpdated(now);
+      setDuration("0s");
+      setPolling(false);
+      setRunningStage(false);
+      showToast({
+        type: "info",
+        title: "Demo Workflow Ready",
+        message: "Quantum QML reranking is simulated in demo mode.",
+      });
+      return;
+    }
     
     try {
       setRunningStage(true);
@@ -120,15 +155,27 @@ export default function QMView({ projectId }: QMViewProps) {
         }
       });
       if (res.success) {
-        alert("Quantum (QML) workflow triggered successfully!");
+        showToast({
+          type: "success",
+          title: "Workflow Started",
+          message: "Quantum QML reranking is now running.",
+        });
         fetchData();
       } else {
-        alert("Execution trigger failed: " + res.message);
+        showToast({
+          type: "error",
+          title: "Execution Failed",
+          message: res.message || "The backend could not start this workflow.",
+        });
         setPolling(false);
         setRunningStage(false);
       }
     } catch (err: any) {
-      alert("Error: " + (err.message || "Failed to trigger background execution adapter."));
+      showToast({
+        type: "error",
+        title: "Execution Failed",
+        message: err.message || "Failed to trigger background execution adapter.",
+      });
       setPolling(false);
       setRunningStage(false);
     }

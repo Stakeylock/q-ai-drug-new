@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import {
   getPipelineExperiments,
+  isDemoMode,
 } from "@/services";
 import type { PipelineExperimentItem } from "@/services";
 import type { ExperimentRecord, ExperimentStatus, PipelineStageState } from "@/types";
@@ -19,7 +20,7 @@ const MOCK_EXPERIMENTS: any[] = [
     id: "EXP-240319-A",
     name: "EGFR Scaffold Optimization",
     status: "completed",
-    createdAt: "2026-04-04T09:20:00Z",
+    created_at: "2026-04-04T09:20:00Z",
     input: {
       protein: "EGFR kinase domain (PDB: 1M17)",
       constraints: {
@@ -45,7 +46,7 @@ const MOCK_EXPERIMENTS: any[] = [
     id: "EXP-240319-B",
     name: "Mpro Fragment Expansion",
     status: "running",
-    createdAt: "2026-04-05T06:50:00Z",
+    created_at: "2026-04-05T06:50:00Z",
     input: {
       protein: "SARS-CoV-2 Mpro (PDB: 6LU7)",
       constraints: {
@@ -71,7 +72,7 @@ const MOCK_EXPERIMENTS: any[] = [
     id: "EXP-240318-F",
     name: "BRAF Selectivity Screen",
     status: "failed",
-    createdAt: "2026-04-03T15:40:00Z",
+    created_at: "2026-04-03T15:40:00Z",
     input: {
       protein: "BRAF V600E (PDB: 6U2V)",
       constraints: {
@@ -97,7 +98,7 @@ const MOCK_EXPERIMENTS: any[] = [
     id: "EXP-240317-C",
     name: "JAK2 ADMET Triage",
     status: "completed",
-    createdAt: "2026-04-02T11:30:00Z",
+    created_at: "2026-04-02T11:30:00Z",
     input: {
       protein: "JAK2 JH1 domain (PDB: 4JI9)",
       constraints: {
@@ -123,7 +124,7 @@ const MOCK_EXPERIMENTS: any[] = [
     id: "EXP-240316-K",
     name: "PI3K-alpha Lead Rescue",
     status: "running",
-    createdAt: "2026-04-01T18:10:00Z",
+    created_at: "2026-04-01T18:10:00Z",
     input: {
       protein: "PI3K-alpha catalytic domain (PDB: 4OVV)",
       constraints: {
@@ -382,6 +383,7 @@ export default function HistoryPage() {
   const [selectedId, setSelectedId] = useState<string>("");
   const selectedIdRef = useRef(selectedId);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isRerunningId, setIsRerunningId] = useState<string | null>(null);
 
@@ -399,16 +401,24 @@ export default function HistoryPage() {
         if (!active) return;
 
         const normalized = rows.map(toExperimentRecord);
-        const data = normalized.length > 0 ? normalized : MOCK_EXPERIMENTS;
+        const data = normalized.length > 0 ? normalized : isDemoMode() ? MOCK_EXPERIMENTS : [];
         setExperiments(data);
+        setLoadError(null);
         if (!data.some((item) => item.id === selectedIdRef.current)) {
           setSelectedId(data[0]?.id ?? "");
         }
-      } catch {
+      } catch (error) {
         if (!active) return;
-        setExperiments(MOCK_EXPERIMENTS);
-        if (!selectedIdRef.current) {
-          setSelectedId(MOCK_EXPERIMENTS[0]?.id ?? "");
+        if (isDemoMode()) {
+          setExperiments(MOCK_EXPERIMENTS);
+          setLoadError(null);
+          if (!selectedIdRef.current) {
+            setSelectedId(MOCK_EXPERIMENTS[0]?.id ?? "");
+          }
+        } else {
+          setExperiments([]);
+          setSelectedId("");
+          setLoadError(error instanceof Error ? error.message : "Could not load experiment history from the backend.");
         }
       } finally {
         if (active) {
@@ -496,7 +506,11 @@ export default function HistoryPage() {
           {sortedExperiments.length === 0 ? (
             <EmptyState
               title="No experiments yet"
-              description="Run pipeline to see data and build your experiment history."
+              description={
+                loadError
+                  ? "Experiment history could not be loaded from the backend. Check API connectivity and retry from the workspace."
+                  : "Run pipeline to see data and build your experiment history."
+              }
               ctaLabel="Go to Workspace"
               ctaHref="/workspace"
               className="min-h-[320px]"

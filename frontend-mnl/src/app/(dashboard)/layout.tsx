@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState, Suspense } from "react";
 
 import { isAuthenticated, removeToken, apiClient, isDemoMode } from "@/services";
 import { ThemeToggle, PharmaAssistantWidget } from "@/components/shared";
-import { BackendStatusBanner, ConnectionHealthIndicator } from "@/components/ui";
+import { ConnectionHealthIndicator } from "@/components/ui";
 import logo from "../../../public/logo.png";
 
 type IconName =
@@ -718,8 +718,6 @@ function DashboardLayoutContent({
         </header>
 
         {showContextBar && <ResearchContextBar />}
-        <BackendStatusBanner />
-
         <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6 lg:px-10">
           {children}
         </main>

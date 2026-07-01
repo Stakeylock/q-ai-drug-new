@@ -79,7 +79,7 @@ export default function MoleculesView({ projectId }: MoleculesViewProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [realMolecules, setRealMolecules] = useState<any[]>([]);
-  const [dataSource, setDataSource] = useState<string>("MOCK DATA");
+  const [dataSource, setDataSource] = useState<string>(isDemoMode() ? "MOCK DATA" : "REAL BACKEND DATA");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -133,6 +133,11 @@ export default function MoleculesView({ projectId }: MoleculesViewProps) {
         quantumRank: m.metadata?.quantum_rank || 1,
         status: m.status || "completed"
       }));
+  const displayClusters = isDemoMode() ? CLUSTERS : [];
+  const admetWarningCount = displayMolecules.filter((m: any) => {
+    const risk = String(m.admetRisk || "").toLowerCase();
+    return risk === "medium" || risk === "high";
+  }).length;
 
   if (!isLoading && displayMolecules.length === 0) {
     return (
@@ -190,8 +195,8 @@ export default function MoleculesView({ projectId }: MoleculesViewProps) {
         <MetricCard label="Generated" value={isDemoMode() ? "15,000" : realMolecules.length.toString()} helperText="Total molecules" status="completed" />
         <MetricCard label="Filtered" value={isDemoMode() ? "1,500" : Math.ceil(realMolecules.length * 0.8).toString()} helperText="Passed basic filters" status="active" />
         <MetricCard label="Selected" value={selectedIds.length.toString()} helperText="Selected leads" status="completed" />
-        <MetricCard label="Novel Scaffolds" value={isDemoMode() ? "42" : "6"} helperText="Unique clusters" status="completed" />
-        <MetricCard label="ADMET Warnings" value={isDemoMode() ? "12" : "0"} helperText="Requires review" status="warning" />
+        <MetricCard label="Novel Scaffolds" value={isDemoMode() ? "42" : "0"} helperText="Unique clusters" status="completed" />
+        <MetricCard label="ADMET Warnings" value={isDemoMode() ? "12" : admetWarningCount.toString()} helperText="Requires review" status="warning" />
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
@@ -255,7 +260,7 @@ export default function MoleculesView({ projectId }: MoleculesViewProps) {
               Scaffold Clusters
             </h4>
             <div className="space-y-2">
-              {CLUSTERS.map(cluster => (
+              {displayClusters.length > 0 ? displayClusters.map(cluster => (
                 <div key={cluster.name} className="p-3 rounded-lg bg-muted-bg/50 border border-border/20 group hover:border-accent/30 cursor-pointer transition-all">
                   <div className="flex justify-between items-center mb-1.5">
                     <span className="text-[11px] font-black text-text">{cluster.name}</span>
@@ -268,7 +273,11 @@ export default function MoleculesView({ projectId }: MoleculesViewProps) {
                     </span>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <p className="rounded-lg border border-border/20 bg-muted-bg/30 p-3 text-[11px] font-medium leading-relaxed text-muted-text/70">
+                  Scaffold clusters will appear after backend clustering data is available.
+                </p>
+              )}
             </div>
           </div>
         </div>

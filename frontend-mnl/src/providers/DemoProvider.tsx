@@ -29,8 +29,6 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     setIsActive(demo);
 
     if (demo) {
-      console.log("🚀 Demo Mode is active. Simulating scientific events...");
-      
       const interval = setInterval(() => {
         const event = SCIENTIFIC_EVENTS[Math.floor(Math.random() * SCIENTIFIC_EVENTS.length)];
         
@@ -44,7 +42,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
             borderRadius: "16px",
           },
         });
-      }, 15000); // Every 15 seconds
+      }, 15000);
 
       return () => clearInterval(interval);
     }

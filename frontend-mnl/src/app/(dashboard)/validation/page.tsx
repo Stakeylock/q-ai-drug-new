@@ -16,7 +16,8 @@ import {
   ProvenanceLegend,
   Button
 } from "@/components/ui";
-import { apiClient } from "@/services/api";
+import { apiClient, isDemoMode } from "@/services/api";
+import { showToast } from "@/utils/toast";
 
 function ValidationPageContent() {
   const searchParams = useSearchParams();
@@ -39,6 +40,13 @@ function ValidationPageContent() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const fetchData = async () => {
+    if (isDemoMode()) {
+      setError(null);
+      setDataSource("DEMO DATA");
+      setIsLoading(false);
+      return null;
+    }
+
     try {
       const projectId = localStorage.getItem("active_project_id");
       if (!projectId) return null;
@@ -108,7 +116,34 @@ function ValidationPageContent() {
 
   const handleRunStage = async () => {
     const projectId = localStorage.getItem("active_project_id");
-    if (!projectId) return;
+    if (!projectId) {
+      showToast({
+        type: "warning",
+        title: "Project Required",
+        message: "Select an active research project before starting ADMET validation.",
+      });
+      return;
+    }
+
+    if (isDemoMode()) {
+      const now = new Date();
+      setPipelineSummary({
+        status: "completed",
+        stage_statuses: {
+          admet: { status: "completed", progress: 100 },
+        },
+      });
+      setLastUpdated(now);
+      setDuration("0s");
+      setPolling(false);
+      setRunningStage(false);
+      showToast({
+        type: "info",
+        title: "Demo Workflow Ready",
+        message: "ADMET validation is simulated in demo mode.",
+      });
+      return;
+    }
     
     try {
       setRunningStage(true);
@@ -121,15 +156,27 @@ function ValidationPageContent() {
         }
       });
       if (res.success) {
-        alert("ADMET workflow triggered successfully!");
+        showToast({
+          type: "success",
+          title: "Workflow Started",
+          message: "ADMET validation is now running.",
+        });
         fetchData();
       } else {
-        alert("Execution trigger failed: " + res.message);
+        showToast({
+          type: "error",
+          title: "Execution Failed",
+          message: res.message || "The backend could not start this workflow.",
+        });
         setPolling(false);
         setRunningStage(false);
       }
     } catch (err: any) {
-      alert("Error: " + (err.message || "Failed to trigger background execution adapter."));
+      showToast({
+        type: "error",
+        title: "Execution Failed",
+        message: err.message || "Failed to trigger background execution adapter.",
+      });
       setPolling(false);
       setRunningStage(false);
     }

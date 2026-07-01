@@ -21,7 +21,7 @@ const ThreeDMoleculeViewer = dynamic(() => import("@/components/molecules/ThreeD
   ),
 });
 
-// Mock data fallbacks for the program if backend has no results yet
+// Demo data used only when explicit demo mode is enabled.
 const MOCK_POSES = [
   { id: "Pose 01", affinity: -10.2, cnnScore: 0.942, rmsd: 1.2, status: "completed", result_id: "mock_1", pose_file_id: null },
   { id: "Pose 02", affinity: -9.8, cnnScore: 0.885, rmsd: 0.8, status: "completed", result_id: "mock_2", pose_file_id: null },
@@ -47,7 +47,7 @@ function VisualizationViewContent({ projectId: propProjectId }: { projectId?: st
   const queryResultId = searchParams.get("result_id");
   const queryPoseFileId = searchParams.get("pose_file_id");
 
-  const [dataSource, setDataSource] = useState<string>("MOCK DATA");
+  const [dataSource, setDataSource] = useState<string>(isDemoMode() ? "MOCK DATA" : "REAL BACKEND DATA");
   const [proteins, setProteins] = useState<any[]>([]);
   const [ligands, setLigands] = useState<any[]>([]);
   const [poses, setPoses] = useState<any[]>([]);
@@ -266,7 +266,7 @@ function VisualizationViewContent({ projectId: propProjectId }: { projectId?: st
         const fpRes = await apiClient.get<any>(`/projects/${projectId}/viewer/interaction-fingerprint/${selectedPose.result_id}`);
         if (fpRes.success && fpRes.data && fpRes.data.available) {
           const data = fpRes.data;
-          setResidues(data.residue_contacts || MOCK_RESIDUES);
+          setResidues(isDemoMode() ? (data.residue_contacts || MOCK_RESIDUES) : (data.residue_contacts || []));
           setInteractions([
             { label: "Hydrogen Bonds", count: data.counts?.h_bonds || 0, color: "bg-cyan-500" },
             { label: "Hydrophobic Contacts", count: data.counts?.hydrophobic || 0, color: "bg-emerald-500" },
@@ -422,11 +422,13 @@ function VisualizationViewContent({ projectId: propProjectId }: { projectId?: st
                     proteins.map(p => (
                       <option key={p.asset_id} value={p.asset_id}>{p.filename}</option>
                     ))
-                  ) : (
+                  ) : isDemoMode() ? (
                     <>
                       <option>EGFR AlphaFold (P00533)</option>
                       <option>EGFR Crystal (PDB: 1M17)</option>
                     </>
+                  ) : (
+                    <option value="">No protein assets available</option>
                   )}
                 </select>
               </div>
@@ -442,11 +444,13 @@ function VisualizationViewContent({ projectId: propProjectId }: { projectId?: st
                     ligands.map(l => (
                       <option key={l.asset_id} value={l.asset_id}>{l.filename}</option>
                     ))
-                  ) : (
+                  ) : isDemoMode() ? (
                     <>
                       <option>QDF-EGFR-001</option>
                       <option>QDF-EGFR-014</option>
                     </>
+                  ) : (
+                    <option value="">No ligand assets available</option>
                   )}
                 </select>
               </div>

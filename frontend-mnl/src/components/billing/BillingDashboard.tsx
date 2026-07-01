@@ -12,6 +12,9 @@ import {
   PermissionState,
   TableSkeleton,
 } from "@/components/ui";
+import { showToast } from "@/utils/toast";
+
+type BillingDashboardState = "normal" | "loading" | "restricted";
 
 const BILLING_METRICS = [
   { label: "Total Bill (MTD)", value: "$2,450", helperText: "Est. end: $3,100", status: "active" as const },
@@ -36,7 +39,7 @@ const PLANS = [
 ];
 
 export default function BillingDashboard() {
-  const [simulatedState, setSimulatedState] = useState<"normal" | "loading" | "restricted">("normal");
+  const [simulatedState, setSimulatedState] = useState<BillingDashboardState>("normal");
 
   return (
     <div className="flex flex-col gap-8 pb-12">
@@ -51,7 +54,7 @@ export default function BillingDashboard() {
               <span className="text-[10px] font-black uppercase tracking-widest text-muted-text/60">UI State:</span>
               <select 
                 value={simulatedState}
-                onChange={(e) => setSimulatedState(e.target.value as any)}
+                onChange={(e) => setSimulatedState(e.target.value as BillingDashboardState)}
                 className="bg-muted-bg border border-border/40 text-text rounded-lg px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider outline-none focus:border-accent cursor-pointer"
               >
                 <option value="normal">🟢 Operational</option>
@@ -99,7 +102,17 @@ export default function BillingDashboard() {
             description="Your user role lacks permission to review pricing packages, view historical invoices, or purchase compute allocations."
             requiredRole="Financial Administrator or Platform Owner"
             action={
-              <ActionButton label="Request Access Escalation" variant="primary" onClick={() => alert("Finance access requested.")} />
+              <ActionButton
+                label="Request Access Escalation"
+                variant="primary"
+                onClick={() =>
+                  showToast({
+                    type: "info",
+                    title: "Request logged",
+                    message: "A finance administrator will review your billing access request.",
+                  })
+                }
+              />
             }
           />
         </div>

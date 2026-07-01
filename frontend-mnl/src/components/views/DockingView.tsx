@@ -16,7 +16,8 @@ import {
   ProvenanceLegend,
   Button
 } from "@/components/ui";
-import { apiClient } from "@/services/api";
+import { apiClient, isDemoMode } from "@/services/api";
+import { showToast } from "@/utils/toast";
 
 export interface DockingViewProps {
   projectId?: string;
@@ -47,6 +48,13 @@ function DockingWorkspaceContent({ projectId }: DockingViewProps) {
   const activeProjectId = projectId || (typeof window !== "undefined" ? localStorage.getItem("active_project_id") : null);
 
   const fetchData = async () => {
+    if (isDemoMode()) {
+      setError(null);
+      setDataSource("DEMO DATA");
+      setIsLoading(false);
+      return null;
+    }
+
     try {
       if (!activeProjectId) return null;
       
@@ -121,7 +129,32 @@ function DockingWorkspaceContent({ projectId }: DockingViewProps) {
 
   const handleRunStage = async () => {
     if (!activeProjectId) {
-      alert("No active research project selected.");
+      showToast({
+        type: "warning",
+        title: "Project Required",
+        message: "Select an active research project before starting a workflow.",
+      });
+      return;
+    }
+
+    const stage = isGnina ? "gnina" : "docking";
+    if (isDemoMode()) {
+      const now = new Date();
+      setPipelineSummary({
+        status: "completed",
+        stage_statuses: {
+          [stage]: { status: "completed", progress: 100 },
+        },
+      });
+      setLastUpdated(now);
+      setDuration("0s");
+      setPolling(false);
+      setRunningStage(false);
+      showToast({
+        type: "info",
+        title: "Demo Workflow Ready",
+        message: `${isGnina ? "GNINA CNN rescoring" : "Molecular docking"} is simulated in demo mode.`,
+      });
       return;
     }
     
@@ -129,7 +162,6 @@ function DockingWorkspaceContent({ projectId }: DockingViewProps) {
       setRunningStage(true);
       setPolling(true);
       setRunStartTime(new Date());
-      const stage = isGnina ? "gnina" : "docking";
       const res = await apiClient.post<any>(`/projects/${activeProjectId}/pipeline/run`, {
         body: {
           pipeline: [stage],
@@ -137,15 +169,27 @@ function DockingWorkspaceContent({ projectId }: DockingViewProps) {
         }
       });
       if (res.success) {
-        alert(`${isGnina ? "GNINA CNN Rescoring" : "Molecular Docking"} workflow triggered successfully!`);
+        showToast({
+          type: "success",
+          title: "Workflow Started",
+          message: `${isGnina ? "GNINA CNN rescoring" : "Molecular docking"} is now running.`,
+        });
         fetchData();
       } else {
-        alert("Execution trigger failed: " + res.message);
+        showToast({
+          type: "error",
+          title: "Execution Failed",
+          message: res.message || "The backend could not start this workflow.",
+        });
         setPolling(false);
         setRunningStage(false);
       }
     } catch (err: any) {
-      alert("Error: " + (err.message || "Failed to trigger background execution adapter."));
+      showToast({
+        type: "error",
+        title: "Execution Failed",
+        message: err.message || "Failed to trigger background execution adapter.",
+      });
       setPolling(false);
       setRunningStage(false);
     }

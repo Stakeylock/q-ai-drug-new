@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { AuthCard, AuthHeader, AuthStatusMessage } from "../_components";
-import { apiClient, toFriendlyErrorMessage } from "@/services";
+import { useCallback, useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { AuthStatusMessage } from "../_components";
+import { apiClient, isDemoMode, toFriendlyErrorMessage } from "@/services";
+import { showToast } from "@/utils/toast";
 
 type Workspace = {
   id: string;
@@ -22,6 +24,54 @@ type RecentProject = {
   status: "Active" | "Idle" | "Completed";
   lastUpdated: string;
 };
+
+type WorkspaceApiItem = {
+  id: string;
+  name: string;
+};
+
+type WorkspaceListResponse = {
+  success: boolean;
+  data?: unknown;
+  message?: string;
+};
+
+type CurrentUserResponse = {
+  success: boolean;
+  data?: {
+    workspaces?: unknown;
+  };
+};
+
+type WorkspaceMutationResponse = {
+  success: boolean;
+  message?: string;
+};
+
+function isWorkspaceApiItem(value: unknown): value is WorkspaceApiItem {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as Record<string, unknown>;
+  return typeof candidate.id === "string" && typeof candidate.name === "string";
+}
+
+function mapWorkspaceItems(value: unknown): Workspace[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(isWorkspaceApiItem).map((ws) => ({
+    id: ws.id,
+    name: ws.name,
+    organization: "Quinfosys R&D Platform",
+    projects: 0,
+    members: 1,
+    lastActive: "Just now",
+    status: "Active" as const,
+  }));
+}
 
 const STATIC_WORKSPACES: Workspace[] = [
   {
@@ -91,21 +141,21 @@ export default function WorkspaceSelectorPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false);
+  const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
-  const fetchWorkspaces = async () => {
+  const fetchWorkspaces = useCallback(async () => {
+    if (isDemoMode()) {
+      setErrorMessage(null);
+      setWorkspaces(STATIC_WORKSPACES);
+      return;
+    }
+
     try {
       setErrorMessage(null);
-      const res = await apiClient.get<{ success: boolean; data: any }>("/workspaces");
-      if (res.success && Array.isArray(res.data) && res.data.length > 0) {
-        const mapped = res.data.map((ws: any) => ({
-          id: ws.id,
-          name: ws.name,
-          organization: "Quinfosys R&D Platform",
-          projects: 0,
-          members: 1,
-          lastActive: "Just now",
-          status: "Active" as const,
-        }));
+      const res = await apiClient.get<WorkspaceListResponse>("/workspaces");
+      const mapped = mapWorkspaceItems(res.data);
+      if (res.success && mapped.length > 0) {
         setWorkspaces(mapped);
         return;
       }
@@ -115,17 +165,9 @@ export default function WorkspaceSelectorPage() {
 
     // Fallback: try /auth/me which also returns workspace list
     try {
-      const meRes = await apiClient.get<{ success: boolean; data: any }>("/auth/me");
-      if (meRes.success && meRes.data?.workspaces?.length > 0) {
-        const mapped = meRes.data.workspaces.map((ws: any) => ({
-          id: ws.id,
-          name: ws.name,
-          organization: "Quinfosys R&D Platform",
-          projects: 0,
-          members: 1,
-          lastActive: "Just now",
-          status: "Active" as const,
-        }));
+      const meRes = await apiClient.get<CurrentUserResponse>("/auth/me");
+      const mapped = mapWorkspaceItems(meRes.data?.workspaces);
+      if (meRes.success && mapped.length > 0) {
         setWorkspaces(mapped);
         return;
       }
@@ -133,20 +175,23 @@ export default function WorkspaceSelectorPage() {
       console.warn("Failed /auth/me fallback:", err2);
     }
 
-    // Final fallback: show static demo workspaces
-    setWorkspaces(STATIC_WORKSPACES);
-    setIsLoading(false);
-  };
+    setWorkspaces([]);
+    setErrorMessage("Workspace data could not be loaded from the backend. Check API connectivity or sign in again.");
+  }, []);
 
   // Ensure loading state is cleared after fetch completes
-  const loadWorkspaces = async () => {
+  const loadWorkspaces = useCallback(async () => {
     await fetchWorkspaces();
     setIsLoading(false);
-  };
+  }, [fetchWorkspaces]);
 
   useEffect(() => {
-    loadWorkspaces();
-  }, []);
+    const timeoutId = window.setTimeout(() => {
+      void loadWorkspaces();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [loadWorkspaces]);
 
   const handleEnterWorkspace = async (workspace: Workspace) => {
     setSelectedId(workspace.id);
@@ -166,22 +211,36 @@ export default function WorkspaceSelectorPage() {
         router.push("/dashboard");
       }, 600);
     } catch (err) {
-      console.error("Selection failed:", err);
-      // Even if API fails, fallback to local storage set to proceed in presentation/offline mode
-      localStorage.setItem("active_workspace_id", workspace.id);
-      localStorage.setItem("active_workspace_name", workspace.name);
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 600);
+      if (isDemoMode()) {
+        localStorage.setItem("active_workspace_id", workspace.id);
+        localStorage.setItem("active_workspace_name", workspace.name);
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 600);
+        return;
+      }
+
+      setSelectedId(null);
+      setStatusMessage(null);
+      setErrorMessage(toFriendlyErrorMessage(err, "Workspace selection failed. Please retry after the backend is reachable."));
+      setIsLoading(false);
     }
   };
 
   const handleContinueDashboard = () => {
+    if (workspaces.length === 0) {
+      showToast({
+        type: "warning",
+        title: "No Workspace Available",
+        message: "Create or select a workspace before continuing to the dashboard.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     setStatusMessage("Reconnecting to most recent active session...");
     
-    // Choose first workspace or fallback if none
-    const firstWs = workspaces[0] || STATIC_WORKSPACES[0];
+    const firstWs = workspaces[0];
     localStorage.setItem("active_workspace_id", firstWs.id);
     localStorage.setItem("active_workspace_name", firstWs.name);
 
@@ -190,20 +249,43 @@ export default function WorkspaceSelectorPage() {
     }, 600);
   };
 
-  const handleCreateWorkspace = async () => {
-    const name = prompt("Create Workspace Wizard:\n\nEnter a name for the new research workspace:");
-    if (!name || !name.trim()) return;
+  const handleCreateWorkspace = () => {
+    setIsCreateWorkspaceOpen(true);
+  };
+
+  const handleCreateWorkspaceSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const name = newWorkspaceName.trim();
+    if (!name) {
+      showToast({
+        type: "warning",
+        title: "Workspace Name Required",
+        message: "Enter a workspace name before creating it.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const res = await apiClient.post<any>("/workspaces", { body: { name: name.trim() } });
+      const res = await apiClient.post<WorkspaceMutationResponse>("/workspaces", { body: { name } });
       if (res.success) {
         setStatusMessage(`Workspace "${name}" created successfully.`);
+        setIsCreateWorkspaceOpen(false);
+        setNewWorkspaceName("");
         await fetchWorkspaces();
       } else {
-        alert("Failed to create workspace.");
+        showToast({
+          type: "error",
+          title: "Create Failed",
+          message: res.message || "The backend could not create this workspace.",
+        });
       }
     } catch (err) {
-      alert("Failed to create workspace: " + (err instanceof Error ? err.message : String(err)));
+      showToast({
+        type: "error",
+        title: "Create Failed",
+        message: err instanceof Error ? err.message : "The backend could not create this workspace.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -229,6 +311,77 @@ export default function WorkspaceSelectorPage() {
           <AuthStatusMessage type="success" message={statusMessage} />
         </div>
       ) : null}
+
+      {errorMessage ? (
+        <div className="w-full">
+          <AuthStatusMessage type="error" message={errorMessage} />
+        </div>
+      ) : null}
+
+      {isCreateWorkspaceOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+          <form
+            onSubmit={handleCreateWorkspaceSubmit}
+            className="w-full max-w-md rounded-xl border bg-card p-6 shadow-2xl"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold tracking-tight" style={{ color: "var(--text)" }}>
+                  Create Workspace
+                </h2>
+                <p className="mt-1 text-xs leading-5" style={{ color: "var(--muted-text)" }}>
+                  Start a secure organization space for research projects, datasets, and team access.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsCreateWorkspaceOpen(false)}
+                className="rounded-md border px-2 py-1 text-xs font-bold uppercase tracking-widest"
+                style={{ borderColor: "var(--border)", color: "var(--muted-text)" }}
+              >
+                Close
+              </button>
+            </div>
+
+            <label className="mt-6 block space-y-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "var(--muted-text)" }}>
+                Workspace Name
+              </span>
+              <input
+                value={newWorkspaceName}
+                onChange={(event) => setNewWorkspaceName(event.target.value)}
+                placeholder="e.g. Oncology Research Workspace"
+                autoFocus
+                className="h-11 w-full rounded-lg border px-3 text-sm font-medium outline-none transition-colors focus:border-cyan-400"
+                style={{
+                  borderColor: "var(--border)",
+                  background: "var(--input-bg)",
+                  color: "var(--text)",
+                }}
+              />
+            </label>
+
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setIsCreateWorkspaceOpen(false)}
+                className="rounded-lg border px-4 py-2 text-[11px] font-bold uppercase tracking-widest"
+                style={{ borderColor: "var(--border)", color: "var(--muted-text)" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="rounded-lg bg-cyan-500 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoading ? "Creating..." : "Create Workspace"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Main Grid Structure */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -405,7 +558,11 @@ export default function WorkspaceSelectorPage() {
 
               <button
                 type="button"
-                onClick={() => alert("Join Workspace:\n\nEnter institutional hash key invite to link profiles.")}
+                onClick={() => showToast({
+                  type: "info",
+                  title: "Join Workspace",
+                  message: "Invite-code workspace joining is ready for backend invite endpoints.",
+                })}
                 className="w-full py-2.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 hover:scale-[1.01] transition-all"
                 style={{ 
                   background: "var(--card)", 
@@ -421,7 +578,11 @@ export default function WorkspaceSelectorPage() {
 
               <button
                 type="button"
-                onClick={() => alert("Import Program:\n\nAccepted structures: SDF, PDB, Mol2, SDF-ZIP datasets.")}
+                onClick={() => showToast({
+                  type: "info",
+                  title: "Import Project",
+                  message: "Program imports support SDF, PDB, Mol2, and zipped molecular datasets once a workspace is active.",
+                })}
                 className="w-full py-2.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 hover:scale-[1.01] transition-all"
                 style={{ 
                   background: "var(--card)", 

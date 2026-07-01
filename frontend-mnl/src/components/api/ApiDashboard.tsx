@@ -15,6 +15,10 @@ import {
   PermissionState,
   OfflineState,
 } from "@/components/ui";
+import { showToast } from "@/utils/toast";
+import type { StatusType } from "@/components/ui";
+
+type ApiDashboardState = "normal" | "loading" | "empty" | "error" | "restricted" | "offline";
 
 const API_METRICS = [
   { label: "API Requests", value: "24.2k", helperText: "Last 30 days", status: "active" as const },
@@ -53,7 +57,15 @@ const API_KEYS = [
     status: "active", 
     key: "qdf_test_••••••••••••0042" 
   },
-];
+] satisfies Array<{
+  name: string;
+  env: string;
+  scope: string;
+  created: string;
+  lastUsed: string;
+  status: StatusType;
+  key: string;
+}>;
 
 const ENDPOINTS = [
   { group: "Projects", items: [
@@ -107,7 +119,7 @@ const candidates = await qdf.molecules.list({
 
 export default function ApiDashboard() {
   const [activeSdk, setActiveSdk] = useState<keyof typeof SDK_EXAMPLES>("python");
-  const [simulatedState, setSimulatedState] = useState<"normal" | "loading" | "empty" | "error" | "restricted" | "offline">("normal");
+  const [simulatedState, setSimulatedState] = useState<ApiDashboardState>("normal");
 
   return (
     <div className="flex flex-col gap-8 pb-12">
@@ -122,7 +134,7 @@ export default function ApiDashboard() {
               <span className="text-[10px] font-black uppercase tracking-widest text-muted-text/60">UI State:</span>
               <select 
                 value={simulatedState}
-                onChange={(e) => setSimulatedState(e.target.value as any)}
+                onChange={(e) => setSimulatedState(e.target.value as ApiDashboardState)}
                 className="bg-muted-bg border border-border/40 text-text rounded-lg px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider outline-none focus:border-accent cursor-pointer"
               >
                 <option value="normal">🟢 Operational</option>
@@ -206,7 +218,17 @@ export default function ApiDashboard() {
             description="Your user access group does not possess administrative capabilities to create, rotate, or deprecate programmatic tokens in this program workspace."
             requiredRole="Infrastructure Administrator or Workspace Architect"
             action={
-              <ActionButton label="Contact Admin Team" variant="primary" onClick={() => alert("Administrative contact requested.")} />
+              <ActionButton
+                label="Contact Admin Team"
+                variant="primary"
+                onClick={() =>
+                  showToast({
+                    type: "info",
+                    title: "Request logged",
+                    message: "An administrator will review your API access request.",
+                  })
+                }
+              />
             }
           />
         </div>
@@ -271,7 +293,7 @@ export default function ApiDashboard() {
                             {key.env}
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <StatusBadge status={key.status as any} size="sm" />
+                            <StatusBadge status={key.status} size="sm" />
                           </td>
                         </tr>
                       ))}

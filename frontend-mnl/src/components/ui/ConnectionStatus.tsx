@@ -50,7 +50,17 @@ export function useBackendConnectionStatus() {
 
 export const BackendStatusBanner: React.FC = () => {
   const { isConnected, isChecking, recheck } = useBackendConnectionStatus();
-  const demo = isDemoMode();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const demo = mounted && isDemoMode();
 
   if (demo) {
     return (
@@ -96,7 +106,13 @@ export const BackendStatusBanner: React.FC = () => {
 
 export const ConnectionHealthIndicator: React.FC = () => {
   const { isConnected } = useBackendConnectionStatus();
-  const demo = isDemoMode();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const demo = mounted && isDemoMode();
 
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border/30 max-w-max">

@@ -1,5 +1,6 @@
 from pathlib import Path
-from fastapi import APIRouter
+from fastapi import APIRouter, status
+from fastapi.responses import JSONResponse
 from app.core.config import settings
 
 router = APIRouter()
@@ -31,11 +32,16 @@ async def health_check():
     else:
         storage_status = storage_provider
 
-    return {
-        "status": "ok",
+    is_healthy = db_status == "connected" and not storage_status.startswith("disconnected")
+    payload = {
+        "status": "ok" if is_healthy else "degraded",
         "service": settings.APP_NAME,
         "environment": settings.APP_ENV,
         "database": db_status,
         "storage": storage_status,
         "q_ai_drug": "unknown"
     }
+    return JSONResponse(
+        status_code=status.HTTP_200_OK if is_healthy else status.HTTP_503_SERVICE_UNAVAILABLE,
+        content=payload,
+    )

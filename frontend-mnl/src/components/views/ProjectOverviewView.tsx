@@ -8,6 +8,7 @@ import {
   SectionHeader,
   PipelineStepper,
   CandidateCard,
+  EmptyState,
   MetricCard,
   ReportCard,
   ExperimentTable,
@@ -15,7 +16,8 @@ import {
   StatusType
 } from "@/components/ui";
 import { AssistantWidget, ChartsSection } from "@/components/dashboard";
-import { apiClient, getApiBaseUrl } from "@/services";
+import { apiClient, getApiBaseUrl, isDemoMode } from "@/services";
+import { showToast } from "@/utils/toast";
 
 interface ProjectDetailProps {
   params: {
@@ -181,11 +183,13 @@ const RECENT_ACTIVITY = [
 
 export interface ProjectOverviewViewProps { projectId: string; }
 export default function ProjectOverviewView({ projectId }: ProjectOverviewViewProps) {
-  const [project, setProject] = useState<any>(PROJECTS_DB[projectId] || PROJECTS_DB["egfr-nsclc"]);
+  const demoMode = isDemoMode();
+  const [project, setProject] = useState<any>(() => demoMode ? (PROJECTS_DB[projectId] || PROJECTS_DB["egfr-nsclc"]) : null);
   const [activeTab, setActiveTab] = useState("Overview");
   const [inputs, setInputs] = useState<any>(null);
   const [completeness, setCompleteness] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [projectLoadError, setProjectLoadError] = useState<string | null>(null);
 
   // Real-time Orchestration States
   const [pipelineRunning, setPipelineRunning] = useState(false);
@@ -210,10 +214,11 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
         }
       });
       setProject((prev: any) => ({
-        ...prev,
+        ...(prev || PROJECTS_DB[projectId] || PROJECTS_DB["egfr-nsclc"]),
         disease: "Non-Small Cell Lung Cancer",
         target: "EGFR (L858R / T790M)",
       }));
+      setProjectLoadError(null);
       setIsValidated(true);
       if (typeof window !== "undefined") {
         window.history.replaceState({}, '', window.location.pathname);
@@ -247,8 +252,16 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
   };
 
   const fetchProjectData = async () => {
+    if (demoMode) {
+      setProject(PROJECTS_DB[projectId] || PROJECTS_DB["egfr-nsclc"]);
+      setProjectLoadError(null);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
+      setProjectLoadError(null);
       if (typeof window !== "undefined") {
         localStorage.setItem("active_project_id", projectId);
       }
@@ -268,6 +281,10 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
           objective: p.description || "Development of mutant-selective discovery programs.",
           collaborators: ["SC", "DK", "ER", "MW"],
         });
+      } else {
+        setProject(null);
+        setProjectLoadError(res.message || "The backend did not return this project.");
+        return;
       }
 
       const inputsRes = await apiClient.get<any>(`/projects/${projectId}/inputs`);
@@ -280,13 +297,22 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
         setCompleteness(compRes.data);
       }
     } catch (err) {
-      console.error("Failed to load project details from backend, using fallback:", err);
+      console.error("Failed to load project details from backend:", err);
+      setProject(null);
+      setProjectLoadError(err instanceof Error ? err.message : "Failed to load project details from the backend.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const fetchSummaryData = async () => {
+    if (demoMode) {
+      setPipelineSummary(null);
+      setPollingActive(false);
+      setPipelineRunning(false);
+      return;
+    }
+
     try {
       const res = await apiClient.get<any>(`/projects/${projectId}/pipeline/summary`);
       if (res.success && res.data) {
@@ -364,23 +390,43 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
         });
 
         if (assignRes.success) {
-          alert(`File "${file.name}" uploaded and assigned successfully!`);
+          showToast({
+            type: "success",
+            title: "File Assigned",
+            message: `${file.name} was uploaded and attached to project inputs.`,
+          });
           fetchProjectData();
         } else {
-          alert("Failed to assign file to inputs.");
+          showToast({
+            type: "error",
+            title: "Assignment Failed",
+            message: "The file uploaded, but the backend could not assign it to project inputs.",
+          });
         }
       } else {
-        alert("Failed to upload file to project storage.");
+        showToast({
+          type: "error",
+          title: "Upload Failed",
+          message: "The backend could not store this file.",
+        });
       }
     } catch (err) {
-      alert("Upload failed: " + (err instanceof Error ? err.message : String(err)));
+      showToast({
+        type: "error",
+        title: "Upload Failed",
+        message: err instanceof Error ? err.message : "The backend could not store this file.",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const getCardInfo = (field: string, fallbackStatus: any, fallbackName: string) => {
-    if (!inputs) return { status: fallbackStatus, fileName: fallbackName };
+    if (!inputs) {
+      return demoMode
+        ? { status: fallbackStatus, fileName: fallbackName }
+        : { status: "Missing" as const, fileName: undefined };
+    }
     const fileId = inputs[field];
     if (fileId) {
       return { status: "Uploaded" as const, fileName: `assigned_file_${fileId.slice(-6)}` };
@@ -389,7 +435,7 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
   };
 
   const getPipelineSteps = () => {
-    const defaultSteps = [
+    const demoSteps = [
       { label: "Target Ranking", status: "completed" as any, description: "EGFR P00533" },
       { label: "Molecule Generation", status: "completed" as any, description: "15k compounds" },
       { label: "ADMET Filtering", status: "completed" as any, description: "1.5k passed" },
@@ -399,13 +445,6 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
       { label: "Molecular Simulations", status: "queued" as any, description: "Stability test" },
       { label: "Report Generation", status: "queued" as any, description: "Validation dossier" },
     ];
-
-    if (!pipelineSummary || !pipelineSummary.latest_pipeline_run) {
-      return defaultSteps;
-    }
-
-    const run = pipelineSummary.latest_pipeline_run;
-    const stageStatuses = run.stage_statuses || {};
 
     const stageMap: Record<string, string> = {
       "target_ranking": "Target Ranking",
@@ -417,6 +456,20 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
       "simulation": "Simulations",
       "report": "Report PDF",
     };
+
+    if (!pipelineSummary || !pipelineSummary.latest_pipeline_run) {
+      if (demoMode) {
+        return demoSteps;
+      }
+      return Object.values(stageMap).map((label) => ({
+        label,
+        status: "queued" as any,
+        description: "No run yet",
+      }));
+    }
+
+    const run = pipelineSummary.latest_pipeline_run;
+    const stageStatuses = run.stage_statuses || {};
 
     const stageKeys = Object.keys(stageMap);
     let furthestActiveIndex = -1;
@@ -464,14 +517,15 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
 
   const getSummaryMetrics = () => {
     const counts = pipelineSummary?.imported_counts || {};
+    const fallback = (value: string) => demoMode ? value : "0";
     return [
-      { label: "Targets Ranked", value: counts.targets_ranked !== undefined ? counts.targets_ranked.toString() : "08" },
-      { label: "Generated Molecules", value: counts.molecules !== undefined ? counts.molecules.toLocaleString() : "15,000" },
-      { label: "Filtered Candidates", value: counts.admet_results !== undefined ? counts.admet_results.toLocaleString() : "1,500" },
-      { label: "Docking Poses", value: counts.docking_results !== undefined ? counts.docking_results.toLocaleString() : "45,200" },
-      { label: "GNINA Runs", value: counts.gnina_results !== undefined ? counts.gnina_results.toLocaleString() : "1,240" },
-      { label: "Quantum Reranked", value: counts.quantum_results !== undefined ? counts.quantum_results.toLocaleString() : "240" },
-      { label: "Reports Generated", value: counts.reports !== undefined ? counts.reports.toLocaleString() : "12" },
+      { label: "Targets Ranked", value: counts.targets_ranked !== undefined ? counts.targets_ranked.toString() : fallback("08") },
+      { label: "Generated Molecules", value: counts.molecules !== undefined ? counts.molecules.toLocaleString() : fallback("15,000") },
+      { label: "Filtered Candidates", value: counts.admet_results !== undefined ? counts.admet_results.toLocaleString() : fallback("1,500") },
+      { label: "Docking Poses", value: counts.docking_results !== undefined ? counts.docking_results.toLocaleString() : fallback("45,200") },
+      { label: "GNINA Runs", value: counts.gnina_results !== undefined ? counts.gnina_results.toLocaleString() : fallback("1,240") },
+      { label: "Quantum Reranked", value: counts.quantum_results !== undefined ? counts.quantum_results.toLocaleString() : fallback("240") },
+      { label: "Reports Generated", value: counts.reports !== undefined ? counts.reports.toLocaleString() : fallback("12") },
     ];
   };
 
@@ -492,6 +546,35 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
     "Overview", "Input Data", "Targets", "Molecules", "Docking", 
     "GNINA", "Quantum", "Simulations", "ADMET", "Reports"
   ];
+
+  if (isLoading && !project) {
+    return (
+      <div className="page-shell flex min-h-[420px] items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="page-shell pb-10">
+        <EmptyState
+          title="Project could not be loaded"
+          description={projectLoadError || "The selected project was not returned by the backend."}
+          action={
+            <ActionButton
+              label="Back to Projects"
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.location.href = "/research-projects";
+                }
+              }}
+            />
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="page-shell ui-fade-in flex flex-col gap-0 pb-10">
@@ -544,9 +627,9 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
               <div className="h-4 w-px bg-border/40" />
               <div className="flex items-center gap-2 px-2.5 py-0.5 bg-muted-bg/50 border border-border/20 rounded-md">
                 <span className="text-[8px] font-black uppercase tracking-widest text-muted-text/50 mr-1.5">Mode:</span>
-                <span className="text-[8px] font-black uppercase text-accent leading-none">REAL BACKEND DATA</span>
+                <span className="text-[8px] font-black uppercase text-accent leading-none">{demoMode ? "DEMO DATA" : "REAL BACKEND DATA"}</span>
                 <span className="mx-1 opacity-20">|</span>
-                <span className="text-[8px] font-black uppercase text-indigo-400 leading-none">LIVE Q-AI-DRUG PIPELINE</span>
+                <span className="text-[8px] font-black uppercase text-indigo-400 leading-none">{demoMode ? "PRESENTATION PIPELINE" : "LIVE Q-AI-DRUG PIPELINE"}</span>
               </div>
             </div>
           </div>
@@ -671,11 +754,19 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
                 title="Lead Candidate Snapshot" 
                 description="Top confidence scoring leads prioritized for experimental validation."
               />
-              <div className="grid gap-4 md:grid-cols-3">
-                {TOP_CANDIDATES.map((candidate) => (
-                  <CandidateCard key={candidate.id} {...candidate} />
-                ))}
-              </div>
+              {demoMode ? (
+                <div className="grid gap-4 md:grid-cols-3">
+                  {TOP_CANDIDATES.map((candidate) => (
+                    <CandidateCard key={candidate.id} {...candidate} />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState
+                  title="No candidate snapshot yet"
+                  description="Lead cards will appear after imported or generated candidates are available for this project."
+                  className="min-h-[220px]"
+                />
+              )}
             </section>
           </div>
 
@@ -688,14 +779,22 @@ export default function ProjectOverviewView({ projectId }: ProjectOverviewViewPr
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-text/60">Recent activity</h4>
               <div className="ui-card-surface p-0 overflow-hidden">
                 <div className="divide-y divide-border/40">
-                  {RECENT_ACTIVITY.map((activity, i) => (
-                    <div key={i} className="p-4 hover:bg-surface-subtle/20 transition-colors">
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="text-[11px] font-medium text-text/80 leading-snug">{activity.text}</p>
-                        <span className="text-[8px] font-black text-muted-text/40 uppercase whitespace-nowrap">{activity.time}</span>
+                  {demoMode ? (
+                    RECENT_ACTIVITY.map((activity, i) => (
+                      <div key={i} className="p-4 hover:bg-surface-subtle/20 transition-colors">
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="text-[11px] font-medium text-text/80 leading-snug">{activity.text}</p>
+                          <span className="text-[8px] font-black text-muted-text/40 uppercase whitespace-nowrap">{activity.time}</span>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="p-4">
+                      <p className="text-[11px] font-medium leading-relaxed text-muted-text/70">
+                        Backend activity events will appear here after this project records pipeline runs.
+                      </p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </section>

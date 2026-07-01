@@ -44,13 +44,15 @@ async def lifespan(app: FastAPI):
 
 
 # 3. Instantiate FastAPI application
+is_production = settings.APP_ENV.lower() == "production"
 app = FastAPI(
     title=settings.APP_NAME,
     description="Quantum AI Drug Discovery Platform Application Backend - Phase 1 Foundation",
     version="1.0.0-phase1",
     lifespan=lifespan,
-    docs_url="/docs",
-    redoc_url="/redoc"
+    docs_url=None if is_production else "/docs",
+    redoc_url=None if is_production else "/redoc",
+    openapi_url=None if is_production else "/openapi.json",
 )
 
 # 4. CORS Setup
@@ -87,12 +89,14 @@ async def root():
     """
     Root endpoint serving basic service identifiers.
     """
-    return {
+    payload = {
         "service": settings.APP_NAME,
         "status": "running",
-        "docs": "/docs",
         "api_prefix": settings.API_V1_PREFIX
     }
+    if not is_production:
+        payload["docs"] = "/docs"
+    return payload
 
 @app.get("/health", tags=["General"])
 async def root_health():

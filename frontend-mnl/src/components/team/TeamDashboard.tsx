@@ -12,6 +12,16 @@ import {
   PermissionState,
   TableSkeleton,
 } from "@/components/ui";
+import { showToast } from "@/utils/toast";
+import type { StatusType } from "@/components/ui";
+
+type TeamDashboardState = "normal" | "loading" | "restricted";
+type MemberStatus = "active" | "inactive";
+
+const MEMBER_STATUS_BADGE: Record<MemberStatus, StatusType> = {
+  active: "active",
+  inactive: "archived",
+};
 
 const TEAM_METRICS = [
   { label: "Team Members", value: "24", status: "completed" as const },
@@ -98,7 +108,7 @@ const PROJECT_GROUPS = [
 ];
 
 export default function TeamDashboard() {
-  const [simulatedState, setSimulatedState] = useState<"normal" | "loading" | "restricted">("normal");
+  const [simulatedState, setSimulatedState] = useState<TeamDashboardState>("normal");
 
   return (
     <div className="flex flex-col gap-8 pb-12">
@@ -113,7 +123,7 @@ export default function TeamDashboard() {
               <span className="text-[10px] font-black uppercase tracking-widest text-muted-text/60">UI State:</span>
               <select 
                 value={simulatedState}
-                onChange={(e) => setSimulatedState(e.target.value as any)}
+                onChange={(e) => setSimulatedState(e.target.value as TeamDashboardState)}
                 className="bg-muted-bg border border-border/40 text-text rounded-lg px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider outline-none focus:border-accent cursor-pointer"
               >
                 <option value="normal">🟢 Operational</option>
@@ -162,7 +172,17 @@ export default function TeamDashboard() {
             description="Your user access level does not allow modification of team members, invitation of external reviewers, or role reallocations."
             requiredRole="Organization Administrator or Program Director"
             action={
-              <ActionButton label="Request Role Escalation" variant="primary" onClick={() => alert("Role elevation request dispatched.")} />
+              <ActionButton
+                label="Request Role Escalation"
+                variant="primary"
+                onClick={() =>
+                  showToast({
+                    type: "info",
+                    title: "Request sent",
+                    message: "An organization administrator will review your role request.",
+                  })
+                }
+              />
             }
           />
         </div>
@@ -222,7 +242,7 @@ export default function TeamDashboard() {
                         <span className="text-[10px] font-bold text-muted-text/50 uppercase">{member.lastActive}</span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <StatusBadge status={member.status as any} size="sm" />
+                        <StatusBadge status={MEMBER_STATUS_BADGE[member.status as MemberStatus]} label={member.status} size="sm" />
                       </td>
                     </tr>
                   ))}
@@ -279,7 +299,7 @@ export default function TeamDashboard() {
                           <span className="text-xs font-bold text-text">{inv.email}</span>
                           <span className="text-[10px] font-black uppercase text-accent tracking-widest">{inv.role}</span>
                        </div>
-                       <StatusBadge status={inv.status as any} size="sm" />
+                       <StatusBadge status={inv.status as StatusType} size="sm" />
                     </div>
                     <div className="flex justify-between items-center pt-2 border-t border-border/20 text-[9px] font-bold text-muted-text/50 uppercase">
                        <span>By: {inv.invitedBy}</span>

@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import AssistantWidget from "../dashboard/AssistantWidget";
+import { showToast } from "@/utils/toast";
 
 const ALLOWED_PATHS = [
   "/dashboard",
@@ -52,7 +53,11 @@ export default function PharmaAssistantWidget() {
             <AssistantWidget 
               activePath={pathname}
               onPromptClick={(prompt) => {
-                console.log("Assistant Prompt:", prompt);
+                showToast({
+                  type: "info",
+                  title: "Assistant Prompt",
+                  message: `"${prompt}" is ready in the full assistant workspace.`,
+                });
               }}
             />
           </motion.div>
