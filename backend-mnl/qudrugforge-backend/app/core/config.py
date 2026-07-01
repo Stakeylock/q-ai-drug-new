@@ -49,6 +49,13 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_MINUTE: int = Field(default=100)
     RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60)
 
+    # Razorpay checkout configuration. RAZORPAY_KEY_ID is public; keep
+    # RAZORPAY_KEY_SECRET server-side only.
+    RAZORPAY_KEY_ID: str = Field(default="")
+    RAZORPAY_KEY_SECRET: str = Field(default="")
+    RAZORPAY_WEBHOOK_SECRET: str = Field(default="")
+    RAZORPAY_API_URL: str = Field(default="https://api.razorpay.com/v1")
+
     # Q-AI-Drug Importer Settings
     Q_AI_DRUG_OUTPUT_ROOT: str = Field(default="../q-ai-drug/outputs")
     Q_AI_DRUG_IMPORT_ALLOW_ABSOLUTE_PATHS: bool = Field(default=False)
@@ -94,6 +101,8 @@ class Settings(BaseSettings):
             errors.append("CORS_ORIGINS must not contain '*' in production.")
         if self.RATE_LIMIT_PER_MINUTE <= 0 or self.RATE_LIMIT_WINDOW_SECONDS <= 0:
             errors.append("Rate limit settings must be positive integers.")
+        if bool(self.RAZORPAY_KEY_ID) ^ bool(self.RAZORPAY_KEY_SECRET):
+            errors.append("RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET must be configured together.")
         if errors:
             raise ValueError("Invalid production configuration: " + " ".join(errors))
 

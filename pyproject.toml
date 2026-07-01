@@ -59,4 +59,4 @@ include = ["q_ai_drug*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = [".", "src"]

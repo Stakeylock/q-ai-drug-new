@@ -22,6 +22,7 @@ from app.api.v1.similarity import router as similarity_router
 from app.api.v1.reports import router as reports_router
 from app.api.v1.pipeline import router as pipeline_router
 from app.api.v1.claim_matrix import router as claim_matrix_router
+from app.api.v1.billing import router as billing_router
 
 api_v1_router = APIRouter()
 
@@ -49,5 +50,6 @@ api_v1_router.include_router(similarity_router)
 api_v1_router.include_router(reports_router)
 api_v1_router.include_router(pipeline_router)
 api_v1_router.include_router(claim_matrix_router)
+api_v1_router.include_router(billing_router)
 
 

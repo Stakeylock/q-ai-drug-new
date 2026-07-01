@@ -1,11 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ApiError } from "@/services/api";
+import {
+  createRazorpayOrder,
+  isPaymentAuthError,
+  loadRazorpayCheckout,
+  type PaymentCurrency,
+  verifyRazorpayPayment,
+} from "@/services/payments";
 
 type BillingCycle = "monthly" | "annual";
 
 type Plan = {
+  id: string;
   name: string;
   eyebrow: string;
   description: string;
@@ -22,6 +32,7 @@ const ANNUAL_DISCOUNT = 0.8;
 
 const PLANS: Plan[] = [
   {
+    id: "free",
     name: "Free",
     eyebrow: "Learn and explore",
     description: "For individual researchers evaluating the core discovery workflow.",
@@ -39,6 +50,7 @@ const PLANS: Plan[] = [
     href: "/signup?plan=free",
   },
   {
+    id: "explorer",
     name: "Explorer",
     eyebrow: "Independent research",
     description: "For scientists moving from early ideas into repeatable experiments.",
@@ -56,6 +68,7 @@ const PLANS: Plan[] = [
     href: "/signup?plan=explorer",
   },
   {
+    id: "research",
     name: "Research",
     eyebrow: "Most popular",
     description: "For active discovery teams running end-to-end candidate programs.",
@@ -75,6 +88,7 @@ const PLANS: Plan[] = [
     featured: true,
   },
   {
+    id: "scale",
     name: "Scale",
     eyebrow: "Multi-program teams",
     description: "For growing biotech teams coordinating multiple discovery programs.",
@@ -93,6 +107,7 @@ const PLANS: Plan[] = [
     href: "/signup?plan=scale",
   },
   {
+    id: "enterprise",
     name: "Enterprise",
     eyebrow: "Private and governed",
     description: "For regulated organizations requiring tailored capacity and controls.",
@@ -148,10 +163,16 @@ function getCurrencyName(currency: string) {
 }
 
 export function PricingExperience({ compact = false }: { compact?: boolean }) {
+  const router = useRouter();
   const [billingCycle, setBillingCycle] = useState<BillingCycle>("annual");
   const [currency, setCurrency] = useState("USD");
   const [rates, setRates] = useState<Record<string, number>>(FALLBACK_RATES);
   const [ratesAreLive, setRatesAreLive] = useState(false);
+  const [checkoutPlanId, setCheckoutPlanId] = useState<string | null>(null);
+  const [checkoutMessage, setCheckoutMessage] = useState<{
+    tone: "info" | "success" | "error";
+    text: string;
+  } | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -198,6 +219,123 @@ export function PricingExperience({ compact = false }: { compact?: boolean }) {
 
     const rate = rates[currency] ?? 1;
     return roundConvertedPrice(plan.usdMonthly * rate);
+  }
+
+  function signupHref(plan: Plan) {
+    const separator = plan.href.includes("?") ? "&" : "?";
+    return `${plan.href}${separator}billing=${billingCycle}`;
+  }
+
+  function checkoutCurrency(): PaymentCurrency {
+    return currency === "USD" ? "USD" : "INR";
+  }
+
+  async function startCheckout(plan: Plan) {
+    if (plan.usdMonthly === 0 || plan.usdMonthly === null) {
+      router.push(signupHref(plan));
+      return;
+    }
+
+    if (typeof window !== "undefined" && !window.localStorage.getItem("auth_token")) {
+      router.push(signupHref(plan));
+      return;
+    }
+
+    const orderCurrency = checkoutCurrency();
+    setCheckoutPlanId(plan.id);
+    setCheckoutMessage({
+      tone: "info",
+      text:
+        currency === orderCurrency
+          ? "Preparing secure Razorpay checkout..."
+          : `Preparing secure Razorpay checkout in ${orderCurrency}.`,
+    });
+
+    try {
+      const order = await createRazorpayOrder({
+        planId: plan.id,
+        billingCycle,
+        currency: orderCurrency,
+      });
+      await loadRazorpayCheckout();
+
+      if (!window.Razorpay) {
+        throw new Error("Razorpay checkout did not load.");
+      }
+
+      const checkout = new window.Razorpay({
+        key: order.key_id,
+        amount: order.amount,
+        currency: order.currency,
+        name: "QuDrugForge",
+        description: `${order.plan_name} ${order.billing_cycle} plan`,
+        order_id: order.order_id,
+        notes: {
+          plan_id: order.plan_id,
+          billing_cycle: order.billing_cycle,
+        },
+        theme: {
+          color: "#2563eb",
+        },
+        modal: {
+          ondismiss: () => {
+            setCheckoutPlanId(null);
+            setCheckoutMessage({ tone: "info", text: "Checkout closed before payment." });
+          },
+        },
+        handler: async (response) => {
+          try {
+            const verification = await verifyRazorpayPayment({
+              planId: order.plan_id,
+              billingCycle: order.billing_cycle,
+              response,
+            });
+            if (!verification.verified) {
+              throw new Error("Payment verification failed.");
+            }
+            setCheckoutMessage({
+              tone: "success",
+              text: "Payment verified. Your subscription change is ready for activation.",
+            });
+            router.push("/billing");
+          } catch {
+            setCheckoutMessage({
+              tone: "error",
+              text: "Payment was received but verification failed. Please contact support with your payment ID.",
+            });
+          } finally {
+            setCheckoutPlanId(null);
+          }
+        },
+      });
+
+      checkout.on("payment.failed", (response) => {
+        setCheckoutPlanId(null);
+        setCheckoutMessage({
+          tone: "error",
+          text: response.error?.description || "Payment failed before completion.",
+        });
+      });
+
+      checkout.open();
+    } catch (error) {
+      setCheckoutPlanId(null);
+      if (isPaymentAuthError(error)) {
+        router.push(signupHref(plan));
+        return;
+      }
+      if (error instanceof ApiError && error.status === 503) {
+        setCheckoutMessage({
+          tone: "info",
+          text: "Razorpay checkout is wired but not configured on this environment yet.",
+        });
+        return;
+      }
+      setCheckoutMessage({
+        tone: "error",
+        text: "Checkout could not start. Please try again shortly.",
+      });
+    }
   }
 
   return (
@@ -334,20 +472,50 @@ export function PricingExperience({ compact = false }: { compact?: boolean }) {
                 ))}
               </ul>
 
-              <Link
-                href={plan.href}
+              {plan.usdMonthly === 0 || plan.usdMonthly === null ? (
+                <Link
+                  href={signupHref(plan)}
+                  className={`mt-7 flex h-11 items-center justify-center rounded-xl px-4 text-sm font-black transition ${
+                    plan.featured
+                      ? "btn-primary-glow"
+                      : "border border-border bg-surface-subtle text-text hover:border-primary/40 hover:text-primary"
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => startCheckout(plan)}
+                  disabled={checkoutPlanId === plan.id}
                 className={`mt-7 flex h-11 items-center justify-center rounded-xl px-4 text-sm font-black transition ${
                   plan.featured
                     ? "btn-primary-glow"
                     : "border border-border bg-surface-subtle text-text hover:border-primary/40 hover:text-primary"
-                }`}
-              >
-                {plan.cta}
-              </Link>
+                } disabled:cursor-wait disabled:opacity-70`}
+                >
+                  {checkoutPlanId === plan.id ? "Preparing..." : plan.cta}
+                </button>
+              )}
             </article>
           );
         })}
       </div>
+
+      {checkoutMessage ? (
+        <div
+          className={`rounded-2xl border px-4 py-3 text-sm font-semibold ${
+            checkoutMessage.tone === "success"
+              ? "border-success/30 bg-success/10 text-success"
+              : checkoutMessage.tone === "error"
+                ? "border-danger/30 bg-danger/10 text-danger"
+                : "border-primary/30 bg-primary/10 text-primary"
+          }`}
+          role="status"
+        >
+          {checkoutMessage.text}
+        </div>
+      ) : null}
 
       <div className="flex flex-col justify-between gap-2 text-xs font-medium text-text-secondary sm:flex-row">
         <p>Prices exclude applicable taxes. Compute overages are billed separately.</p>

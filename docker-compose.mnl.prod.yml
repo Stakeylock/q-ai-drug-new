@@ -114,6 +114,10 @@ services:
       Q_AI_DRUG_OUTPUT_ROOT: /app/q-ai-drug-outputs
       Q_AI_DRUG_EXECUTION_MODE: http
       ENABLE_DEV_JOB_SIMULATION: "false"
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
+      RAZORPAY_API_URL: ${RAZORPAY_API_URL:-https://api.razorpay.com/v1}
     ports:
       - '8001:8001'
     depends_on:
